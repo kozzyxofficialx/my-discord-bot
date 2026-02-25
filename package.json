@@ -1,0 +1,19 @@
+{
+  "name": "my-discord-bot",
+  "version": "1.0.0",
+  "description": "A powerful multi-purpose Discord bot.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "discord.js": "^14.17.3",
+    "dotenv": "^16.4.7",
+    "open": "^11.0.0",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
+  }
+}

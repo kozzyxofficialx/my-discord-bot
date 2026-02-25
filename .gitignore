@@ -1,0 +1,11 @@
+node_modules/
+.env
+*.sqlite
+database.sqlite
+*.log
+error.log
+debug.log
+crash_log.txt
+*.bak
+KozzyX.js.bak
+.DS_Store
