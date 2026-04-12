@@ -117,6 +117,22 @@ export default {
 
             // PREFIX COMMANDS
             if (!message.guild) return;
+
+            // Silently ignore non-mods — only members with at least one elevated
+            // permission can trigger prefix commands.
+            const MOD_PERMS = [
+                PermissionsBitField.Flags.Administrator,
+                PermissionsBitField.Flags.ManageGuild,
+                PermissionsBitField.Flags.ManageChannels,
+                PermissionsBitField.Flags.ManageMessages,
+                PermissionsBitField.Flags.ManageNicknames,
+                PermissionsBitField.Flags.KickMembers,
+                PermissionsBitField.Flags.BanMembers,
+                PermissionsBitField.Flags.ModerateMembers,
+                PermissionsBitField.Flags.ViewAuditLog,
+            ];
+            if (!MOD_PERMS.some(p => message.member.permissions.has(p))) return;
+
             const args = raw.slice(PREFIX.length).trim().split(/\s+/);
             const commandName = args.shift()?.toLowerCase();
             if (!commandName) return;
