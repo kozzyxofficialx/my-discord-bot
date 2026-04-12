@@ -1,12 +1,14 @@
-import { Events } from "discord.js";
-import { getGuildSettings, afkMap, guildAutoresponders, clearAfk } from "../utils/database.js";
+import { Events, PermissionsBitField } from "discord.js";
+import { getGuildSettings, afkMap, guildAutoresponders, saveSettings, clearAfk } from "../utils/database.js";
 import { replyEmbed, buildCoolEmbed } from "../utils/embeds.js";
-import { containsBadWords, looksSpammy, matchesTrigger, isEmojiResponse } from "../utils/helpers.js";
+import { containsBadWords, looksSpammy, matchesTrigger, isEmojiResponse, parseHexColorToInt } from "../utils/helpers.js";
 import { moderateMessage } from "../utils/ai.js";
 
 // Per-channel cooldown for AI moderation to avoid hammering the API
-const aiModCooldowns = new Map(); // channelId -> last check timestamp
-const AI_MOD_INTERVAL_MS = 3000; // min 3s between AI checks per channel
+const aiModCooldowns = new Map();
+const AI_MOD_INTERVAL_MS = 3000;
+
+const PREFIX = ",";
 
 export default {
     name: Events.MessageCreate,
@@ -48,7 +50,7 @@ export default {
             }
 
             // AI MODERATION
-            if (message.guild) {
+            if (message.guild && !raw.startsWith(PREFIX)) {
                 const settings = getGuildSettings(message.guild.id);
                 if (settings.plugins?.ai_moderation) {
                     const now = Date.now();
@@ -66,7 +68,6 @@ export default {
                                     description: `<@${message.author.id}> your message was removed by auto-moderation.\n**Reason:** ${verdict.reason || "Violated community guidelines."}`,
                                 })],
                             }).catch(() => null);
-                            // Log to case channel
                             const { postCase, caseEmbed } = await import("../utils/embeds.js");
                             await postCase(message.guild, caseEmbed(message.guild.id, "🤖 Auto-Moderation — Message Removed", [
                                 `**User:** ${message.author.tag} (<@${message.author.id}>)`,
@@ -80,35 +81,83 @@ export default {
                 }
             }
 
-            // AUTORESPONDERS
-            if (!message.guild) return;
+            // AUTORESPONDERS (non-prefix messages only)
+            if (!raw.startsWith(PREFIX)) {
+                if (!message.guild) return;
 
-            const settings = getGuildSettings(message.guild.id);
-            const filterOn = settings.autoresponderFilterOn !== false;
-            const list = guildAutoresponders.get(message.guild.id) || [];
+                const settings = getGuildSettings(message.guild.id);
+                const filterOn = settings.autoresponderFilterOn !== false;
+                const list = guildAutoresponders.get(message.guild.id) || [];
 
-            if (filterOn) {
-                if (containsBadWords(lower, settings.badWords) || looksSpammy(raw)) return;
-            }
+                if (filterOn) {
+                    if (containsBadWords(lower, settings.badWords) || looksSpammy(raw)) return;
+                }
 
-            for (const ar of list) {
-                const trig = ar.trigger.toLowerCase();
-                const isMatch = lower === trig || raw.trim().toLowerCase() === trig || matchesTrigger(lower, trig);
-                if (!isMatch) continue;
+                for (const ar of list) {
+                    const trig = ar.trigger.toLowerCase();
+                    const isMatch = lower === trig || raw.trim().toLowerCase() === trig || matchesTrigger(lower, trig);
+                    if (!isMatch) continue;
 
-                const resp = String(ar.response || "").trim();
-                if (!resp) return;
+                    const resp = String(ar.response || "").trim();
+                    if (!resp) return;
 
-                if (isEmojiResponse(resp)) {
-                    try { await message.react(resp); } catch { }
-                } else {
-                    await replyEmbed(message, {
-                        type: "autoresponder",
-                        title: "🤖 Auto Response",
-                        description: resp,
-                    }).catch(() => { });
+                    if (isEmojiResponse(resp)) {
+                        try { await message.react(resp); } catch { }
+                    } else {
+                        await replyEmbed(message, {
+                            type: "autoresponder",
+                            title: "🤖 Auto Response",
+                            description: resp,
+                        }).catch(() => { });
+                    }
+                    return;
                 }
                 return;
+            }
+
+            // PREFIX COMMANDS
+            if (!message.guild) return;
+            const args = raw.slice(PREFIX.length).trim().split(/\s+/);
+            const commandName = args.shift()?.toLowerCase();
+            if (!commandName) return;
+
+            const settings = getGuildSettings(message.guild.id);
+
+            // Embed color command: ,embed_<type>_#hex
+            if (commandName.startsWith("embed_")) {
+                if (!message.member.permissions.has(PermissionsBitField.Flags.ManageGuild)) {
+                    return replyEmbed(message, { type: "error", title: "⛔ Permission Needed", description: "You need **Manage Server** to change embed colors." });
+                }
+                const parts = commandName.split("_");
+                const type = parts[1];
+                const hexPart = parts.slice(2).join("_");
+                if (!type || !hexPart) {
+                    return replyEmbed(message, { type: "error", title: "❌ Invalid Format", description: "Use: `,embed_<type>_#hex`\nExample: `,embed_ticket_#57F287`" });
+                }
+                const colorInt = parseHexColorToInt(hexPart);
+                if (colorInt === null) {
+                    return replyEmbed(message, { type: "error", title: "❌ Invalid Color", description: "Hex must look like `#57F287` (6 hex digits)." });
+                }
+                settings.embedColors[type] = colorInt;
+                await saveSettings();
+                return replyEmbed(message, { type: "settings", title: "🎨 Embed Color Updated", description: `Set **${type}** embed color to **#${String(hexPart).replace("#", "").toUpperCase()}**.` });
+            }
+
+            // Command loader
+            const command = client.prefixCommands.get(commandName) || client.prefixCommands.get(client.aliases.get(commandName));
+            if (command) {
+                try {
+                    await command.execute(message, args, client);
+                } catch (error) {
+                    console.error("Command execution error:", error);
+                    await replyEmbed(message, { type: "error", title: "❌ Error", description: "There was an error while executing this command!" });
+                }
+            } else {
+                return replyEmbed(message, {
+                    type: "error",
+                    title: "❓ Unknown Command",
+                    description: `Command not recognized: \`${PREFIX}${commandName}\`\nTry: \`,modhelp\``,
+                });
             }
 
         } catch (err) {

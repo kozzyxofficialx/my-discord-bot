@@ -20,6 +20,8 @@ export class ExtendedClient extends Client {
         });
 
         this.slashCommands = new Collection();
+        this.prefixCommands = new Collection();
+        this.aliases = new Collection();
         this.slashData = []; // for registration
     }
 
