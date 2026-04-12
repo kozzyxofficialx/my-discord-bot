@@ -116,6 +116,12 @@ export function getGuildSettings(guildId) {
             dynamicVc: defaultDynamicVcConfig(),
             appealsChannelId: null,
             automodWhitelist: [],
+            automodRules: {
+                invite_links:  true,
+                mass_mentions: true,
+                spam:          true,
+                caps:          true,
+            },
         };
         serverSettings.set(guildId, s);
     }

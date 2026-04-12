@@ -46,19 +46,20 @@ function runBuiltinAutomod(message, settings) {
     const content = message.content;
     const lower = content.toLowerCase();
     const whitelist = settings.automodWhitelist ?? [];
+    const rules = settings.automodRules ?? {};
 
     // Whitelist: if any whitelisted word appears, skip ALL automod
     if (whitelist.length && whitelist.some(w => lower.includes(w.toLowerCase()))) return null;
 
     // 1. Discord invite links
-    if (INVITE_REGEX.test(content)) {
-        return { reason: "Discord invite links are not allowed here.", rule: "invite_link" };
+    if (rules.invite_links !== false && INVITE_REGEX.test(content)) {
+        return { reason: "Discord invite links are not allowed here.", rule: "invite_links" };
     }
 
     // 2. Mass mentions
     const mentions = message.mentions.users.size + message.mentions.roles.size;
-    if (mentions > MENTION_LIMIT) {
-        return { reason: `Mass mention (${mentions} pings in one message).`, rule: "mass_mention" };
+    if (rules.mass_mentions !== false && mentions > MENTION_LIMIT) {
+        return { reason: `Mass mention (${mentions} pings in one message).`, rule: "mass_mentions" };
     }
 
     // 3. Spam — same user sending too many messages too fast
@@ -66,12 +67,12 @@ function runBuiltinAutomod(message, settings) {
     const log = (userMsgLog.get(message.author.id) ?? []).filter(t => now - t < SPAM_WINDOW_MS);
     log.push(now);
     userMsgLog.set(message.author.id, log);
-    if (log.length > SPAM_MSG_LIMIT) {
+    if (rules.spam !== false && log.length > SPAM_MSG_LIMIT) {
         return { reason: "Sending messages too fast.", rule: "spam" };
     }
 
     // 4. Excessive caps
-    if (content.length >= CAPS_MIN_LEN) {
+    if (rules.caps !== false && content.length >= CAPS_MIN_LEN) {
         const letters = content.replace(/[^a-zA-Z]/g, "");
         if (letters.length >= 5) {
             const capsRatio = content.replace(/[^A-Z]/g, "").length / letters.length;
