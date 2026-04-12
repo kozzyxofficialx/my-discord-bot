@@ -1,36 +1,73 @@
 import { EmbedBuilder } from "discord.js";
 import { getGuildSettings } from "./database.js";
 
-// ---------------- BASIC EMBED BUILDER ----------------
-export function buildCoolEmbed({ guildId, type = "info", client, title = null, description = null, footerUser = null, fields = null, showAuthor = false, showFooter = false, footerText = null, thumbnail = null }) {
+// ---------------- TYPE METADATA ----------------
+// Each embed type gets its own color, system label, and accent bar character.
+const TYPE_META = {
+    mod:            { default: 0xED4245, label: "Moderation System",  icon: "⚔️" },
+    error:          { default: 0xFF2D55, label: "Error",               icon: "🚨" },
+    success:        { default: 0x2ECC71, label: "Success",             icon: "✅" },
+    warning:        { default: 0xF1C40F, label: "Warning",             icon: "⚠️" },
+    info:           { default: 0x5865F2, label: "Information",         icon: "💡" },
+    settings:       { default: 0xEB459E, label: "Settings",            icon: "⚙️" },
+    ticket:         { default: 0x1ABC9C, label: "Ticket System",       icon: "🎫" },
+    afk:            { default: 0x7289DA, label: "AFK",                 icon: "💤" },
+    autoresponder:  { default: 0xE67E22, label: "Autoresponder",       icon: "🤖" },
+    case:           { default: 0xC0392B, label: "Case Log",            icon: "📋" },
+};
+
+// ---------------- EMBED BUILDER ----------------
+export function buildCoolEmbed({
+    guildId,
+    type = "info",
+    client,
+    title = null,
+    description = null,
+    footerUser = null,
+    fields = null,
+    showAuthor = false,
+    showFooter = false,
+    footerText = null,
+    thumbnail = null,
+}) {
     const settings = guildId ? getGuildSettings(guildId) : null;
-    const color = settings?.embedColors?.[type] ?? 0x5865f2;
+    const meta = TYPE_META[type] ?? TYPE_META.info;
+
+    // Guild can override color per type; otherwise use the vibrant default
+    const color = settings?.embedColors?.[type] ?? meta.default;
 
     const embed = new EmbedBuilder()
         .setColor(color)
         .setTimestamp();
 
-    if (showAuthor && client?.user) {
+    // Author line: bot avatar + "{icon} System Label"
+    if ((showAuthor || true) && client?.user) {
         embed.setAuthor({
-            name: client.user.username,
-            iconURL: client.user.displayAvatarURL(),
+            name: `${meta.icon}  ${meta.label}`,
+            iconURL: client.user.displayAvatarURL({ dynamic: true }),
         });
     }
 
-    if (title) embed.setTitle(title);
-    if (description) embed.setDescription(description);
-    if (thumbnail) embed.setThumbnail(thumbnail);
+    if (title)       embed.setTitle(title);
+    if (thumbnail)   embed.setThumbnail(thumbnail);
+
+    // Description: wrap in a styled block with a decorative separator
+    if (description) {
+        embed.setDescription(`${description}\n\n${"▬".repeat(28)}`);
+    }
+
     if (Array.isArray(fields) && fields.length) embed.addFields(fields);
 
+    // Footer: user avatar + "Requested by X  •  System Label"
     if (footerUser) {
         embed.setFooter({
-            text: `Requested by ${footerUser.tag}`,
+            text: `Requested by ${footerUser.tag}  •  ${meta.label}`,
             iconURL: footerUser.displayAvatarURL({ dynamic: true }),
         });
     } else if (footerText) {
-        embed.setFooter({ text: footerText });
-    } else if (showFooter && footerUser) { // fallback if both used logically
-        embed.setFooter({ text: `Requested by ${footerUser.tag}` });
+        embed.setFooter({ text: `${footerText}  •  ${meta.label}` });
+    } else {
+        embed.setFooter({ text: meta.label });
     }
 
     return embed;
@@ -85,7 +122,6 @@ export async function postCase(guild, embed, originChannelId = null) {
         const settings = getGuildSettings(guild.id);
         if (!settings.caseChannelId) return;
 
-        // Avoid duplicates if the case channel is the same channel the command was run in
         if (originChannelId && settings.caseChannelId === originChannelId) return;
 
         const ch = guild.channels.cache.get(settings.caseChannelId);
