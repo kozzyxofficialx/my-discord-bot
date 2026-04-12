@@ -1,4 +1,17 @@
-import { buildCoolEmbed, replyEmbed, postCase, caseEmbed } from "./embeds.js";
+import { buildCoolEmbed, replyEmbed, postCase, caseEmbed, asEmbedPayload } from "./embeds.js";
+import { safeRespond } from "./helpers.js";
+
+// Detect if ctx is a slash interaction or a message
+function isInteraction(ctx) { return !!ctx.user && !ctx.author; }
+function getAuthor(ctx) { return ctx.author || ctx.user; }
+function getChannelId(ctx) { return ctx.channel?.id || ctx.channelId; }
+
+async function reply(ctx, opts) {
+    if (isInteraction(ctx)) {
+        return safeRespond(ctx, asEmbedPayload({ guildId: ctx.guildId, ...opts }));
+    }
+    return replyEmbed(ctx, opts);
+}
 
 // ---------------- MOD ACTION DMs ----------------
 export async function trySendModDM({ user, guild, type = "mod", title, description, moderatorTag, reason, durationText }) {
@@ -32,126 +45,130 @@ export async function trySendModDM({ user, guild, type = "mod", title, descripti
     }
 }
 
-export async function doKick(message, target, reason) {
+export async function doKick(ctx, target, reason) {
+    const author = getAuthor(ctx);
     try {
         await trySendModDM({
             user: target.user,
-            guild: message.guild,
+            guild: ctx.guild,
             type: "mod",
             title: "👢 You were kicked",
             description: "You have been kicked from the server.",
-            moderatorTag: message.author.tag,
+            moderatorTag: author.tag,
             reason,
         });
         await target.kick(reason);
 
-        await replyEmbed(message, {
+        await reply(ctx, {
             type: "mod",
             title: "👢 Kick",
             description: `Kicked **${target.user.tag}**.\n**Reason:** ${reason}`,
         });
 
-        await postCase(message.guild, caseEmbed(message.guild.id, "👢 Kick", [
+        await postCase(ctx.guild, caseEmbed(ctx.guild.id, "👢 Kick", [
             `**User:** ${target.user.tag}`,
-            `**By:** ${message.author.tag}`,
+            `**By:** ${author.tag}`,
             `**Reason:** ${reason}`,
-        ]), message.channel.id);
+        ]), getChannelId(ctx));
     } catch {
-        return replyEmbed(message, { type: "error", title: "❌ Kick Failed", description: "Failed to kick that user." });
+        return reply(ctx, { type: "error", title: "❌ Kick Failed", description: "Failed to kick that user." });
     }
 }
 
-export async function doBan(message, target, reason) {
+export async function doBan(ctx, target, reason) {
+    const author = getAuthor(ctx);
     try {
         // Check if appeals plugin is enabled — include appeal instructions in DM
         const { getGuildSettings } = await import("./database.js");
-        const settings = getGuildSettings(message.guild.id);
+        const settings = getGuildSettings(ctx.guild.id);
         const appealNote = settings.plugins?.appeals
-            ? `\n\nTo appeal this ban, use \`/appeal\` in any server with this bot and enter server ID \`${message.guild.id}\`.`
+            ? `\n\nTo appeal this ban, use \`/appeal\` in any server with this bot and enter server ID \`${ctx.guild.id}\`.`
             : "";
 
         await trySendModDM({
             user: target,
-            guild: message.guild,
+            guild: ctx.guild,
             type: "mod",
             title: "🔨 You were banned",
             description: `You have been banned from the server.${appealNote}`,
-            moderatorTag: message.author.tag,
+            moderatorTag: author.tag,
             reason,
         });
-        await message.guild.members.ban(target.id, { reason });
+        await ctx.guild.members.ban(target.id, { reason });
 
-        await replyEmbed(message, {
+        await reply(ctx, {
             type: "mod",
             title: "🔨 Ban",
             description: `Banned **${target.tag}**.\n**Reason:** ${reason}`,
         });
 
-        await postCase(message.guild, caseEmbed(message.guild.id, "🔨 Ban", [
+        await postCase(ctx.guild, caseEmbed(ctx.guild.id, "🔨 Ban", [
             `**User:** ${target.tag}`,
-            `**By:** ${message.author.tag}`,
+            `**By:** ${author.tag}`,
             `**Reason:** ${reason}`,
-        ]), message.channel.id);
+        ]), getChannelId(ctx));
     } catch {
-        return replyEmbed(message, { type: "error", title: "❌ Ban Failed", description: "Failed to ban that user." });
+        return reply(ctx, { type: "error", title: "❌ Ban Failed", description: "Failed to ban that user." });
     }
 }
 
-export async function doTimeout(message, target, ms) {
+export async function doTimeout(ctx, target, ms) {
+    const author = getAuthor(ctx);
     try {
         const minutes = Math.round(ms / 60000);
         await trySendModDM({
             user: target.user,
-            guild: message.guild,
+            guild: ctx.guild,
             type: "mod",
             title: "⏱️ You were timed out",
             description: "You have been timed out in the server.",
-            moderatorTag: message.author.tag,
+            moderatorTag: author.tag,
             reason: `Timed out for ${minutes} minute(s).`,
             durationText: `${minutes} minute(s)`,
         });
-        await target.timeout(ms, `Timed out by ${message.author.tag}`);
+        await target.timeout(ms, `Timed out by ${author.tag}`);
 
-        await replyEmbed(message, {
+        await reply(ctx, {
             type: "mod",
             title: "⏱️ Timeout",
             description: `Timed out ${target} for **${minutes} minutes**.`,
         });
 
-        await postCase(message.guild, caseEmbed(message.guild.id, "⏱️ Timeout", [
+        await postCase(ctx.guild, caseEmbed(ctx.guild.id, "⏱️ Timeout", [
             `**User:** ${target.user.tag}`,
-            `**By:** ${message.author.tag}`,
+            `**By:** ${author.tag}`,
             `**Duration:** ${minutes} minutes`,
-        ]), message.channel.id);
+        ]), getChannelId(ctx));
     } catch {
-        return replyEmbed(message, { type: "error", title: "❌ Timeout Failed", description: "Failed to timeout user." });
+        return reply(ctx, { type: "error", title: "❌ Timeout Failed", description: "Failed to timeout user." });
     }
 }
 
-export async function doUntimeout(message, target) {
+export async function doUntimeout(ctx, target) {
+    const author = getAuthor(ctx);
     try {
         await trySendModDM({
             user: target.user,
-            guild: message.guild,
+            guild: ctx.guild,
             type: "mod",
             title: "✅ Timeout removed",
             description: "Your timeout has been removed.",
-            moderatorTag: message.author.tag,
+            moderatorTag: author.tag,
             reason: "Timeout removed.",
         });
-        await target.timeout(null, `Timeout removed by ${message.author.tag}`);
+        await target.timeout(null, `Timeout removed by ${author.tag}`);
 
-        await replyEmbed(message, {
+        await reply(ctx, {
             type: "mod",
             title: "✅ Timeout Removed",
             description: `Removed timeout from ${target}.`,
         });
 
-        await postCase(message.guild, caseEmbed(message.guild.id, "✅ Timeout Removed", [
+        await postCase(ctx.guild, caseEmbed(ctx.guild.id, "✅ Timeout Removed", [
             `**User:** ${target.user.tag}`,
-            `**By:** ${message.author.tag}`,
-        ]), message.channel.id);
+            `**By:** ${author.tag}`,
+        ]), getChannelId(ctx));
     } catch {
-        return replyEmbed(message, { type: "error", title: "❌ Failed", description: "Failed to remove timeout." });
+        return reply(ctx, { type: "error", title: "❌ Failed", description: "Failed to remove timeout." });
     }
 }

@@ -1,5 +1,6 @@
 import { PermissionsBitField, AuditLogEvent } from "discord.js";
-import { replyEmbed } from "../../utils/embeds.js";
+import { safeRespond } from "../../utils/helpers.js";
+import { asEmbedPayload } from "../../utils/embeds.js";
 import { getGuildSettings } from "../../utils/database.js";
 import { getDB } from "../../utils/db.js";
 
@@ -21,33 +22,32 @@ const ACTION_LABELS = {
 };
 
 export default {
-    name: "audit",
-    async execute(message, args) {
-        if (!message.guild) return;
-        if (!message.member.permissions.has(PermissionsBitField.Flags.ViewAuditLog)) {
-            return replyEmbed(message, { type: "error", title: "⛔ Permission Denied", description: "You need **View Audit Log**." });
-        }
-
-        const settings = getGuildSettings(message.guild.id);
+    data: {
+        name: "audit",
+        description: "View audit log history for a user.",
+        default_member_permissions: String(PermissionsBitField.Flags.ViewAuditLog),
+        dm_permission: false,
+        options: [
+            { name: "user", description: "User to look up", type: 6, required: true },
+        ],
+    },
+    async execute(interaction) {
+        const settings = getGuildSettings(interaction.guildId);
         if (!settings.plugins?.audit_log) {
-            return replyEmbed(message, { type: "error", title: "❌ Plugin Disabled", description: "The Audit Log plugin is not enabled. Use `/plugins enable audit_log`." });
+            return safeRespond(interaction, asEmbedPayload({ guildId: interaction.guildId, type: "error", title: "❌ Plugin Disabled", description: "The Audit Log plugin is not enabled. Use `/plugins enable Audit Log`.", ephemeral: true }));
         }
 
-        const target = message.mentions.users.first();
-        if (!target) {
-            return replyEmbed(message, { type: "error", title: "❌ Usage", description: "`,audit @user`" });
-        }
-
+        const target = interaction.options.getUser("user");
         const db = await getDB();
         const rows = await db.all(
             `SELECT action, executor_id, reason, created_at FROM audit_log
              WHERE guild_id = ? AND target_id = ?
              ORDER BY created_at DESC LIMIT 15`,
-            message.guild.id, target.id
+            interaction.guildId, target.id
         );
 
         if (!rows.length) {
-            return replyEmbed(message, { type: "info", title: "📋 Audit Log", description: `No logged actions found for ${target.tag}.` });
+            return safeRespond(interaction, asEmbedPayload({ guildId: interaction.guildId, type: "info", title: "📋 Audit Log", description: `No logged actions found for ${target.tag}.` }));
         }
 
         const lines = rows.map(r => {
@@ -58,10 +58,6 @@ export default {
             return `${label} by ${by} ${ts}${reason}`;
         });
 
-        return replyEmbed(message, {
-            type: "info",
-            title: `📋 Audit Log — ${target.tag}`,
-            description: lines.join("\n"),
-        });
+        return safeRespond(interaction, asEmbedPayload({ guildId: interaction.guildId, type: "info", title: `📋 Audit Log — ${target.tag}`, description: lines.join("\n") }));
     },
 };
