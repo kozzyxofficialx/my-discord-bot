@@ -132,6 +132,65 @@ const CATEGORY_BLUEPRINTS = {
     },
 };
 
+// ---------- Meme emoji & sticker data ----------------------------------
+// Twemoji CDN — reliable jsDelivr-hosted open source emoji images (72x72 PNG).
+const TW = (hex) => `https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/${hex}.png`;
+
+const MEME_EMOJIS = [
+    { name: "skull",          hex: "1f480", tag: "💀" },
+    { name: "sob",            hex: "1f62d", tag: "😭" },
+    { name: "lmao",           hex: "1f602", tag: "😂" },
+    { name: "rofl",           hex: "1f923", tag: "🤣" },
+    { name: "moai",           hex: "1f5ff", tag: "🗿" },
+    { name: "nerd",           hex: "1f913", tag: "🤓" },
+    { name: "clown",          hex: "1f921", tag: "🤡" },
+    { name: "troll",          hex: "1f9cc", tag: "🧌" },
+    { name: "frog",           hex: "1f438", tag: "🐸" },
+    { name: "eyes",           hex: "1f440", tag: "👀" },
+    { name: "fire",           hex: "1f525", tag: "🔥" },
+    { name: "exploding_head", hex: "1f92f", tag: "🤯" },
+    { name: "devil",          hex: "1f608", tag: "😈" },
+    { name: "pleading",       hex: "1f97a", tag: "🥺" },
+    { name: "cool",           hex: "1f60e", tag: "😎" },
+    { name: "cold",           hex: "1f976", tag: "🥶" },
+    { name: "nail_polish",    hex: "1f485", tag: "💅" },
+    { name: "pinched",        hex: "1f90c", tag: "🤌" },
+    { name: "melting",        hex: "1fae0", tag: "🫠" },
+    { name: "salute",         hex: "1fae1", tag: "🫡" },
+    { name: "hundred",        hex: "1f4af", tag: "💯" },
+    { name: "duck",           hex: "1f986", tag: "🦆" },
+    { name: "crab",           hex: "1f980", tag: "🦀" },
+    { name: "turtle",         hex: "1f422", tag: "🐢" },
+    { name: "triumph",        hex: "1f624", tag: "😤" },
+    { name: "sparkles",       hex: "2728",  tag: "✨" },
+    { name: "trophy",         hex: "1f3c6", tag: "🏆" },
+    { name: "pog",            hex: "1f632", tag: "😲" },
+    { name: "pensive",        hex: "1f614", tag: "😔" },
+    { name: "muscle",         hex: "1f4aa", tag: "💪" },
+    { name: "thumbsup",       hex: "1f44d", tag: "👍" },
+    { name: "thumbsdown",     hex: "1f44e", tag: "👎" },
+    { name: "party",          hex: "1f389", tag: "🎉" },
+    { name: "gem",            hex: "1f48e", tag: "💎" },
+    { name: "lightning",      hex: "26a1",  tag: "⚡" },
+    { name: "brain",          hex: "1f9e0", tag: "🧠" },
+    { name: "lion",           hex: "1f981", tag: "🦁" },
+    { name: "heart_hands",    hex: "1faf6", tag: "🫶" },
+    { name: "money",          hex: "1f4b0", tag: "💰" },
+    { name: "star",           hex: "2b50",  tag: "⭐" },
+];
+
+// Stickers — same source images, uploaded as stickers (up to 5 on base servers)
+const MEME_STICKERS = [
+    { name: "Skull",  hex: "1f480", tag: "💀", description: "Skull sticker" },
+    { name: "Moai",   hex: "1f5ff", tag: "🗿", description: "Moai stone sticker" },
+    { name: "Clown",  hex: "1f921", tag: "🤡", description: "Clown sticker" },
+    { name: "Fire",   hex: "1f525", tag: "🔥", description: "Fire sticker" },
+    { name: "Frog",   hex: "1f438", tag: "🐸", description: "Frog sticker" },
+];
+
+// Max emojis per boost tier (regular emoji slots, same limit for animated)
+const EMOJI_LIMIT_BY_TIER = [50, 100, 150, 250];
+
 // ---------- Preset blueprints ------------------------------------------
 // Each preset lists which role groups and which categories to provision.
 const PRESETS = {
@@ -462,6 +521,30 @@ export default {
                     log.add("📣", `Posted announcement placeholder in <#${announcementsCh.id}>.`);
                 }
             }
+            // 6. EMOJIS — fill up to the server's limit
+            if (!dryRun) {
+                await addMemeEmojis(guild, log);
+            } else {
+                log.add("🧪", `Would add up to ${EMOJI_LIMIT_BY_TIER[guild.premiumTier] || 50} meme emojis.`);
+            }
+
+            // 7. STICKERS — up to the server's sticker limit
+            if (!dryRun) {
+                await addMemeStickers(guild, log);
+            } else {
+                log.add("🧪", `Would add up to 5 meme stickers.`);
+            }
+
+            // 8. ENABLE COMMUNITY MODE
+            if (!dryRun) {
+                const rulesCh  = findCreatedByName(createdChannels, "rules");
+                const updateCh = findCreatedByName(createdChannels, "announcements") ||
+                                 findCreatedByName(createdChannels, "server-updates");
+                await enableCommunity(guild, { rulesCh, updateCh }, log);
+            } else {
+                log.add("🧪", `Would enable Community mode.`);
+            }
+
         } catch (err) {
             console.error("[server_setup] Fatal error:", err);
             log.add("❌", `Fatal error: \`${err?.message || err}\``);
@@ -490,7 +573,7 @@ export default {
         summary.setFooter({
             text: dryRun
                 ? "Re-run without dry_run to apply."
-                : `Tip: run ,ticket in #support to deploy the ticket panel.`,
+                : `Tip: boost the server to unlock more emoji and sticker slots!`,
         });
 
         return safeRespond(interaction, { embeds: [summary] });
@@ -686,4 +769,100 @@ async function postRulesEmbed(channel, guild) {
         .setFooter({ text: "Breaking these rules may result in warnings, mutes, kicks, or bans." })
         .setTimestamp();
     await channel.send({ embeds: [embed] });
+}
+
+// ========================================================================
+//  EMOJI / STICKER / COMMUNITY HELPERS
+// ========================================================================
+
+async function addMemeEmojis(guild, log) {
+    const tier = guild.premiumTier ?? 0;
+    const maxEmojis = EMOJI_LIMIT_BY_TIER[tier] ?? 50;
+
+    // Count existing non-animated emojis
+    const existing = guild.emojis.cache.filter((e) => !e.animated);
+    const existingNames = new Set(existing.map((e) => e.name));
+    const slots = maxEmojis - existing.size;
+
+    if (slots <= 0) {
+        log.add("⏭️", `Emoji slots full (${existing.size}/${maxEmojis}) — skipped emoji upload.`);
+        return;
+    }
+
+    const toAdd = MEME_EMOJIS.filter((e) => !existingNames.has(e.name)).slice(0, slots);
+    let added = 0;
+
+    for (const emoji of toAdd) {
+        try {
+            await guild.emojis.create({
+                attachment: TW(emoji.hex),
+                name: emoji.name,
+                reason: "server_setup — meme emoji pack",
+            });
+            added++;
+        } catch { /* skip individual failures silently */ }
+    }
+
+    log.add("😂", `Added **${added}** meme emoji(s) (${existing.size + added}/${maxEmojis} slots used).`);
+}
+
+async function addMemeStickers(guild, log) {
+    // Sticker slots: 5 base, 15 at tier 1, 30 at tier 2, 60 at tier 3
+    const STICKER_LIMITS = [5, 15, 30, 60];
+    const maxStickers = STICKER_LIMITS[guild.premiumTier ?? 0] ?? 5;
+
+    const existingNames = new Set(guild.stickers.cache.map((s) => s.name));
+    const slots = maxStickers - guild.stickers.cache.size;
+
+    if (slots <= 0) {
+        log.add("⏭️", `Sticker slots full (${guild.stickers.cache.size}/${maxStickers}) — skipped sticker upload.`);
+        return;
+    }
+
+    const toAdd = MEME_STICKERS.filter((s) => !existingNames.has(s.name)).slice(0, slots);
+    let added = 0;
+
+    for (const sticker of toAdd) {
+        try {
+            await guild.stickers.create({
+                file: TW(sticker.hex),
+                name: sticker.name,
+                tags: sticker.tag,
+                description: sticker.description,
+                reason: "server_setup — meme sticker pack",
+            });
+            added++;
+        } catch { /* stickers may fail if image size doesn't meet Discord's min — skip */ }
+    }
+
+    log.add("🎨", `Added **${added}** meme sticker(s) (${guild.stickers.cache.size}/${maxStickers} slots used).`);
+}
+
+async function enableCommunity(guild, { rulesCh, updateCh }, log) {
+    // Community requires a rules channel + a public updates channel.
+    if (!rulesCh || !updateCh) {
+        log.add("⚠️", `Community mode skipped — need both #rules and #announcements channels.`);
+        return;
+    }
+
+    // Skip if already enabled
+    if (guild.features.includes("COMMUNITY")) {
+        log.add("⏭️", `Community mode already enabled — skipped.`);
+        return;
+    }
+
+    try {
+        await guild.edit({
+            features: [...new Set([...guild.features, "COMMUNITY"])],
+            rulesChannelId: rulesCh.id,
+            publicUpdatesChannelId: updateCh.id,
+            preferredLocale: "en-US",
+            explicitContentFilter: 2,  // scan all members
+            verificationLevel: guild.verificationLevel < 1 ? 1 : guild.verificationLevel,
+            reason: "server_setup — enabling Community mode",
+        });
+        log.add("🏘️", `Enabled **Community mode** (rules: <#${rulesCh.id}>, updates: <#${updateCh.id}>).`);
+    } catch (e) {
+        log.add("⚠️", `Community mode failed: \`${e.message}\` — enable it manually in Server Settings.`);
+    }
 }
