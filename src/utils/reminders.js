@@ -24,27 +24,40 @@ export async function initReminders(client) {
 
     for (const r of reminders) {
         if (r.remind_at <= now) {
-            // Expired while offline
             await sendReminder(client, r, true);
         } else {
-            // Schedule future
             scheduleReminder(client, r);
         }
     }
     console.log(`⏰ Loaded ${reminders.length} reminders.`);
+
+    // Belt-and-suspenders: sweep every minute for any reminders that setTimeout may have missed
+    setInterval(async () => {
+        try {
+            const db2 = await getDB();
+            const due = await db2.all("SELECT * FROM reminders WHERE remind_at <= ?", Date.now());
+            for (const r of due) await sendReminder(client, r);
+        } catch (err) {
+            console.error("[reminders] Sweep error:", err);
+        }
+    }, 60_000);
 }
 
 export function scheduleReminder(client, reminder) {
     const diff = reminder.remind_at - Date.now();
 
-    if (diff > MAX_TIMEOUT) {
-        // Too far in future, just wait until a restart or periodic check handles it.
-        // For simplicity in this bot, we set max timeout and re-check, or ignore.
-        // Let's ignore for now as 24 days is long enough for a demo.
+    if (diff <= 0) {
+        sendReminder(client, reminder);
         return;
     }
 
-    setTimeout(() => sendReminder(client, reminder), Math.max(0, diff));
+    if (diff > MAX_TIMEOUT) {
+        // Chain: wait MAX_TIMEOUT then re-evaluate — works for any future duration
+        setTimeout(() => scheduleReminder(client, reminder), MAX_TIMEOUT);
+        return;
+    }
+
+    setTimeout(() => sendReminder(client, reminder), diff);
 }
 
 async function sendReminder(client, reminder, late = false) {
@@ -63,7 +76,9 @@ async function sendReminder(client, reminder, late = false) {
                 const user = await client.users.fetch(reminder.user_id).catch(() => null);
                 target = user;
             }
-        } catch { }
+        } catch (err) {
+            console.error("[reminders] Failed to fetch delivery target:", err);
+        }
 
         if (!target) return; // User/Channel gone
 

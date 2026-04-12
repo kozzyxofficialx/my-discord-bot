@@ -1,7 +1,12 @@
 import { Events, PermissionsBitField } from "discord.js";
-import { getGuildSettings, afkMap, guildAutoresponders, saveSettings } from "../utils/database.js";
-import { replyEmbed } from "../utils/embeds.js";
+import { getGuildSettings, afkMap, guildAutoresponders, saveSettings, clearAfk } from "../utils/database.js";
+import { replyEmbed, buildCoolEmbed } from "../utils/embeds.js";
 import { containsBadWords, looksSpammy, matchesTrigger, isEmojiResponse, parseHexColorToInt } from "../utils/helpers.js";
+import { moderateMessage } from "../utils/ai.js";
+
+// Per-channel cooldown for AI moderation to avoid hammering the API
+const aiModCooldowns = new Map(); // channelId -> last check timestamp
+const AI_MOD_INTERVAL_MS = 3000; // min 3s between AI checks per channel
 
 const PREFIX = ",";
 
@@ -17,7 +22,7 @@ export default {
             // AFK removal
             const afkEntry = afkMap.get(message.author.id);
             if (afkEntry) {
-                afkMap.delete(message.author.id);
+                await clearAfk(message.author.id);
                 await replyEmbed(message, {
                     type: "afk",
                     title: "👋 Welcome Back",
@@ -41,6 +46,39 @@ export default {
                         title: "💤 AFK Notice",
                         description: lines.join("\n"),
                     }).catch(() => { });
+                }
+            }
+
+            // AI MODERATION
+            if (message.guild && !raw.startsWith(PREFIX)) {
+                const settings = getGuildSettings(message.guild.id);
+                if (settings.plugins?.ai_moderation) {
+                    const now = Date.now();
+                    const lastCheck = aiModCooldowns.get(message.channelId) ?? 0;
+                    if (now - lastCheck >= AI_MOD_INTERVAL_MS) {
+                        aiModCooldowns.set(message.channelId, now);
+                        const verdict = await moderateMessage(raw).catch(() => null);
+                        if (verdict?.flagged && (verdict.severity === "medium" || verdict.severity === "high")) {
+                            await message.delete().catch(() => null);
+                            await message.channel.send({
+                                embeds: [buildCoolEmbed({
+                                    guildId: message.guild.id,
+                                    type: "warning",
+                                    title: "🤖 Message Removed",
+                                    description: `<@${message.author.id}> your message was removed by AI moderation.\n**Reason:** ${verdict.reason || "Violated community guidelines."}`,
+                                })],
+                            }).catch(() => null);
+                            // Log to case channel
+                            const { postCase, caseEmbed } = await import("../utils/embeds.js");
+                            await postCase(message.guild, caseEmbed(message.guild.id, "🤖 AI Moderation — Message Removed", [
+                                `**User:** ${message.author.tag} (<@${message.author.id}>)`,
+                                `**Severity:** ${verdict.severity}`,
+                                `**Reason:** ${verdict.reason}`,
+                                `**Content:** \`${raw.slice(0, 200)}\``,
+                            ]));
+                            return;
+                        }
+                    }
                 }
             }
 

@@ -63,12 +63,19 @@ export async function doKick(message, target, reason) {
 
 export async function doBan(message, target, reason) {
     try {
+        // Check if appeals plugin is enabled — include appeal instructions in DM
+        const { getGuildSettings } = await import("./database.js");
+        const settings = getGuildSettings(message.guild.id);
+        const appealNote = settings.plugins?.appeals
+            ? `\n\nTo appeal this ban, use \`/appeal\` in any server with this bot and enter server ID \`${message.guild.id}\`.`
+            : "";
+
         await trySendModDM({
             user: target,
             guild: message.guild,
             type: "mod",
             title: "🔨 You were banned",
-            description: "You have been banned from the server.",
+            description: `You have been banned from the server.${appealNote}`,
             moderatorTag: message.author.tag,
             reason,
         });

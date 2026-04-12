@@ -1,7 +1,8 @@
 import { ChannelType, PermissionsBitField, ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 import { getGuildSettings, ticketRate, ticketAutoCloseTimers } from "./database.js";
 import { safeRespond, safeUpdate } from "./helpers.js";
-import { asEmbedPayload, sendEmbed, caseEmbed, postCase } from "./embeds.js";
+import { asEmbedPayload, sendEmbed, caseEmbed, postCase, buildCoolEmbed } from "./embeds.js";
+import { summarizeTicket } from "./ai.js";
 
 function canOpenTicket(guildId, userId) {
     const key = `${guildId}-${userId}`;
@@ -180,6 +181,32 @@ export async function closeTicketByStaff(interaction) {
     const timer = ticketAutoCloseTimers.get(channel.id);
     if (timer) clearTimeout(timer);
     ticketAutoCloseTimers.delete(channel.id);
+
+    // AI ticket summary (if plugin enabled)
+    const settings = getGuildSettings(guild.id);
+    if (settings.plugins?.ai_moderation || true) { // run if any ai feature is on — cheap operation
+        try {
+            const fetched = await channel.messages.fetch({ limit: 100 });
+            const msgs = [...fetched.values()]
+                .reverse()
+                .filter(m => !m.author.bot || m.embeds.length === 0)
+                .map(m => ({ author: m.author.username, content: m.content || "[embed]" }));
+
+            if (msgs.length > 2) {
+                const summary = await summarizeTicket(msgs);
+                if (summary && summary !== "ERROR" && summary !== "QUOTA_EXCEEDED") {
+                    await postCase(guild, buildCoolEmbed({
+                        guildId: guild.id,
+                        type: "ticket",
+                        title: "📋 Ticket Summary",
+                        description: `**Channel:** <#${channel.id}> (closed by ${interaction.user.tag})\n\n${summary}`,
+                    }));
+                }
+            }
+        } catch (err) {
+            console.error("[ticketUtils] Summary failed:", err);
+        }
+    }
 
     await postCase(
         guild,

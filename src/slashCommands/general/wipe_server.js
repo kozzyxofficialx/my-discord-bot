@@ -32,6 +32,12 @@ export default {
                 type: 3, // STRING
                 required: true,
             },
+            {
+                name: "dry_run",
+                description: "Preview what will be deleted without actually doing it.",
+                type: 5, // BOOLEAN
+                required: false,
+            },
         ],
     },
 
@@ -65,6 +71,8 @@ export default {
             }));
         }
 
+        const dryRun = interaction.options.getBoolean("dry_run") ?? false;
+
         // Confirm by typing the exact server name
         const confirmName = interaction.options.getString("confirm_name");
         if (confirmName !== guild.name) {
@@ -86,6 +94,35 @@ export default {
                 guildId: guild.id, type: "error",
                 title: "❌ Bot Missing Permissions",
                 description: "I need **Manage Channels** and **Manage Roles** to wipe the server.",
+                ephemeral: true,
+            }));
+        }
+
+        // Dry run: show what would be deleted without touching anything
+        if (dryRun) {
+            const botHighest = me?.roles?.highest;
+            const channels = [...guild.channels.cache.values()];
+            const roles = [...guild.roles.cache.values()].filter(r =>
+                r.id !== guild.id &&
+                !r.managed &&
+                !(botHighest && r.position >= botHighest.position)
+            );
+            const skippedRoles = [...guild.roles.cache.values()].filter(r =>
+                r.id !== guild.id && (r.managed || (botHighest && r.position >= botHighest.position))
+            );
+
+            const lines = [
+                `🗑️ Would delete **${channels.length}** channel(s) and categor(ies).`,
+                `🎭 Would delete **${roles.length}** role(s).`,
+                `⚙️ Would clear bot settings (case channel, ticket panel).`,
+                skippedRoles.length ? `⏭️ Would skip: ${skippedRoles.map(r => `@${r.name}`).slice(0, 5).join(", ")}${skippedRoles.length > 5 ? ` +${skippedRoles.length - 5} more` : ""} (managed/above bot)` : null,
+            ].filter(Boolean);
+
+            return safeRespond(interaction, asEmbedPayload({
+                guildId: guild.id,
+                type: "warning",
+                title: "🧪 Dry Run — Wipe Preview",
+                description: `**No changes were made.** Re-run without \`dry_run\` to execute.\n\n${lines.join("\n")}`,
                 ephemeral: true,
             }));
         }

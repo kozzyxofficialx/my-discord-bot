@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KozzyX — Dashboard</title>
+<style>
+  :root { --bg: #0d0d0d; --surface: #161616; --surface2: #1e1e1e; --border: #2a2a2a; --accent: #5865F2; --success: #57f287; --text: #e0e0e0; --muted: #888; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+  .nav-left { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; }
+  .logout { color: var(--muted); text-decoration: none; font-size: 0.85rem; }
+  .logout:hover { color: var(--text); }
+  main { max-width: 900px; margin: 0 auto; padding: 32px 16px; }
+  h2 { font-size: 1.1rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+  .guild-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-bottom: 40px; }
+  .guild-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; cursor: pointer; text-align: center; transition: border-color 0.2s; }
+  .guild-card:hover { border-color: var(--accent); }
+  .guild-card.active { border-color: var(--accent); background: var(--surface2); }
+  .guild-icon { width: 48px; height: 48px; border-radius: 50%; margin: 0 auto 8px; display: block; background: var(--border); }
+  .guild-name { font-size: 0.85rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #settings-panel { display: none; }
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; margin-bottom: 16px; }
+  .section h3 { font-size: 1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .plugin-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .plugin-row:last-child { border-bottom: none; }
+  .plugin-info strong { display: block; font-size: 0.9rem; }
+  .plugin-info span { color: var(--muted); font-size: 0.8rem; }
+  .toggle { position: relative; width: 42px; height: 24px; flex-shrink: 0; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; inset: 0; background: var(--border); border-radius: 24px; cursor: pointer; transition: 0.2s; }
+  .slider:before { content: ""; position: absolute; height: 18px; width: 18px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: 0.2s; }
+  input:checked + .slider { background: var(--accent); }
+  input:checked + .slider:before { transform: translateX(18px); }
+  .save-btn { background: var(--accent); color: #fff; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; margin-top: 16px; }
+  .save-btn:hover { background: #4752C4; }
+  .save-btn:disabled { opacity: 0.5; cursor: default; }
+  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--success); color: #0d0d0d; padding: 10px 20px; border-radius: 8px; font-weight: 600; display: none; z-index: 999; }
+  .field-group { margin-top: 12px; }
+  .field-group label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 4px; }
+  .field-group input { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 6px; font-size: 0.9rem; width: 100%; }
+  .field-group input:focus { outline: none; border-color: var(--accent); }
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-left">🤖 KozzyX</div>
+  <div class="nav-right">
+    <img id="user-avatar" class="avatar" src="" alt="">
+    <span id="user-name" style="font-size:0.9rem"></span>
+    <a class="logout" href="/auth/logout">Logout</a>
+  </div>
+</nav>
+
+<main>
+  <h2>Your Servers</h2>
+  <div class="guild-grid" id="guild-grid">Loading...</div>
+
+  <div id="settings-panel">
+    <h2 id="panel-guild-name"></h2>
+
+    <div class="section">
+      <h3>🔌 Plugins</h3>
+      <div id="plugin-rows"></div>
+    </div>
+
+    <div class="section">
+      <h3>🚨 Anti-Raid Config</h3>
+      <div class="field-group">
+        <label>Join threshold (raids detected at this many joins per window)</label>
+        <input type="number" id="raid-threshold" min="3" max="100" value="10">
+      </div>
+      <div class="field-group">
+        <label>Window (seconds)</label>
+        <input type="number" id="raid-window" min="10" max="3600" value="60">
+      </div>
+      <div class="field-group">
+        <label>Action on detection</label>
+        <select id="raid-action" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:6px;font-size:0.9rem;width:100%">
+          <option value="lockdown">Lockdown (block @everyone from messaging)</option>
+          <option value="kick">Kick new joiners</option>
+          <option value="ban">Ban new joiners</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>📩 Appeals Channel ID</h3>
+      <div class="field-group">
+        <label>Channel ID where ban appeals are sent</label>
+        <input type="text" id="appeals-channel" placeholder="e.g. 123456789012345678">
+      </div>
+    </div>
+
+    <button class="save-btn" id="save-btn" onclick="saveSettings()">Save Changes</button>
+  </div>
+</main>
+
+<div class="toast" id="toast">✅ Saved!</div>
+
+<script>
+const PLUGIN_META = {
+  conversation_memory: { label: "Conversation Memory",    desc: "Claude remembers /ask history per user." },
+  ai_moderation:       { label: "AI Moderation",          desc: "Auto-remove harmful messages via Claude." },
+  dynamic_vc:          { label: "Dynamic Voice Channels", desc: "Auto-create VCs on join." },
+  invite_tracking:     { label: "Invite Tracking",        desc: "Track who invited each member." },
+  anti_raid:           { label: "Anti-Raid",              desc: "Detect and lock down during join spikes." },
+  appeals:             { label: "Ban Appeals",            desc: "Banned users can submit an appeal." },
+  audit_log:           { label: "Audit Log",              desc: "Persist Discord audit log to SQLite." },
+};
+
+let currentGuildId = null;
+let currentSettings = {};
+
+async function init() {
+  const res = await fetch("/api/me");
+  if (!res.ok) { location.href = "/"; return; }
+  const { user, guilds } = await res.json();
+
+  document.getElementById("user-name").textContent = user.username;
+  document.getElementById("user-avatar").src = user.avatar
+    ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.webp?size=64`
+    : `https://cdn.discordapp.com/embed/avatars/0.png`;
+
+  const manageable = (guilds ?? []).filter(g => (g.permissions & 0x20) === 0x20);
+  const grid = document.getElementById("guild-grid");
+  if (!manageable.length) { grid.textContent = "No servers where you have Manage Server."; return; }
+
+  grid.innerHTML = "";
+  for (const g of manageable) {
+    const icon = g.icon
+      ? `https://cdn.discordapp.com/icons/${g.id}/${g.icon}.webp?size=64`
+      : `https://cdn.discordapp.com/embed/avatars/0.png`;
+    const card = document.createElement("div");
+    card.className = "guild-card";
+    card.innerHTML = `<img class="guild-icon" src="${icon}" alt=""><div class="guild-name">${escHtml(g.name)}</div>`;
+    card.onclick = () => selectGuild(g.id, g.name, card);
+    grid.appendChild(card);
+  }
+}
+
+async function selectGuild(id, name, cardEl) {
+  document.querySelectorAll(".guild-card").forEach(c => c.classList.remove("active"));
+  cardEl.classList.add("active");
+  currentGuildId = id;
+
+  const res = await fetch(`/api/guild/${id}`);
+  if (!res.ok) { alert("Could not load settings."); return; }
+  const { settings } = await res.json();
+  currentSettings = settings;
+
+  document.getElementById("panel-guild-name").textContent = name;
+  document.getElementById("settings-panel").style.display = "block";
+
+  // Render plugin toggles
+  const container = document.getElementById("plugin-rows");
+  container.innerHTML = "";
+  for (const [key, meta] of Object.entries(PLUGIN_META)) {
+    const on = settings.plugins?.[key] ?? false;
+    container.innerHTML += `
+      <div class="plugin-row">
+        <div class="plugin-info"><strong>${escHtml(meta.label)}</strong><span>${escHtml(meta.desc)}</span></div>
+        <label class="toggle"><input type="checkbox" id="plugin-${key}" ${on ? "checked" : ""}><span class="slider"></span></label>
+      </div>`;
+  }
+
+  // Anti-raid
+  document.getElementById("raid-threshold").value = settings.antiRaid?.threshold ?? 10;
+  document.getElementById("raid-window").value    = Math.round((settings.antiRaid?.windowMs ?? 60000) / 1000);
+  document.getElementById("raid-action").value    = settings.antiRaid?.action ?? "lockdown";
+
+  // Appeals
+  document.getElementById("appeals-channel").value = settings.appealsChannelId ?? "";
+}
+
+async function saveSettings() {
+  if (!currentGuildId) return;
+  const btn = document.getElementById("save-btn");
+  btn.disabled = true;
+
+  const plugins = {};
+  for (const key of Object.keys(PLUGIN_META)) {
+    plugins[key] = document.getElementById(`plugin-${key}`)?.checked ?? false;
+  }
+
+  const windowSec = parseInt(document.getElementById("raid-window").value, 10);
+  const body = {
+    plugins,
+    antiRaid: {
+      threshold: parseInt(document.getElementById("raid-threshold").value, 10),
+      windowMs: windowSec * 1000,
+      action: document.getElementById("raid-action").value,
+    },
+    appealsChannelId: document.getElementById("appeals-channel").value.trim() || null,
+  };
+
+  const res = await fetch(`/api/guild/${currentGuildId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+
+  btn.disabled = false;
+  if (res.ok) showToast();
+  else alert("Failed to save. Check console.");
+}
+
+function showToast() {
+  const t = document.getElementById("toast");
+  t.style.display = "block";
+  setTimeout(() => { t.style.display = "none"; }, 2500);
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+init();
+</script>
+</body>
+</html>
