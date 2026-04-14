@@ -212,6 +212,7 @@ export default {
                 if (!message.guild) return;
 
                 const settings = getGuildSettings(message.guild.id);
+                if (settings.plugins?.autoresponders === false) return;
                 const filterOn = settings.autoresponderFilterOn !== false;
                 const list = guildAutoresponders.get(message.guild.id) || [];
 
