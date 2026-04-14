@@ -1,9 +1,12 @@
-import { boosterRolesDB, saveBoosterRoles } from "../../utils/database.js";
+import { boosterRolesDB, saveBoosterRoles, getGuildSettings } from "../../utils/database.js";
 import { replyEmbed } from "../../utils/embeds.js";
 
 export default {
     name: "boosterrole",
     async execute(message, args) {
+        if (getGuildSettings(message.guild.id).plugins?.booster_roles === false) {
+            return replyEmbed(message, { type: "error", title: "🚫 Feature Disabled", description: "The booster role system is disabled in this server." });
+        }
         const sub = (args[0] || "").toLowerCase();
         const isBooster = message.member.roles.cache.some(r => r.tags?.premiumSubscriber);
         const isOwner = message.guild.ownerId === message.author.id;
