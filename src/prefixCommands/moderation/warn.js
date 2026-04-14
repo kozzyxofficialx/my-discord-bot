@@ -26,6 +26,10 @@ export default {
         if (!message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
             return permissionError(message, "You need **Timeout Members** permission to warn.");
         }
+        const settings = getGuildSettings(message.guild.id);
+        if (settings.plugins?.warnings === false) {
+            return replyEmbed(message, { type: "error", title: "🚫 Feature Disabled", description: "The warnings system is disabled in this server." });
+        }
         const target = message.mentions.members.first();
         if (!target) return replyEmbed(message, { type: "error", title: "❌ Usage", description: "`,warn @user [reason]` OR `,warn remove @user [count]`" });
 
