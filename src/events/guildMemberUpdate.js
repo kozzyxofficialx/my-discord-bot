@@ -6,6 +6,7 @@ export default {
     async execute(oldM, newM) {
         try {
             const settings = getGuildSettings(newM.guild.id);
+            if (settings.plugins?.nicklock === false) return;
             if (!settings.nickLocks || !settings.nickLocks[newM.id]) return;
             const lock = settings.nickLocks[newM.id];
             if (oldM.nickname !== newM.nickname) {
