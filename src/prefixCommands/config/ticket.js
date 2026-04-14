@@ -6,6 +6,9 @@ export default {
     name: "ticket",
     async execute(message, args) {
         const settings = getGuildSettings(message.guild.id);
+        if (settings.plugins?.tickets === false) {
+            return replyEmbed(message, { type: "error", title: "🚫 Feature Disabled", description: "The ticket system is disabled in this server." });
+        }
         const target = settings.ticketPanelChannelId
             ? message.guild.channels.cache.get(settings.ticketPanelChannelId)
             : message.channel;
