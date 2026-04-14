@@ -42,6 +42,12 @@ export default {
 
             // Ticket open (ticket_open_<categoryId>)
             if (id.startsWith("ticket_open_")) {
+                if (interaction.guildId) {
+                    const settings = getGuildSettings(interaction.guildId);
+                    if (settings.plugins?.tickets === false) {
+                        return safeRespond(interaction, { content: "🚫 The ticket system is disabled in this server.", ephemeral: true });
+                    }
+                }
                 const categoryId = id.slice("ticket_open_".length);
                 return createTicketChannel(interaction, categoryId);
             }
