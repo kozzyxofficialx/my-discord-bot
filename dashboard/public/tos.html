@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Service</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --border: #2a2d3e;
+      --accent: #5865f2;
+      --accent-dim: #4752c4;
+      --text: #e0e2f0;
+      --muted: #8b8fa8;
+      --heading: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 16px;
+      line-height: 1.75;
+      padding: 2rem 1rem 4rem;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    header .badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: var(--heading);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem 2rem;
+      margin-bottom: 1.25rem;
+    }
+
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--heading);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    h2 .icon {
+      font-size: 1.2rem;
+    }
+
+    p {
+      color: var(--text);
+      margin-bottom: 0.75rem;
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    ul li {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+
+    ul li::before {
+      content: "›";
+      color: var(--accent);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 0.05rem;
+    }
+
+    .highlight {
+      border-left: 3px solid var(--accent);
+      padding-left: 1rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .warning {
+      border-left: 3px solid #f59e0b;
+      padding-left: 1rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    code {
+      background: #0f1117;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.1rem 0.4rem;
+      font-size: 0.85rem;
+      font-family: "SF Mono", "Fira Code", monospace;
+      color: #a5b4fc;
+    }
+
+    .contact-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .contact-link:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+    }
+
+    .nav-links a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .nav-links a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header>
+      <div class="badge">Legal</div>
+      <h1>Terms of Service</h1>
+      <p>Last updated: April 18, 2026 &nbsp;·&nbsp; Effective immediately</p>
+      <div class="nav-links">
+        <a href="/privacy.html">Privacy Policy</a>
+      </div>
+    </header>
+
+    <section>
+      <h2><span class="icon">📖</span> Agreement</h2>
+      <p>
+        By adding this bot to your Discord server, or by using any of its commands, you agree to
+        be bound by these Terms of Service. If you do not agree, please remove the bot from your
+        server and discontinue use immediately.
+      </p>
+      <p>
+        These terms apply to all users, including server administrators, moderators, and regular members
+        who interact with the bot.
+      </p>
+    </section>
+
+    <section>
+      <h2><span class="icon">✅</span> Eligibility</h2>
+      <ul>
+        <li>You must be at least 13 years old to use this bot, in compliance with Discord's own Terms of Service.</li>
+        <li>You must comply with <a class="contact-link" href="https://discord.com/terms" target="_blank">Discord's Terms of Service</a> and <a class="contact-link" href="https://discord.com/guidelines" target="_blank">Community Guidelines</a> at all times.</li>
+        <li>Server administrators are responsible for ensuring their members' use of the bot complies with these terms.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2><span class="icon">🤖</span> Use of the Bot</h2>
+      <p>You are permitted to use this bot for lawful purposes within your Discord server. You agree not to:</p>
+      <ul>
+        <li>Use the bot to harass, threaten, or harm any individual or group.</li>
+        <li>Attempt to exploit, abuse, or reverse-engineer the bot or its underlying systems.</li>
+        <li>Use AI commands (<code>/ask</code>, <code>/imagine</code>, <code>/translate</code>) to generate illegal, harmful, or explicitly inappropriate content.</li>
+        <li>Spam or flood the bot with requests in a way that degrades service for others.</li>
+        <li>Use moderation commands (<code>ban</code>, <code>kick</code>, <code>warn</code>, etc.) to abuse or unfairly target users.</li>
+        <li>Attempt to manipulate the bot's invite tracking, warning system, or any other data in bad faith.</li>
+        <li>Use the bot for any commercial purpose without prior written consent from the bot owner.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2><span class="icon">🛡️</span> Moderation Features</h2>
+      <p>
+        This bot provides moderation tools including banning, kicking, warning, muting, and audit logging.
+        These tools are intended to help server administrators maintain safe communities.
+      </p>
+      <p class="warning">
+        Server administrators are solely responsible for how moderation commands are used within their servers.
+        The bot owner is not liable for any moderation actions taken by server staff.
+      </p>
+      <ul>
+        <li>Moderation actions and audit logs are stored per-server and are accessible only to that server's staff.</li>
+        <li>Misuse of moderation commands against users may violate Discord's Terms of Service.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2><span class="icon">🤖</span> AI-Generated Content</h2>
+      <p>
+        Commands such as <code>/ask</code>, <code>/imagine</code>, and <code>/translate</code> use
+        third-party AI services. By using these commands, you acknowledge that:
+      </p>
+      <ul>
+        <li>AI-generated responses may be inaccurate, incomplete, or inappropriate — use them at your own discretion.</li>
+        <li>You are responsible for how you use or share AI-generated content.</li>
+        <li>Generating content that violates Discord's guidelines or applicable laws is strictly prohibited.</li>
+        <li>The bot owner is not responsible for the accuracy or consequences of AI-generated responses.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2><span class="icon">⚙️</span> Service Availability</h2>
+      <p>
+        The bot is provided on an "as is" and "as available" basis. We do not guarantee uninterrupted,
+        error-free operation at all times.
+      </p>
+      <ul>
+        <li>The bot may be taken offline for maintenance, updates, or unforeseen issues at any time.</li>
+        <li>Features may be added, modified, or removed without prior notice.</li>
+        <li>We reserve the right to remove the bot from any server that violates these terms without warning.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2><span class="icon">⚠️</span> Limitation of Liability</h2>
+      <p>
+        To the fullest extent permitted by law, the bot owner shall not be liable for any indirect,
+        incidental, special, or consequential damages arising from your use of the bot, including but
+        not limited to:
+      </p>
+      <ul>
+        <li>Loss of data or server content.</li>
+        <li>Moderation actions taken in error.</li>
+        <li>Downtime or service interruptions.</li>
+        <li>Consequences of AI-generated content.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2><span class="icon">🔒</span> Privacy</h2>
+      <p>
+        Your use of this bot is also governed by our
+        <a class="contact-link" href="/privacy.html">Privacy Policy</a>, which is incorporated
+        into these Terms of Service by reference. Please review it to understand how your data is
+        collected and used.
+      </p>
+    </section>
+
+    <section>
+      <h2><span class="icon">📝</span> Changes to These Terms</h2>
+      <p>
+        We reserve the right to update these Terms of Service at any time. When we do, the
+        "Last updated" date at the top of this page will be revised. Continued use of the bot
+        after any changes constitutes your acceptance of the new terms.
+      </p>
+      <p class="highlight">
+        It is your responsibility to review these terms periodically. If you disagree with any
+        changes, you should remove the bot from your server.
+      </p>
+    </section>
+
+    <section>
+      <h2><span class="icon">✉️</span> Contact</h2>
+      <p>If you have any questions about these Terms of Service, please contact the bot owner:</p>
+      <ul>
+        <li>Discord: Contact via your server's support channel or DM the bot owner directly.</li>
+        <li>Email: <a class="contact-link" href="mailto:spaminhaler942@gmail.com">spaminhaler942@gmail.com</a></li>
+      </ul>
+    </section>
+
+    <footer>
+      <p>&copy; 2026 · This bot is not affiliated with or endorsed by Discord Inc.</p>
+    </footer>
+
+  </div>
+</body>
+</html>
