@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --border: #2a2d3e;
+      --accent: #5865f2;
+      --accent-dim: #4752c4;
+      --text: #e0e2f0;
+      --muted: #8b8fa8;
+      --heading: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 16px;
+      line-height: 1.75;
+      padding: 2rem 1rem 4rem;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    header .badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: var(--heading);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem 2rem;
+      margin-bottom: 1.25rem;
+    }
+
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--heading);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    h2 .icon {
+      font-size: 1.2rem;
+    }
+
+    p {
+      color: var(--text);
+      margin-bottom: 0.75rem;
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    ul li {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+
+    ul li::before {
+      content: "›";
+      color: var(--accent);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 0.05rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    th {
+      text-align: left;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    td:first-child {
+      color: var(--heading);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    td code {
+      background: #0f1117;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.1rem 0.4rem;
+      font-size: 0.8rem;
+      font-family: "SF Mono", "Fira Code", monospace;
+      color: #a5b4fc;
+    }
+
+    .highlight {
+      border-left: 3px solid var(--accent);
+      padding-left: 1rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .contact-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .contact-link:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header>
+      <div class="badge">Legal</div>
+      <h1>Privacy Policy</h1>
+      <p>Last updated: April 18, 2026 &nbsp;·&nbsp; Effective immediately</p>
+    </header>
+
+    <section>
+      <h2><span class="icon">📖</span> Overview</h2>
+      <p>
+        This Privacy Policy explains what data is collected by this Discord bot, why it is collected,
+        how long it is retained, and your rights regarding that data.
+      </p>
+      <p>
+        By adding this bot to your server or using any of its commands, you agree to the collection
+        and use of data as described in this policy.
+      </p>
+    </section>
+
+    <section>
+      <h2><span class="icon">🗃️</span> Data We Collect</h2>
+      <p>The bot stores only what is necessary to provide its features. Below is a full breakdown:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>What is stored</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>User ID</td>
+            <td>Discord snowflake ID</td>
+            <td>Identify users across all features</td>
+          </tr>
+          <tr>
+            <td>Reminders</td>
+            <td>Message content, delivery time, channel ID</td>
+            <td>Send scheduled reminder messages</td>
+          </tr>
+          <tr>
+            <td>To-do items</td>
+            <td>Item text, creation timestamp</td>
+            <td>Personal to-do list feature</td>
+          </tr>
+          <tr>
+            <td>AFK status</td>
+            <td>Reason text, timestamp</td>
+            <td>Show AFK notice when mentioned</td>
+          </tr>
+          <tr>
+            <td>Warnings</td>
+            <td>User ID, server ID, reason, history</td>
+            <td>Moderation warn system</td>
+          </tr>
+          <tr>
+            <td>Moderation audit log</td>
+            <td>Action type, target ID, executor ID, reason</td>
+            <td>Staff audit trail within your server</td>
+          </tr>
+          <tr>
+            <td>Appeals</td>
+            <td>User ID, server ID, reason, status</td>
+            <td>Ban/punishment appeal submissions</td>
+          </tr>
+          <tr>
+            <td>Invite tracking</td>
+            <td>Inviter ID, invite code, join timestamp</td>
+            <td>Track who invited which members</td>
+          </tr>
+          <tr>
+            <td>AI conversation history</td>
+            <td>Message history per user per server</td>
+            <td>Maintain context for <code>/ask</code> command</td>
+          </tr>
+          <tr>
+            <td>Booster roles</td>
+            <td>User ID, role ID</td>
+            <td>Persist custom booster roles</td>
+          </tr>
+          <tr>
+            <td>Cosmetics / titles</td>
+            <td>User ID, title text</td>
+            <td>Custom display titles</td>
+          </tr>
+          <tr>
+            <td>Dynamic voice channels</td>
+            <td>Channel ID, owner ID, server ID</td>
+            <td>Track auto-created voice channels</td>
+          </tr>
+          <tr>
+            <td>Server settings</td>
+            <td>Guild ID, configuration JSON</td>
+            <td>Store per-server plugin and bot settings</td>
+          </tr>
+          <tr>
+            <td>Autoresponders</td>
+            <td>Guild ID, trigger text, response text</td>
+            <td>Automated message responses</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2><span class="icon">🤖</span> AI Features</h2>
+      <p>
+        The <code>/ask</code>, <code>/imagine</code>, and <code>/translate</code> commands use
+        third-party AI APIs (Anthropic / Claude). When you use these commands:
+      </p>
+      <ul>
+        <li>Your message content is sent to the AI provider to generate a response.</li>
+        <li>Conversation history is stored locally in our database to maintain context.</li>
+        <li>You can delete your AI conversation history at any time using <code>/clear_memory</code>.</li>
+        <li>AI providers may have their own data retention policies. See <a class="contact-link" href="https://www.anthropic.com/privacy" target="_blank">Anthropic's Privacy Policy</a> for details.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2><span class="icon">🔒</span> How We Use Your Data</h2>
+      <ul>
+        <li>To operate and deliver the bot's features as described above.</li>
+        <li>To allow server administrators to moderate their communities.</li>
+        <li>Data is never sold, shared with advertisers, or used for any commercial purpose.</li>
+        <li>Data is not shared with any third party except AI providers when you explicitly use AI commands.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2><span class="icon">📦</span> Data Storage</h2>
+      <p>
+        All data is stored in a local SQLite database on the server hosting this bot. It is not
+        stored in any cloud database or shared storage. Access is limited to the bot process and
+        the server dashboard.
+      </p>
+      <p class="highlight">
+        Server settings and moderation data persist as long as the bot remains in your server.
+        Personal user data (reminders, AFK, to-dos, AI history) persists until manually deleted
+        or the bot is removed.
+      </p>
+    </section>
+
+    <section>
+      <h2><span class="icon">🗑️</span> Data Deletion</h2>
+      <p>You can request deletion of your data at any time:</p>
+      <ul>
+        <li>Use <code>/clear_memory</code> to delete your AI conversation history.</li>
+        <li>AFK status is automatically removed when you send a message.</li>
+        <li>Reminders are automatically deleted after they fire.</li>
+        <li>For full data deletion, contact the bot owner using the information below.</li>
+      </ul>
+      <p>
+        Server administrators can request full removal of their server's data by removing the bot
+        from their server and contacting the bot owner.
+      </p>
+    </section>
+
+    <section>
+      <h2><span class="icon">👶</span> Children's Privacy</h2>
+      <p>
+        This bot is not directed at children under the age of 13. We do not knowingly collect data
+        from children under 13. If you believe a child has provided data, please contact us
+        immediately so it can be removed.
+      </p>
+    </section>
+
+    <section>
+      <h2><span class="icon">✉️</span> Contact</h2>
+      <p>
+        If you have any questions about this Privacy Policy or want to request data deletion,
+        please contact the bot owner:
+      </p>
+      <ul>
+        <li>Discord: Contact via your server's support channel or DM the bot owner directly.</li>
+        <li>Email: <a class="contact-link" href="mailto:bazsi9849@icloud.com">bazsi9849@icloud.com</a></li>
+      </ul>
+    </section>
+
+    <section>
+      <h2><span class="icon">📝</span> Changes to This Policy</h2>
+      <p>
+        We may update this Privacy Policy from time to time. When we do, the "Last updated" date
+        at the top of this page will be revised. Continued use of the bot after any changes
+        constitutes acceptance of the new policy.
+      </p>
+    </section>
+
+    <footer>
+      <p>&copy; 2026 · This bot is not affiliated with or endorsed by Discord Inc.</p>
+    </footer>
+
+  </div>
+</body>
+</html>
