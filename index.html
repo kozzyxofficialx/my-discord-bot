@@ -1,0 +1,3170 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>kozzyx — a reasonable moderation bot</title>
+    <meta name="description" content="kozzyx is an all-in-one Discord bot: moderation, AI (Claude-powered /ask & /imagine), tickets, and one-command server setup. 50+ commands, slash + prefix, none paywalled." />
+    <meta property="og:title" content="kozzyx — a reasonable moderation bot" />
+    <meta property="og:description" content="Moderation, AI, tickets, and server setup. 50+ commands. Add to your Discord server in 30 seconds." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://kozzyx.app/og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="kozzyx — a reasonable moderation bot" />
+    <meta name="twitter:description" content="Moderation, AI, tickets, and server setup. 50+ commands. Add to your Discord server in 30 seconds." />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect x='6' y='8' width='28' height='26' rx='8' fill='%238b5cf6'/><rect x='11' y='13' width='18' height='13' rx='4' fill='%230b0b0d'/><circle cx='16' cy='19.5' r='1.6' fill='white'/><circle cx='24' cy='19.5' r='1.6' fill='white'/><line x1='20' y1='8' x2='20' y2='4' stroke='%238b5cf6' stroke-width='1.5' stroke-linecap='round'/><circle cx='20' cy='3' r='1.5' fill='%238b5cf6'/></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0b0d;
+            --bg-elev: #131316;
+            --bg-elev-2: #1a1a1f;
+            --fg: #ededf0;
+            --fg-dim: #a0a0a8;
+            --fg-faint: #5a5a62;
+            --line: #242428;
+            --line-soft: #1c1c20;
+            --accent: oklch(0.72 0.17 280);
+            --accent-soft: oklch(0.72 0.17 280 / 0.14);
+            --accent-fg: #ffffff;
+            --danger: oklch(0.70 0.18 25);
+            --ok: oklch(0.78 0.15 155);
+            --warn: oklch(0.80 0.15 80);
+        }
+
+        html[data-theme="light"] {
+            --bg: #f7f7f5;
+            --bg-elev: #ffffff;
+            --bg-elev-2: #f0f0ec;
+            --fg: #111113;
+            --fg-dim: #5a5a62;
+            --fg-faint: #9a9aa4;
+            --line: #e4e4e0;
+            --line-soft: #ededea;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--fg);
+            font-family: 'Geist', -apple-system, system-ui, sans-serif;
+            font-feature-settings: 'ss01', 'cv01';
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: inherit;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .mono {
+            font-family: 'Geist Mono', ui-monospace, monospace;
+        }
+
+        .serif {
+            font-family: 'Instrument Serif', serif;
+        }
+
+        ::selection {
+            background: var(--accent);
+            color: var(--accent-fg);
+        }
+
+        /* Grain overlay */
+        .grain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.035;
+            mix-blend-mode: overlay;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+        }
+
+        #root {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ============ AURORA BACKGROUND ============ */
+        .aurora {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .aurora::before,
+        .aurora::after {
+            content: '';
+            position: absolute;
+            width: 70vw;
+            height: 70vw;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.35;
+            will-change: transform;
+        }
+
+        .aurora::before {
+            background: radial-gradient(circle, var(--accent) 0%, transparent 60%);
+            top: -20%;
+            left: -20%;
+            animation: auroraA 22s ease-in-out infinite alternate;
+        }
+
+        .aurora::after {
+            background: radial-gradient(circle, oklch(0.6 0.22 220) 0%, transparent 60%);
+            bottom: -30%;
+            right: -20%;
+            animation: auroraB 28s ease-in-out infinite alternate;
+            opacity: 0.22;
+        }
+
+        @keyframes auroraA {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(30vw, 20vh) scale(1.2);
+            }
+        }
+
+        @keyframes auroraB {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(-25vw, -20vh) scale(1.3);
+            }
+        }
+
+        /* ============ 3D CYBER GRID ============ */
+        .cyber-grid {
+            position: absolute;
+            bottom: -50vh;
+            left: -50vw;
+            width: 200vw;
+            height: 100vh;
+            background-image: 
+                linear-gradient(to right, var(--line-soft) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--line-soft) 1px, transparent 1px);
+            background-size: 60px 60px;
+            transform: perspective(600px) rotateX(75deg);
+            animation: gridMove 10s linear infinite;
+            opacity: 0.2;
+            z-index: 0;
+            pointer-events: none;
+            -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 80%);
+            mask-image: linear-gradient(to top, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 80%);
+        }
+
+        @keyframes gridMove {
+            0% { transform: perspective(600px) rotateX(75deg) translateY(0); }
+            100% { transform: perspective(600px) rotateX(75deg) translateY(60px); }
+        }
+
+        /* ============ BOOT LOADER ============ */
+        .boot-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s cubic-bezier(0.8, 0, 0.2, 1), transform 0.8s cubic-bezier(0.8, 0, 0.2, 1);
+            transform-origin: top;
+        }
+
+        .boot-loader.hidden {
+            opacity: 0;
+            transform: scaleY(0);
+            pointer-events: none;
+        }
+
+        .boot-text {
+            font-family: 'Geist Mono', ui-monospace, monospace;
+            font-size: 14px;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        .boot-progress-bar {
+            width: 200px;
+            height: 2px;
+            background: var(--line);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .boot-progress-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: var(--accent);
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        /* ============ SPOTLIGHT CARDS ============ */
+        .spotlight-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .spotlight-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            background: radial-gradient(400px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), var(--accent-soft), transparent 40%);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .spotlight-card:hover::after {
+            opacity: 1;
+        }
+
+        /* ============ SCROLL REVEAL ============ */
+        [data-reveal] {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        [data-reveal].in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        [data-reveal="left"] {
+            transform: translateX(-40px);
+        }
+
+        [data-reveal="left"].in {
+            transform: translateX(0);
+        }
+
+        [data-reveal="right"] {
+            transform: translateX(40px);
+        }
+
+        [data-reveal="right"].in {
+            transform: translateX(0);
+        }
+
+        [data-reveal="scale"] {
+            transform: scale(0.92);
+        }
+
+        [data-reveal="scale"].in {
+            transform: scale(1);
+        }
+
+        /* ============ TEXT SHINE (for hero h1 italic) ============ */
+        .shine {
+            background: linear-gradient(110deg, var(--accent) 30%, #fff 50%, var(--accent) 70%);
+            background-size: 250% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: shineMove 4s linear infinite;
+        }
+
+        @keyframes shineMove {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* ============ GLOW RING (buttons) ============ */
+        .glow-ring {
+            position: relative;
+            isolation: isolate;
+        }
+
+        .glow-ring::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: inherit;
+            background: conic-gradient(from var(--a, 0deg), var(--accent), transparent 30%, var(--accent));
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s;
+            animation: spinRing 3s linear infinite;
+        }
+
+        .glow-ring:hover::before {
+            opacity: 0.85;
+        }
+
+        @keyframes spinRing {
+            to {
+                --a: 360deg;
+            }
+        }
+
+        @property --a {
+            syntax: '<angle>';
+            inherits: false;
+            initial-value: 0deg;
+        }
+
+        /* ============ MAGNETIC BUTTON BASE ============ */
+        .magnetic {
+            transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: transform;
+        }
+
+        /* ============ FLOATING PARTICLES (hero bg) ============ */
+        .particles {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background: var(--accent);
+            opacity: 0.5;
+            animation: drift var(--dur, 20s) linear infinite;
+        }
+
+        @keyframes drift {
+            0% {
+                transform: translate(0, 0);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.6;
+            }
+
+            90% {
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: translate(var(--tx, 100px), var(--ty, -300px));
+                opacity: 0;
+            }
+        }
+
+        /* ============ MARQUEE ============ */
+        .marquee-track {
+            animation: marquee 40s linear infinite;
+        }
+
+        @keyframes marquee {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* ============ TYPEWRITER CARET ============ */
+        .caret::after {
+            content: '▍';
+            color: var(--accent);
+            animation: caretBlink 0.9s steps(2) infinite;
+            margin-left: 2px;
+        }
+
+        @keyframes caretBlink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* ============ CHAT ENTRANCE ============ */
+        @keyframes chatIn {
+            0% {
+                opacity: 0;
+                transform: translateY(14px) scale(0.96);
+                filter: blur(4px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        /* ============ HERO HEADLINE MASK ============ */
+        .head-mask {
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .head-inner {
+            display: inline-block;
+            animation: riseUp 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        .head-inner.d1 {
+            animation-delay: 0.05s;
+        }
+
+        .head-inner.d2 {
+            animation-delay: 0.18s;
+        }
+
+        .head-inner.d3 {
+            animation-delay: 0.32s;
+        }
+
+        @keyframes riseUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        /* ============ INTERACTIVE TWEAKS ============ */
+        .marquee-divider {
+            width: 100vw;
+            background: var(--accent-soft);
+            border-top: 1px solid var(--accent);
+            border-bottom: 1px solid var(--accent);
+            padding: 12px 0;
+            position: relative;
+            z-index: 10;
+            margin: 60px 0;
+            overflow: hidden;
+            display: flex;
+            box-shadow: 0 0 40px var(--accent-soft);
+            margin-left: calc(-50vw + 50%);
+        }
+        .marquee-inner {
+            display: flex;
+            white-space: nowrap;
+            animation: marquee 14s linear infinite;
+        }
+        .marquee-item {
+            font-family: 'Geist Mono', ui-monospace, monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent);
+            margin: 0 40px;
+            letter-spacing: 2px;
+        }
+
+        .dynamic-island {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%) translateY(120px) scale(0.9);
+            z-index: 10000;
+            background: rgba(20, 20, 24, 0.7);
+            backdrop-filter: blur(20px) saturate(140%);
+            -webkit-backdrop-filter: blur(20px) saturate(140%);
+            border: 1px solid var(--line);
+            border-radius: 100px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05) inset;
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .dynamic-island.visible {
+            transform: translateX(-50%) translateY(0) scale(1);
+            opacity: 1;
+            pointer-events: all;
+        }
+        .island-link {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--fg-dim);
+            padding: 8px 16px;
+            border-radius: 100px;
+            transition: all 0.2s ease;
+        }
+        .island-link:hover {
+            color: var(--fg);
+            background: rgba(255,255,255,0.08);
+        }
+
+        #cursor-blob {
+            position: fixed;
+            top: 0; left: 0;
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: var(--accent);
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.3s ease, border-radius 0.2s ease;
+            mix-blend-mode: screen;
+            will-change: left, top, width, height;
+        }
+        #cursor-blob.active {
+            width: 24px; height: 24px;
+            background: #fff;
+            opacity: 0.6;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); filter: hue-rotate(0deg) drop-shadow(0 0 transparent); }
+            20% { transform: translate(-2px, 1px); filter: hue-rotate(90deg) drop-shadow(4px 0 #0ff); }
+            40% { transform: translate(-1px, -2px); filter: hue-rotate(180deg) drop-shadow(-4px 0 #f0f); }
+            60% { transform: translate(2px, 1px); filter: hue-rotate(270deg) drop-shadow(4px 0 #0ff); }
+            80% { transform: translate(1px, -1px); filter: hue-rotate(360deg) drop-shadow(-4px 0 #f0f); }
+            100% { transform: translate(0); filter: hue-rotate(0deg) drop-shadow(0 0 transparent); }
+        }
+        .btn-glitch {
+            position: relative;
+            transform-origin: center;
+        }
+        .btn-glitch:active {
+            animation: glitch 0.2s linear !important;
+        }
+        }
+
+        /* ============ RESPECT REDUCED MOTION ============ */
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* ============ MOBILE RESPONSIVE ============ */
+        @media (max-width: 900px) {
+            .hero-grid { grid-template-columns: 1fr !important; gap: 48px !important; }
+            .hero-grid > div:last-child { order: -1; }
+            .features-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
+            .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 32px !important; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+            .stats-grid > div:nth-child(2) { border-right: none !important; }
+            .dashboard-body { grid-template-columns: 1fr !important; }
+            .dashboard-sidebar { display: none !important; }
+            nav > div:nth-child(2) { display: none !important; }
+            .how-grid { grid-template-columns: 1fr !important; }
+            .kpi-grid { grid-template-columns: repeat(2, 1fr) !important; }
+            .mobile-hamburger { display: grid !important; }
+            .nav-cta-btn { display: none !important; }
+        }
+
+        @media (max-width: 600px) {
+            section, .section-pad { padding-left: 20px !important; padding-right: 20px !important; }
+            .stats-grid { grid-template-columns: 1fr 1fr !important; }
+            .footer-grid { grid-template-columns: 1fr !important; }
+            nav { padding: 14px 20px !important; }
+            .changelog-row { grid-template-columns: 1fr !important; gap: 16px !important; }
+        }
+
+        /* ============ HOW IT WORKS SECTION ============ */
+        .how-step {
+            position: relative;
+            padding: 28px 24px;
+            background: var(--bg-elev);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            transition: border-color 0.25s, transform 0.25s;
+        }
+        .how-step:hover {
+            border-color: color-mix(in oklab, var(--accent) 50%, var(--line));
+            transform: translateY(-4px);
+        }
+        .how-step-number {
+            font-family: 'Geist Mono', monospace;
+            font-size: 11px;
+            color: var(--accent);
+            letter-spacing: 0.1em;
+            margin-bottom: 16px;
+            opacity: 0.8;
+        }
+        .how-step-connector {
+            position: absolute;
+            top: 50%;
+            right: -28px;
+            width: 28px;
+            height: 1px;
+            background: linear-gradient(90deg, var(--line), transparent);
+            pointer-events: none;
+        }
+
+        /* ============ STATUS BADGE ============ */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 100px;
+            background: color-mix(in oklab, var(--ok) 12%, transparent);
+            border: 1px solid color-mix(in oklab, var(--ok) 30%, transparent);
+            font-size: 11px;
+            color: var(--ok);
+            font-family: 'Geist Mono', monospace;
+        }
+        .status-dot-live {
+            width: 6px; height: 6px; border-radius: 3px;
+            background: var(--ok);
+            animation: pulseLive 2s ease-in-out infinite;
+        }
+        @keyframes pulseLive {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 color-mix(in oklab, var(--ok) 60%, transparent); }
+            50% { opacity: 0.7; box-shadow: 0 0 0 4px transparent; }
+        }
+
+        /* ============ COMMAND CATEGORY COLORS ============ */
+        .cmd-cat-mod    { color: var(--danger) !important; }
+        .cmd-cat-ai     { color: var(--ok) !important; }
+        .cmd-cat-setup  { color: var(--warn) !important; }
+        .cmd-cat-ticket { color: oklch(0.78 0.14 240) !important; }
+
+        /* ============ STAGGER REVEAL ============ */
+        [data-stagger] > * {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        [data-stagger].in > *:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.05s; }
+        [data-stagger].in > *:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.12s; }
+        [data-stagger].in > *:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.19s; }
+        [data-stagger].in > *:nth-child(4) { opacity: 1; transform: translateY(0); transition-delay: 0.26s; }
+        [data-stagger].in > *:nth-child(5) { opacity: 1; transform: translateY(0); transition-delay: 0.33s; }
+
+        /* ============ ANIMATED UNDERLINE LINKS ============ */
+        .underline-link {
+            position: relative;
+        }
+        .underline-link::after {
+            content: '';
+            position: absolute;
+            left: 0; bottom: -2px;
+            width: 0; height: 1px;
+            background: var(--accent);
+            transition: width 0.25s ease;
+        }
+        .underline-link:hover::after { width: 100%; }
+
+        /* ============ COMMAND HOVER GLOW ============ */
+        .cmd-row:hover {
+            background: var(--bg-elev) !important;
+        }
+        .cmd-row:hover .cmd-name {
+            color: var(--accent) !important;
+        }
+
+        /* ============ SECTION FADE KEYFRAME ============ */
+        @keyframes sectionFadeIn {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ============ TABS SHIMMER ON SWITCH ============ */
+        @keyframes tabShimmer {
+            0% { opacity: 0; transform: translateX(-8px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+        .tab-content-enter { animation: tabShimmer 0.3s cubic-bezier(0.22,1,0.36,1) both; }
+
+        /* ============ COUNTER PULSE ============ */
+        @keyframes counterPop {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.04); }
+            100% { transform: scale(1); }
+        }
+        .counter-pop { animation: counterPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
+    </style>
+</head>
+
+<body>
+    <div id="scroll-progress" style="position:fixed;top:0;left:0;height:2px;background:var(--accent);z-index:99998;width:0%;transition:width 0.1s linear;box-shadow:0 0 8px var(--accent);"></div>
+    <div class="aurora">
+        <div class="cyber-grid"></div>
+    </div>
+    <div class="grain"></div>
+    <div id="boot-loader" class="boot-loader">
+        <div class="boot-text" id="boot-text">BOOTING KOZZYX OS...</div>
+        <div class="boot-progress-bar">
+            <div class="boot-progress-fill" id="boot-fill"></div>
+        </div>
+    </div>
+    <div id="root"></div>
+    <canvas id="trail" style="position:fixed;inset:0;pointer-events:none;z-index:9998;"></canvas>
+
+    <script>
+        // Tweakable defaults — host persists changes written here
+        window.KOZZ_TWEAKS = /*EDITMODE-BEGIN*/{
+            "accent": "violet"
+        }/*EDITMODE-END*/;
+    </script>
+
+    <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+
+    <script type="text/babel" data-presets="react">
+
+        // ==== src/data.jsx ====
+        // Data shared across components
+
+        const INVITE_URL = 'https://discord.com/oauth2/authorize?client_id=1442127404607737999&permissions=8&integration_type=0&scope=bot+applications.commands';
+
+        const ACCENTS = {
+            violet: { name: 'violet', oklch: '0.72 0.17 280', label: 'Violet' },
+            lime: { name: 'lime', oklch: '0.88 0.19 120', label: 'Lime' },
+            coral: { name: 'coral', oklch: '0.75 0.17 28', label: 'Coral' },
+            cyan: { name: 'cyan', oklch: '0.82 0.13 210', label: 'Cyan' },
+            amber: { name: 'amber', oklch: '0.82 0.16 75', label: 'Amber' },
+            blush: { name: 'blush', oklch: '0.80 0.12 350', label: 'Blush' },
+        };
+
+        /*COMMANDS-DATA-BEGIN*/
+        const COMMANDS = [
+            // ── utility ──────────────────────────────────────────────────────────
+            { "cmd": "/afk",            "args": "",                       "desc": "Set your AFK status",                                          "cat": "utility",  "popular": false, "prefix": false },
+            { "cmd": "/avatar",         "args": "[user]",                 "desc": "Show a user's avatar",                                         "cat": "utility",  "popular": false, "prefix": false },
+            { "cmd": "/banner",         "args": "[user]",                 "desc": "Show a user's banner",                                         "cat": "utility",  "popular": false, "prefix": false },
+            { "cmd": "/decide",         "args": "<options>",              "desc": "Pick between options (separate with |)",                       "cat": "utility",  "popular": false, "prefix": false },
+            { "cmd": "/define",         "args": "<word>",                 "desc": "Define an English word",                                       "cat": "utility",  "popular": false, "prefix": false },
+            { "cmd": "/features",       "args": "",                       "desc": "Show bot features pages",                                      "cat": "utility",  "popular": false, "prefix": false },
+            { "cmd": "/help",           "args": "",                       "desc": "Show help pages",                                              "cat": "utility",  "popular": true,  "prefix": false },
+            { "cmd": "/invites",        "args": "[user]",                 "desc": "Check invite stats for yourself or another user",              "cat": "utility",  "popular": false, "prefix": false },
+            { "cmd": "/plugins",        "args": "",                       "desc": "Enable or disable optional bot features",                      "cat": "utility",  "popular": false, "prefix": false },
+            { "cmd": "/remind",         "args": "<time> <message>",       "desc": "Set a reminder",                                               "cat": "utility",  "popular": false, "prefix": false },
+            { "cmd": "/serverinfo",     "args": "",                       "desc": "Show info about this server",                                  "cat": "utility",  "popular": false, "prefix": false },
+            { "cmd": "/todo",           "args": "",                       "desc": "Manage your simple to-do list",                                "cat": "utility",  "popular": false, "prefix": false },
+            { "cmd": "/userinfo",       "args": "[user]",                 "desc": "Show info about a user",                                       "cat": "utility",  "popular": false, "prefix": false },
+            { "cmd": "/vc",             "args": "",                       "desc": "Manage your dynamic voice channel",                            "cat": "utility",  "popular": false, "prefix": false },
+            { "cmd": ",afk",            "args": "",                       "desc": "Set your AFK status",                                          "cat": "utility",  "popular": false, "prefix": true  },
+            { "cmd": ",boosterrole",    "args": "",                       "desc": "Configure custom roles for server boosters",                   "cat": "utility",  "popular": false, "prefix": true  },
+            // ── moderation ───────────────────────────────────────────────────────
+            { "cmd": "/warn",           "args": "<user> <reason>",        "desc": "Warn a user — tracks warn history",                            "cat": "mod",      "popular": true,  "prefix": false },
+            { "cmd": "/clearwarns",     "args": "<user>",                 "desc": "Clear all warnings for a user",                                "cat": "mod",      "popular": false, "prefix": false },
+            { "cmd": "/kick",           "args": "<user> [reason]",        "desc": "Kick a user from the server",                                  "cat": "mod",      "popular": false, "prefix": false },
+            { "cmd": "/ban",            "args": "<user> [reason]",        "desc": "Ban a user from the server",                                   "cat": "mod",      "popular": true,  "prefix": false },
+            { "cmd": "/unban",          "args": "<user>",                 "desc": "Unban a previously banned user",                               "cat": "mod",      "popular": false, "prefix": false },
+            { "cmd": "/mute",           "args": "<user> <time> [reason]", "desc": "Timeout a user for a set duration",                            "cat": "mod",      "popular": false, "prefix": false },
+            { "cmd": "/unmute",         "args": "<user>",                 "desc": "Remove a timeout from a user",                                 "cat": "mod",      "popular": false, "prefix": false },
+            { "cmd": "/nuke",           "args": "[amount]",               "desc": "Bulk-delete messages from this channel",                       "cat": "mod",      "popular": true,  "prefix": false },
+            { "cmd": "/lock",           "args": "[channel]",              "desc": "Lock a channel so users can't send messages",                  "cat": "mod",      "popular": false, "prefix": false },
+            { "cmd": "/unlock",         "args": "[channel]",              "desc": "Unlock a previously locked channel",                           "cat": "mod",      "popular": false, "prefix": false },
+            { "cmd": "/nicklock",       "args": "<user> <nick>",          "desc": "Force a nickname and lock it",                                 "cat": "mod",      "popular": false, "prefix": false },
+            { "cmd": "/modhelp",        "args": "",                       "desc": "Show moderation help pages",                                   "cat": "mod",      "popular": false, "prefix": false },
+            { "cmd": "/wipe_server",    "args": "",                       "desc": "⚠️ DANGER: Delete ALL channels and roles. Server owner only", "cat": "mod",      "popular": false, "prefix": false },
+            { "cmd": ",audit",          "args": "",                       "desc": "View moderation audit logs",                                   "cat": "mod",      "popular": false, "prefix": true  },
+            { "cmd": ",ban",            "args": "<user> [reason]",        "desc": "Ban a user from the server",                                   "cat": "mod",      "popular": false, "prefix": true  },
+            { "cmd": ",clear",          "args": "[amount]",               "desc": "Bulk delete messages in a channel",                            "cat": "mod",      "popular": false, "prefix": true  },
+            { "cmd": ",clearwarns",     "args": "<user>",                 "desc": "Clear all warnings for a user",                                "cat": "mod",      "popular": false, "prefix": true  },
+            { "cmd": ",damage",         "args": "<user>",                 "desc": "Apply a custom moderation damage action to a user",            "cat": "mod",      "popular": false, "prefix": true  },
+            { "cmd": ",heal",           "args": "<user>",                 "desc": "Remove damage / reset state for a user",                       "cat": "mod",      "popular": false, "prefix": true  },
+            { "cmd": ",kick",           "args": "<user> [reason]",        "desc": "Kick a user from the server",                                  "cat": "mod",      "popular": false, "prefix": true  },
+            { "cmd": ",lock",           "args": "",                       "desc": "Lock the current channel",                                     "cat": "mod",      "popular": false, "prefix": true  },
+            { "cmd": ",nick",           "args": "<user> <nick>",          "desc": "Change a user's nickname",                                     "cat": "mod",      "popular": false, "prefix": true  },
+            { "cmd": ",nicklock",       "args": "<user> <nick>",          "desc": "Lock a user's nickname so they cannot change it",              "cat": "mod",      "popular": false, "prefix": true  },
+            { "cmd": ",nickunlock",     "args": "<user>",                 "desc": "Unlock a user's nickname",                                     "cat": "mod",      "popular": false, "prefix": true  },
+            { "cmd": ",slowmode",       "args": "<seconds>",              "desc": "Set the slowmode for a channel",                               "cat": "mod",      "popular": false, "prefix": true  },
+            { "cmd": ",unlock",         "args": "",                       "desc": "Unlock the current channel",                                   "cat": "mod",      "popular": false, "prefix": true  },
+            { "cmd": ",unraid",         "args": "",                       "desc": "Disable raid mode protections",                                "cat": "mod",      "popular": false, "prefix": true  },
+            { "cmd": ",warn",           "args": "<user> <reason>",        "desc": "Issue a formal warning to a user",                             "cat": "mod",      "popular": false, "prefix": true  },
+            { "cmd": ",warnings",       "args": "<user>",                 "desc": "View a user's current warnings",                               "cat": "mod",      "popular": false, "prefix": true  },
+            { "cmd": ",warnthreshold",  "args": "<number>",               "desc": "Set the threshold for auto-actions on warnings",               "cat": "mod",      "popular": false, "prefix": true  },
+            // ── AI ───────────────────────────────────────────────────────────────
+            { "cmd": "/ask",            "args": "<prompt>",               "desc": "Ask Claude AI a question — remembers conversation context",    "cat": "ai",       "popular": true,  "prefix": false },
+            { "cmd": "/summarize",      "args": "",                       "desc": "Summarize the last few messages using Claude",                 "cat": "ai",       "popular": true,  "prefix": false },
+            { "cmd": "/translate",      "args": "<text>",                 "desc": "Translate text — auto-detects source language",                "cat": "ai",       "popular": false, "prefix": false },
+            { "cmd": "/generate_rules", "args": "",                       "desc": "Use AI to generate a custom rules embed for this server",      "cat": "ai",       "popular": false, "prefix": false },
+            { "cmd": "/imagine",        "args": "<prompt>",               "desc": "Generate an image using Pollinations.ai (Flux model)",         "cat": "ai",       "popular": true,  "prefix": false },
+            { "cmd": "/clear_memory",   "args": "",                       "desc": "Clear Claude's conversation history for you in this server",   "cat": "ai",       "popular": false, "prefix": false },
+            // ── setup & config ───────────────────────────────────────────────────
+            { "cmd": "/server_setup",   "args": "[preset]",               "desc": "Scaffold channels, roles, and config from a preset",           "cat": "setup",    "popular": true,  "prefix": false },
+            { "cmd": "/reset_setup",    "args": "",                       "desc": "Delete everything server_setup created and optionally redo it","cat": "setup",    "popular": false, "prefix": false },
+            { "cmd": ",alias",          "args": "",                       "desc": "Manage custom command aliases (add/remove/list)",               "cat": "setup",    "popular": false, "prefix": true  },
+            { "cmd": ",appealschannel", "args": "<channel>",              "desc": "Set the channel for ban appeals",                              "cat": "setup",    "popular": false, "prefix": true  },
+            { "cmd": ",automod",        "args": "",                       "desc": "Configure built-in AutoMod rules",                             "cat": "setup",    "popular": false, "prefix": true  },
+            { "cmd": ",automod_whitelist","args": "",                     "desc": "Manage the AutoMod word whitelist",                            "cat": "setup",    "popular": false, "prefix": true  },
+            { "cmd": ",autoresponder",  "args": "",                       "desc": "Configure custom auto-responses",                              "cat": "setup",    "popular": false, "prefix": true  },
+            { "cmd": ",autoresponder_filter_off","args": "",              "desc": "Turn off filters for auto-responders",                         "cat": "setup",    "popular": false, "prefix": true  },
+            { "cmd": ",autoresponder_filter_on","args": "",               "desc": "Turn on filters for auto-responders",                          "cat": "setup",    "popular": false, "prefix": true  },
+            { "cmd": ",case_channel",   "args": "<channel>",              "desc": "Set the channel for moderation case logs",                     "cat": "setup",    "popular": false, "prefix": true  },
+            { "cmd": ",disable",        "args": "<command>",              "desc": "Globally disable a prefix command in the server",              "cat": "setup",    "popular": false, "prefix": true  },
+            { "cmd": ",enable",         "args": "<command>",              "desc": "Re-enable a previously disabled command",                      "cat": "setup",    "popular": false, "prefix": true  },
+            { "cmd": ",prefix_delete_respond_cooldown","args": "<time>", "desc": "Set cooldown for auto-deletion of bot responses",              "cat": "setup",    "popular": false, "prefix": true  },
+            // ── tickets ──────────────────────────────────────────────────────────
+            { "cmd": "/appeal",         "args": "",                       "desc": "Submit a ban appeal to a server",                              "cat": "tickets",  "popular": false, "prefix": false },
+            { "cmd": ",ticket",         "args": "",                       "desc": "Main command for ticket system configuration",                 "cat": "tickets",  "popular": false, "prefix": true  },
+            { "cmd": ",ticket_channel", "args": "<channel>",              "desc": "Set the parent category or channel for tickets",               "cat": "tickets",  "popular": false, "prefix": true  },
+            { "cmd": ",ticket_close",   "args": "",                       "desc": "Close an active ticket",                                       "cat": "tickets",  "popular": false, "prefix": true  },
+            { "cmd": ",ticket_edit",    "args": "",                       "desc": "Edit ticket system settings",                                  "cat": "tickets",  "popular": false, "prefix": true  },
+            { "cmd": ",ticket_ping",    "args": "<role>",                 "desc": "Set the role to be pinged when a ticket is opened",            "cat": "tickets",  "popular": false, "prefix": true  },
+        ];
+        /*COMMANDS-DATA-END*/
+
+        const FEATURES = [
+            {
+                id: 'automod',
+                tab: 'Moderation',
+                title: 'Full moderation toolkit',
+                blurb: "Warns, bans, kicks, nicklocks, channel locks, warn thresholds that auto-escalate. The stuff you actually need.",
+                points: [
+                    'Warn-threshold system — auto-mute/kick/ban at X warns',
+                    '/nuke and ,unraid for when things get loud',
+                    'Per-user warn history and /clearwarns for fresh starts',
+                    'Channel locks and nickname locks, both reversible',
+                ],
+                visual: 'automod',
+            },
+            {
+                id: 'ai',
+                tab: 'AI commands',
+                title: 'AI in chat, not a separate app',
+                blurb: "/ask for Claude-powered answers, /imagine for image generation, /translate for on-the-fly translation. No paywalled tier.",
+                points: [
+                    '/ask remembers conversation context per-user',
+                    '/imagine generates images from any prompt',
+                    '/translate auto-detects source language',
+                    '/clear_memory to reset the bot\'s memory of your chat',
+                ],
+                visual: 'cases',
+            },
+            {
+                id: 'setup',
+                tab: 'Server setup',
+                title: 'Go from empty server to ready in one command',
+                blurb: "/server_setup scaffolds channels, roles, and config. /generate_rules gives you AI-generated starting rules to edit.",
+                points: [
+                    '/server_setup creates a working baseline in seconds',
+                    '/generate_rules — AI-drafted rules you actually own',
+                    'Modular plugins via /plugins and ,enable / ,disable',
+                    '/wipe_server to start over, with double-confirm',
+                ],
+                visual: 'dashboard',
+            },
+            {
+                id: 'tickets',
+                tab: 'Tickets & appeals',
+                title: 'Support and appeals, ticket-based',
+                blurb: "Users open tickets with one command. Appeals for bans and warns route to a channel your mods actually check.",
+                points: [
+                    ',ticket opens a private channel instantly',
+                    '/appeal lets banned users request review',
+                    ',ticket_ping to page the right role',
+                    'Configurable ticket channel and auto-close',
+                ],
+                visual: 'raid',
+            },
+        ];
+
+        window.KOZZ = { ACCENTS, COMMANDS, FEATURES, INVITE_URL };
+
+
+        // ==== src/mascot.jsx ====
+        // Kozzy the mascot — a geometric blob-bot. Animated eyes track cursor.
+        // Not a copy of any existing character — just a friendly rounded rectangle with feelings.
+
+        function Mascot({ size = 240, mood: defaultMood = 'neutral', blink = true }) {
+            const [eye, setEye] = React.useState({ x: 0, y: 0 });
+            const [blinking, setBlinking] = React.useState(false);
+            const [mood, setMood] = React.useState(defaultMood);
+            const [bouncing, setBouncing] = React.useState(false);
+            const ref = React.useRef(null);
+
+            React.useEffect(() => {
+                if (!blink) return;
+                let t;
+                const loop = () => {
+                    setBlinking(true);
+                    setTimeout(() => setBlinking(false), 140);
+                    t = setTimeout(loop, 2200 + Math.random() * 3500);
+                };
+                t = setTimeout(loop, 1500);
+                return () => clearTimeout(t);
+            }, [blink]);
+
+            React.useEffect(() => {
+                const onMove = (e) => {
+                    if (!ref.current) return;
+                    const r = ref.current.getBoundingClientRect();
+                    const cx = r.left + r.width / 2;
+                    const cy = r.top + r.height / 2;
+                    const dx = (e.clientX - cx) / Math.max(r.width, 300);
+                    const dy = (e.clientY - cy) / Math.max(r.height, 300);
+                    const mag = Math.min(1, Math.hypot(dx, dy) * 1.4);
+                    const ang = Math.atan2(dy, dx);
+                    setEye({ x: Math.cos(ang) * mag * 4, y: Math.sin(ang) * mag * 4 });
+                };
+                window.addEventListener('mousemove', onMove);
+                return () => window.removeEventListener('mousemove', onMove);
+            }, []);
+
+            const mouthPath = {
+                neutral: 'M 78 130 Q 100 136 122 130',
+                happy: 'M 76 126 Q 100 146 124 126',
+                smug: 'M 80 132 Q 100 128 120 134',
+                alert: 'M 82 132 L 118 132',
+            }[mood] || 'M 78 130 Q 100 136 122 130';
+
+            const handleClick = () => {
+                if (bouncing) return;
+                setMood('happy');
+                setBouncing(true);
+                setTimeout(() => setBouncing(false), 400);
+                setTimeout(() => setMood(defaultMood), 2000);
+            };
+
+            return (
+                <svg ref={ref} onClick={handleClick} viewBox="0 0 200 200" width={size} height={size} style={{ 
+                    display: 'block', 
+                    overflow: 'visible', 
+                    cursor: 'pointer',
+                    transform: bouncing ? 'scale(1.08) translateY(-12px)' : 'scale(1) translateY(0)',
+                    transition: 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                }}>
+                    <defs>
+                        <linearGradient id="body-grad" x1="0" x2="0" y1="0" y2="1">
+                            <stop offset="0" stopColor="var(--accent)" stopOpacity="1" />
+                            <stop offset="1" stopColor="var(--accent)" stopOpacity="0.75" />
+                        </linearGradient>
+                        <radialGradient id="body-shade" cx="0.35" cy="0.3" r="0.8">
+                            <stop offset="0" stopColor="#ffffff" stopOpacity="0.25" />
+                            <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+                        </radialGradient>
+                    </defs>
+
+                    {/* shadow */}
+                    <ellipse cx="100" cy="185" rx="55" ry="6" fill="#000" opacity="0.25" />
+
+                    {/* antenna */}
+                    <line x1="100" y1="40" x2="100" y2="22" stroke="var(--accent)" strokeWidth="3" strokeLinecap="round" />
+                    <circle cx="100" cy="19" r="5" fill="var(--accent)">
+                        <animate attributeName="r" values="5;6;5" dur="1.8s" repeatCount="indefinite" />
+                    </circle>
+
+                    {/* body — rounded square */}
+                    <rect x="40" y="42" width="120" height="130" rx="36" ry="36" fill="url(#body-grad)" />
+                    <rect x="40" y="42" width="120" height="130" rx="36" ry="36" fill="url(#body-shade)" />
+                    <rect x="40" y="42" width="120" height="130" rx="36" ry="36" fill="none" stroke="rgba(0,0,0,0.2)" strokeWidth="1" />
+
+                    {/* screen / face panel */}
+                    <rect x="54" y="70" width="92" height="74" rx="20" ry="20" fill="#0b0b0d" opacity="0.92" />
+                    <rect x="54" y="70" width="92" height="74" rx="20" ry="20" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
+
+                    {/* eyes */}
+                    <g transform={`translate(${eye.x}, ${eye.y})`}>
+                        <circle cx="82" cy="102" r={blinking ? 0.5 : 5} fill="#fff" style={{ transition: 'r 80ms' }} />
+                        <circle cx="118" cy="102" r={blinking ? 0.5 : 5} fill="#fff" style={{ transition: 'r 80ms' }} />
+                        {!blinking && (
+                            <>
+                                <circle cx="84" cy="100" r="1.5" fill="var(--accent)" />
+                                <circle cx="120" cy="100" r="1.5" fill="var(--accent)" />
+                            </>
+                        )}
+                    </g>
+
+                    {/* mouth */}
+                    <path d={mouthPath} stroke="#fff" strokeWidth="3" fill="none" strokeLinecap="round" />
+
+                    {/* cheek blush */}
+                    <circle cx="62" cy="122" r="4" fill="var(--accent)" opacity="0.4" />
+                    <circle cx="138" cy="122" r="4" fill="var(--accent)" opacity="0.4" />
+
+                    {/* feet */}
+                    <rect x="62" y="170" width="22" height="8" rx="4" fill="var(--accent)" opacity="0.7" />
+                    <rect x="116" y="170" width="22" height="8" rx="4" fill="var(--accent)" opacity="0.7" />
+                </svg>
+            );
+        }
+
+        // tiny version for nav / favicon-ish use
+        function MascotMini({ size = 28 }) {
+            return (
+                <svg viewBox="0 0 40 40" width={size} height={size} style={{ display: 'block' }}>
+                    <rect x="6" y="8" width="28" height="26" rx="8" fill="var(--accent)" />
+                    <rect x="11" y="13" width="18" height="13" rx="4" fill="#0b0b0d" />
+                    <circle cx="16" cy="19.5" r="1.6" fill="#fff" />
+                    <circle cx="24" cy="19.5" r="1.6" fill="#fff" />
+                    <line x1="20" y1="8" x2="20" y2="4" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" />
+                    <circle cx="20" cy="3" r="1.5" fill="var(--accent)" />
+                </svg>
+            );
+        }
+
+        Object.assign(window, { Mascot, MascotMini });
+
+
+        // ==== src/nav.jsx ====
+        function Nav({ theme, setTheme }) {
+            const [menuOpen, setMenuOpen] = React.useState(false);
+            const navStyle = {
+                position: 'sticky', top: 0, zIndex: 50,
+                padding: '18px 40px', display: 'flex', alignItems: 'center',
+                justifyContent: 'space-between',
+                backdropFilter: 'blur(14px) saturate(140%)',
+                WebkitBackdropFilter: 'blur(14px) saturate(140%)',
+                background: 'color-mix(in oklab, var(--bg) 72%, transparent)',
+                borderBottom: '1px solid var(--line-soft)',
+            };
+            const linkStyle = {
+                color: 'var(--fg-dim)', fontSize: 14, fontWeight: 500,
+                padding: '8px 12px', borderRadius: 8,
+                transition: 'color 0.2s, background 0.2s',
+            };
+            const closeMenu = () => setMenuOpen(false);
+            return (
+                <>
+                <nav style={navStyle}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <MascotMini size={28} />
+                        <span style={{ fontSize: 17, fontWeight: 600, letterSpacing: '-0.01em' }}>kozzyx</span>
+                        <span className="status-badge" style={{ marginLeft: 4 }}>
+                            <span className="status-dot-live" />
+                            online
+                        </span>
+                    </div>
+                    <div className="nav-links" style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <a href="#features" style={linkStyle} onMouseEnter={(e) => e.target.style.color = 'var(--fg)'} onMouseLeave={(e) => e.target.style.color = 'var(--fg-dim)'}>Features</a>
+                        <a href="#commands" style={linkStyle} onMouseEnter={(e) => e.target.style.color = 'var(--fg)'} onMouseLeave={(e) => e.target.style.color = 'var(--fg-dim)'}>Commands</a>
+                        <a href="#changelog" style={linkStyle} onMouseEnter={(e) => e.target.style.color = 'var(--fg)'} onMouseLeave={(e) => e.target.style.color = 'var(--fg-dim)'}>Changelog</a>
+                        <a href="#faq" style={linkStyle} onMouseEnter={(e) => e.target.style.color = 'var(--fg)'} onMouseLeave={(e) => e.target.style.color = 'var(--fg-dim)'}>FAQ</a>
+                        <a href="https://github.com/kozzyxofficialx/my-discord-bot" style={linkStyle} target="_blank" rel="noopener" onMouseEnter={(e) => e.target.style.color = 'var(--fg)'} onMouseLeave={(e) => e.target.style.color = 'var(--fg-dim)'}>GitHub</a>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} title="Toggle theme"
+                            style={{ width: 34, height: 34, borderRadius: 8, display: 'grid', placeItems: 'center', color: 'var(--fg-dim)', border: '1px solid var(--line)' }}>
+                            {theme === 'dark'
+                                ? <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                                : <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                            }
+                        </button>
+                        <a href={window.KOZZ.INVITE_URL} target="_blank" rel="noopener" className="nav-cta-btn" style={{
+                            padding: '9px 16px', background: 'var(--accent)', color: 'var(--accent-fg)',
+                            borderRadius: 8, fontSize: 14, fontWeight: 600,
+                            transition: 'transform 0.1s, filter 0.2s', display: 'inline-block',
+                        }}
+                            onMouseEnter={(e) => e.currentTarget.style.filter = 'brightness(1.08)'}
+                            onMouseLeave={(e) => e.currentTarget.style.filter = 'brightness(1)'}
+                        >Add to Discord →</a>
+                        {/* Hamburger — mobile only */}
+                        <button onClick={() => setMenuOpen(o => !o)} aria-label="Menu" className="mobile-hamburger"
+                            style={{ width: 34, height: 34, borderRadius: 8, display: 'none', placeItems: 'center', color: 'var(--fg-dim)', border: '1px solid var(--line)' }}>
+                            {menuOpen
+                                ? <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                                : <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+                            }
+                        </button>
+                    </div>
+                </nav>
+                {/* Mobile drawer */}
+                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 49, pointerEvents: menuOpen ? 'all' : 'none' }}>
+                    <div onClick={closeMenu} style={{
+                        position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)',
+                        opacity: menuOpen ? 1 : 0, transition: 'opacity 0.25s',
+                        backdropFilter: 'blur(4px)',
+                    }} />
+                    <div style={{
+                        position: 'absolute', top: 0, right: 0, width: 280, height: '100%',
+                        background: 'var(--bg-elev)', borderLeft: '1px solid var(--line)',
+                        transform: menuOpen ? 'translateX(0)' : 'translateX(100%)',
+                        transition: 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
+                        padding: '80px 20px 32px', display: 'flex', flexDirection: 'column', gap: 4,
+                    }}>
+                        {[
+                            { href: '#features', label: 'Features' },
+                            { href: '#commands', label: 'Commands' },
+                            { href: '#changelog', label: 'Changelog' },
+                            { href: '#faq', label: 'FAQ' },
+                            { href: 'https://github.com/kozzyxofficialx/my-discord-bot', label: 'GitHub', ext: true },
+                        ].map((l) => (
+                            <a key={l.href} href={l.href} target={l.ext ? '_blank' : undefined} rel={l.ext ? 'noopener' : undefined} onClick={closeMenu}
+                                style={{ padding: '13px 14px', fontSize: 16, fontWeight: 500, color: 'var(--fg-dim)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', transition: 'background 0.15s, color 0.15s' }}
+                                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-elev-2)'; e.currentTarget.style.color = 'var(--fg)'; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--fg-dim)'; }}
+                            >
+                                {l.label}
+                                {l.ext && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>}
+                            </a>
+                        ))}
+                        <div style={{ marginTop: 'auto', paddingTop: 24, borderTop: '1px solid var(--line-soft)' }}>
+                            <a href={window.KOZZ.INVITE_URL} target="_blank" rel="noopener" onClick={closeMenu}
+                                style={{ display: 'block', textAlign: 'center', padding: '14px', background: 'var(--accent)', color: 'var(--accent-fg)', borderRadius: 10, fontSize: 15, fontWeight: 600 }}>
+                                Add to Discord →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                </>
+            );
+        }
+
+        Object.assign(window, { Nav });
+
+
+        // ==== src/scramble.jsx ====
+        function ScrambleText({ text, delay = 0 }) {
+            const [out, setOut] = React.useState('');
+            const chars = '!<>-_\\\\/[]{}—=+*^?#_';
+            
+            React.useEffect(() => {
+                let start = null;
+                const duration = 1200;
+                let reqId;
+
+                const tick = (now) => {
+                    if (!start) start = now;
+                    const elapsed = now - start;
+                    if (elapsed < delay) {
+                        reqId = requestAnimationFrame(tick);
+                        return;
+                    }
+                    const progress = Math.max(0, Math.min(1, (elapsed - delay) / duration));
+                    
+                    if (progress >= 1) {
+                        setOut(text);
+                        return;
+                    }
+                    
+                    const revealedCount = Math.floor(progress * text.length);
+                    let scrambled = '';
+                    for (let i = 0; i < text.length; i++) {
+                        if (i < revealedCount || text[i] === ' ') {
+                            scrambled += text[i];
+                        } else {
+                            scrambled += chars[Math.floor(Math.random() * chars.length)];
+                        }
+                    }
+                    setOut(scrambled);
+                    reqId = requestAnimationFrame(tick);
+                };
+                reqId = requestAnimationFrame(tick);
+                return () => cancelAnimationFrame(reqId);
+            }, [text, delay]);
+
+            return <span>{out || '\u00A0'}</span>;
+        }
+
+        // ==== src/hero.jsx ====
+        function Hero() {
+            const [chatStep, setChatStep] = React.useState(0);
+            const chatRef = React.useRef(null);
+
+            // Fake moderation in action
+            const chatScript = [
+                { t: 'msg', user: 'sp4m_b0t_4471', color: 'oklch(0.70 0.14 30)', text: 'FREE NITRO >>> discord-gifts.ru/claim', new: true },
+                { t: 'kozz', text: 'Caught phishing pattern. User removed, message purged.', action: 'BAN' },
+                { t: 'msg', user: 'mira', color: 'oklch(0.80 0.10 200)', text: 'lol thanks kozzy' },
+                { t: 'msg', user: 'jun', color: 'oklch(0.78 0.12 280)', text: 'wait is that the 4th one today' },
+                { t: 'kozz', text: 'Raid shield raised — 12 suspicious joins in last 60s.', action: 'AUTO' },
+                { t: 'msg', user: 'jun', color: 'oklch(0.78 0.12 280)', text: 'legend' },
+            ];
+
+            React.useEffect(() => {
+                let i = 0;
+                const id = setInterval(() => {
+                    i += 1;
+                    if (i > chatScript.length) {
+                        setChatStep(0);
+                        i = 0;
+                        return;
+                    }
+                    setChatStep(i);
+                }, 1400);
+                return () => clearInterval(id);
+            }, []);
+
+            React.useEffect(() => {
+                if (chatRef.current) chatRef.current.scrollTop = chatRef.current.scrollHeight;
+            }, [chatStep]);
+
+            return (
+                <section className="hero-grid" style={{
+                    padding: '80px 40px 100px',
+                    maxWidth: 1320,
+                    margin: '0 auto',
+                    display: 'grid',
+                    gridTemplateColumns: '1.05fr 0.95fr',
+                    gap: 80,
+                    alignItems: 'center',
+                }}>
+                    <div>
+                        <div style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 8,
+                            padding: '6px 12px 6px 6px',
+                            borderRadius: 100,
+                            background: 'var(--bg-elev)',
+                            border: '1px solid var(--line)',
+                            fontSize: 12,
+                            color: 'var(--fg-dim)',
+                            marginBottom: 28,
+                        }}>
+                            <span className="mono" style={{
+                                background: 'var(--accent-soft)',
+                                color: 'var(--accent)',
+                                padding: '3px 8px',
+                                borderRadius: 100,
+                                fontSize: 10,
+                                fontWeight: 600,
+                                letterSpacing: '0.04em',
+                            }}>NEW</span>
+                            /ask and /imagine — Claude-powered AI, right in chat
+                        </div>
+
+                        <h1 style={{
+                            fontSize: 'clamp(48px, 6vw, 84px)',
+                            lineHeight: 0.98,
+                            letterSpacing: '-0.035em',
+                            margin: 0,
+                            fontWeight: 500,
+                        }}>
+                            <ScrambleText text="One bot." delay={800} /><br />
+                            <ScrambleText text="Moderation, " delay={900} />
+                            <span className="serif shine" style={{ fontStyle: 'italic', fontWeight: 400, color: 'var(--accent)' }}>
+                                <ScrambleText text="AI, tickets," delay={1000} />
+                            </span>
+                            <br />
+                            <ScrambleText text="and the boring stuff." delay={1100} />
+                        </h1>
+
+                        <p style={{
+                            fontSize: 19,
+                            lineHeight: 1.5,
+                            color: 'var(--fg-dim)',
+                            marginTop: 28,
+                            maxWidth: 520,
+                        }}>
+                            kozzyx is an all-in-one Discord bot. Warns, bans, and ticket flows. Claude-powered /ask and /imagine. One-command server setup. 50+ commands across slash and prefix.
+                        </p>
+
+                        <div style={{ display: 'flex', gap: 12, marginTop: 36, alignItems: 'center', flexWrap: 'wrap' }}>
+                            <a href={window.KOZZ.INVITE_URL} target="_blank" rel="noopener" style={{
+                                padding: '14px 22px',
+                                background: 'var(--accent)',
+                                color: 'var(--accent-fg)',
+                                borderRadius: 10,
+                                fontSize: 15,
+                                fontWeight: 600,
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: 10,
+                                transition: 'transform 0.12s, filter 0.2s',
+                            }}
+                                onMouseEnter={(e) => { e.currentTarget.style.filter = 'brightness(1.08)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.filter = 'brightness(1)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                            >
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.54 0c1.356 0 2.46 1.104 2.46 2.472v21.528l-2.58-2.28-1.452-1.344-1.536-1.428.636 2.22H3.42C2.064 21.168.96 20.064.96 18.696V2.472C.96 1.104 2.064 0 3.42 0h16.12zM12 5.5s-1.5 1.2-3.6 1.2c0 0-.4 2.5 1.8 4.6 0 0 .9-1 1.8-1s1.8 1 1.8 1c2.2-2.1 1.8-4.6 1.8-4.6-2.1 0-3.6-1.2-3.6-1.2z" /></svg>
+                                Add to Discord
+                            </a>
+                            <a href="#commands" style={{
+                                padding: '14px 20px',
+                                background: 'transparent',
+                                color: 'var(--fg)',
+                                borderRadius: 10,
+                                fontSize: 15,
+                                fontWeight: 500,
+                                border: '1px solid var(--line)',
+                                transition: 'background 0.2s',
+                                display: 'inline-block',
+                            }}
+                                onMouseEnter={(e) => e.currentTarget.style.background = 'var(--bg-elev)'}
+                                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                            >
+                                View commands
+                            </a>
+                            <span style={{ fontSize: 13, color: 'var(--fg-faint)', marginLeft: 4 }}>50+ commands · slash + prefix</span>
+                        </div>
+
+                        <div style={{ marginTop: 40, display: 'flex', gap: 28, alignItems: 'center', flexWrap: 'wrap' }}>
+                            <TrustLine />
+                        </div>
+                    </div>
+
+                    {/* Hero right — mascot + live chat demo */}
+                    <div style={{ position: 'relative' }}>
+                        <div style={{
+                            position: 'absolute',
+                            inset: '-8% -8% -8% -8%',
+                            background: 'radial-gradient(circle at 60% 40%, var(--accent-soft), transparent 70%)',
+                            filter: 'blur(40px)',
+                            zIndex: 0,
+                        }} />
+
+                        <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
+                            <div style={{ marginBottom: -30, animation: 'float 5s ease-in-out infinite' }}>
+                                <Mascot size={180} mood="smug" />
+                            </div>
+
+                            <div style={{
+                                width: '100%',
+                                background: 'var(--bg-elev)',
+                                border: '1px solid var(--line)',
+                                borderRadius: 16,
+                                overflow: 'hidden',
+                                boxShadow: '0 30px 80px -20px rgba(0,0,0,0.5)',
+                            }}>
+                                {/* chat header */}
+                                <div style={{
+                                    padding: '12px 16px',
+                                    borderBottom: '1px solid var(--line-soft)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    background: 'var(--bg-elev-2)',
+                                }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                        <span style={{ color: 'var(--fg-faint)', fontSize: 14 }}>#</span>
+                                        <span style={{ fontSize: 14, fontWeight: 600 }}>general</span>
+                                        <span className="mono" style={{ fontSize: 11, color: 'var(--fg-faint)' }}>— 214 members</span>
+                                    </div>
+                                    <div style={{ display: 'flex', gap: 6 }}>
+                                        <span style={{ width: 8, height: 8, borderRadius: 4, background: 'var(--ok)' }} />
+                                        <span className="mono" style={{ fontSize: 10, color: 'var(--fg-faint)' }}>kozzyx online</span>
+                                    </div>
+                                </div>
+
+                                <div ref={chatRef} style={{
+                                    padding: 12,
+                                    height: 280,
+                                    overflow: 'hidden',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: 8,
+                                    fontSize: 14,
+                                }}>
+                                    {chatScript.slice(0, chatStep).map((m, i) => (
+                                        <ChatLine key={i} m={m} />
+                                    ))}
+                                    {chatStep > 0 && chatStep < chatScript.length && <TypingDot />}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <style>{`
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes blink { 0%, 60%, 100% { opacity: 0.3; } 30% { opacity: 1; } }
+      `}</style>
+                </section>
+            );
+        }
+
+        function ChatLine({ m }) {
+            if (m.t === 'kozz') {
+                return (
+                    <div style={{
+                        background: 'var(--accent-soft)',
+                        border: '1px solid color-mix(in oklab, var(--accent) 30%, transparent)',
+                        padding: '8px 12px',
+                        borderRadius: 10,
+                        display: 'flex',
+                        gap: 10,
+                        alignItems: 'flex-start',
+                        animation: 'fadeUp 0.3s ease',
+                    }}>
+                        <MascotMini size={18} />
+                        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <span style={{ fontSize: 13, color: 'var(--fg)' }}>{m.text}</span>
+                            <span className="mono" style={{
+                                marginLeft: 'auto',
+                                fontSize: 10,
+                                fontWeight: 600,
+                                letterSpacing: '0.05em',
+                                padding: '2px 6px',
+                                borderRadius: 4,
+                                background: 'var(--accent)',
+                                color: 'var(--accent-fg)',
+                            }}>{m.action}</span>
+                        </div>
+                    </div>
+                );
+            }
+            return (
+                <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', animation: 'fadeUp 0.3s ease' }}>
+                    <div style={{
+                        width: 26, height: 26, borderRadius: 13, background: m.color, flexShrink: 0,
+                        display: 'grid', placeItems: 'center', fontSize: 11, fontWeight: 600, color: '#0b0b0d',
+                    }}>
+                        {m.user[0].toUpperCase()}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
+                            <span style={{ fontSize: 13, fontWeight: 600 }}>{m.user}</span>
+                            <span className="mono" style={{ fontSize: 10, color: 'var(--fg-faint)' }}>now</span>
+                        </div>
+                        <div style={{
+                            fontSize: 13,
+                            color: m.new ? 'var(--fg-dim)' : 'var(--fg)',
+                            textDecoration: m.new ? 'line-through' : 'none',
+                            opacity: m.new ? 0.55 : 1,
+                        }}>{m.text}</div>
+                    </div>
+                </div>
+            );
+        }
+
+        function TypingDot() {
+            return (
+                <div style={{ display: 'flex', gap: 4, padding: '4px 8px', alignItems: 'center' }}>
+                    {[0, 1, 2].map(i => (
+                        <span key={i} style={{
+                            width: 5, height: 5, borderRadius: 5, background: 'var(--fg-faint)',
+                            animation: `blink 1.2s infinite ${i * 0.15}s`,
+                        }} />
+                    ))}
+                </div>
+            );
+        }
+
+        function TrustLine() {
+            return (
+                <>
+                    <div style={{ fontSize: 12, color: 'var(--fg-faint)', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+                        Built with
+                    </div>
+                    <div style={{ display: 'flex', gap: 20, alignItems: 'center', color: 'var(--fg-dim)', fontSize: 14 }}>
+                        <span>discord.js</span>
+                        <span style={{ color: 'var(--fg-faint)' }}>·</span>
+                        <span>claude api</span>
+                        <span style={{ color: 'var(--fg-faint)' }}>·</span>
+                        <span>node.js</span>
+                        <span style={{ color: 'var(--fg-faint)' }}>·</span>
+                        <span>gcp</span>
+                    </div>
+                </>
+            );
+        }
+
+        Object.assign(window, { Hero });
+
+
+        // ==== src/stats.jsx ====
+        const STATS_URL = 'http://104.199.127.109:3456';
+
+        function Stats() {
+            const [liveData, setLiveData] = React.useState(null);
+            const [lastUpdated, setLastUpdated] = React.useState(null);
+            const [online, setOnline] = React.useState(true);
+
+            const fetchStats = () => {
+                fetch(STATS_URL)
+                    .then(r => r.json())
+                    .then(d => { setLiveData(d); setOnline(true); setLastUpdated(new Date()); })
+                    .catch(() => setOnline(false));
+            };
+
+            React.useEffect(() => {
+                fetchStats();
+                const id = setInterval(fetchStats, 30000);
+                return () => clearInterval(id);
+            }, []);
+
+            const stats = [
+                { n: liveData?.servers ?? '…', label: 'servers', note: 'live from bot' },
+                { n: liveData?.commands ?? 50, label: 'commands', note: 'slash + prefix combined' },
+                { n: 5, label: 'categories', note: 'mod · AI · utility · setup · tickets' },
+                { n: liveData ? Math.floor(liveData.uptime / 3600) : '…', label: 'hours online', note: 'current session' },
+            ];
+
+            return (
+                <section style={{ padding: '60px 40px', maxWidth: 1320, margin: '0 auto', borderTop: '1px solid var(--line-soft)', borderBottom: '1px solid var(--line-soft)' }}>
+                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 36, flexWrap: 'wrap', gap: 12 }}>
+                        <div>
+                            <div className="mono" style={{ fontSize: 12, color: 'var(--fg-faint)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>§ 01 — by the numbers</div>
+                            <h2 style={{ fontSize: 32, margin: '8px 0 0', fontWeight: 500, letterSpacing: '-0.02em' }}>
+                                Transparent stats. <span className="serif" style={{ fontStyle: 'italic', color: 'var(--fg-dim)', fontWeight: 400 }}>no funny business</span>
+                            </h2>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <span style={{ width: 6, height: 6, borderRadius: 3, background: online ? 'var(--ok)' : 'var(--danger)', display: 'inline-block' }} />
+                            <span className="mono" style={{ fontSize: 11, color: 'var(--fg-faint)' }}>
+                                {online ? (lastUpdated ? `updated ${lastUpdated.toLocaleTimeString()}` : 'connecting...') : 'bot offline · showing cached'}
+                            </span>
+                        </div>
+                    </div>
+                    <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0, borderTop: '1px solid var(--line)' }} data-stagger>
+                        {stats.map((s, i) => (
+                            <StatCell key={i} {...s} isLast={i === stats.length - 1} />
+                        ))}
+                    </div>
+                </section>
+            );
+        }
+
+        function StatCell({ n, label, note, isLast }) {
+            const [val, setVal] = React.useState(0);
+            const ref = React.useRef(null);
+            const [hovered, setHovered] = React.useState(false);
+
+            React.useEffect(() => {
+                const io = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            const duration = 1400;
+                            const start = performance.now();
+                            const tick = (now) => {
+                                const t = Math.min(1, (now - start) / duration);
+                                const eased = 1 - Math.pow(1 - t, 3);
+                                setVal(Math.round(n * eased));
+                                if (t < 1) requestAnimationFrame(tick);
+                            };
+                            requestAnimationFrame(tick);
+                            io.disconnect();
+                        }
+                    });
+                }, { threshold: 0.3 });
+                if (ref.current) io.observe(ref.current);
+                return () => io.disconnect();
+            }, [n]);
+
+            return (
+                <div
+                    ref={ref}
+                    data-statcell
+                    onMouseEnter={() => setHovered(true)}
+                    onMouseLeave={() => setHovered(false)}
+                    style={{
+                        padding: '32px 28px',
+                        borderRight: isLast ? 'none' : '1px solid var(--line)',
+                        position: 'relative',
+                        transition: 'background 0.2s',
+                        background: hovered ? 'var(--bg-elev)' : 'transparent',
+                    }}
+                >
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                        <span className="mono" style={{ fontSize: 56, fontWeight: 500, letterSpacing: '-0.03em', lineHeight: 1 }}>
+                            {val.toLocaleString()}
+                        </span>
+                    </div>
+                    <div style={{ marginTop: 12, fontSize: 14, fontWeight: 500 }}>{label}</div>
+                    <div className="mono" style={{ marginTop: 4, fontSize: 11, color: 'var(--fg-faint)' }}>{note}</div>
+                </div>
+            );
+        }
+
+        Object.assign(window, { Stats });
+
+
+        // ==== src/features.jsx ====
+        function Features() {
+            const [active, setActive] = React.useState('automod');
+            const feature = window.KOZZ.FEATURES.find(f => f.id === active);
+
+            return (
+                <section id="features" style={{
+                    padding: '120px 40px',
+                    maxWidth: 1320,
+                    margin: '0 auto',
+                }}>
+                    <div style={{ maxWidth: 720, marginBottom: 56 }}>
+                        <div className="mono" style={{ fontSize: 12, color: 'var(--fg-faint)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>§ 02 — what it does</div>
+                        <h2 style={{ fontSize: 'clamp(36px, 4vw, 56px)', margin: '12px 0 0', fontWeight: 500, letterSpacing: '-0.03em', lineHeight: 1 }}>
+                            Four things,<br />
+                            <span className="serif" style={{ fontStyle: 'italic', color: 'var(--accent)', fontWeight: 400 }}>done properly</span>.
+                        </h2>
+                    </div>
+
+                    {/* Tabs */}
+                    <div style={{ display: 'flex', gap: 2, borderBottom: '1px solid var(--line)', marginBottom: 40, overflowX: 'auto' }}>
+                        {window.KOZZ.FEATURES.map((f) => (
+                            <button key={f.id}
+                                onClick={() => setActive(f.id)}
+                                style={{
+                                    padding: '14px 22px',
+                                    fontSize: 14,
+                                    fontWeight: 500,
+                                    color: active === f.id ? 'var(--fg)' : 'var(--fg-dim)',
+                                    borderBottom: `2px solid ${active === f.id ? 'var(--accent)' : 'transparent'}`,
+                                    transition: 'color 0.2s',
+                                    whiteSpace: 'nowrap',
+                                    marginBottom: -1,
+                                }}
+                            >
+                                {f.tab}
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Content */}
+                    <div className="features-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1.15fr', gap: 80, alignItems: 'center' }}>
+                        <div key={feature.id} className="tab-content-enter" style={{ animation: 'fadeUp 0.4s ease' }}>
+                            <h3 style={{ fontSize: 36, margin: 0, fontWeight: 500, letterSpacing: '-0.02em', lineHeight: 1.1 }}>{feature.title}</h3>
+                            <p style={{ fontSize: 17, color: 'var(--fg-dim)', lineHeight: 1.5, marginTop: 20 }}>{feature.blurb}</p>
+                            <ul style={{ listStyle: 'none', padding: 0, marginTop: 28 }}>
+                                {feature.points.map((p, i) => (
+                                    <li key={i} style={{
+                                        display: 'flex',
+                                        gap: 12,
+                                        alignItems: 'flex-start',
+                                        padding: '12px 0',
+                                        borderTop: i === 0 ? 'none' : '1px solid var(--line-soft)',
+                                        fontSize: 14,
+                                        color: 'var(--fg)',
+                                    }}>
+                                        <span style={{ color: 'var(--accent)', marginTop: 2 }}>→</span>
+                                        <span>{p}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        <FeatureVisual kind={feature.visual} key={feature.id + '-v'} />
+                    </div>
+                </section>
+            );
+        }
+
+        function FeatureVisual({ kind }) {
+            const baseTiltProps = { 'data-tiltcard': '1' };
+            const base = {
+                background: 'var(--bg-elev)',
+                border: '1px solid var(--line)',
+                borderRadius: 16,
+                padding: 28,
+                minHeight: 420,
+                position: 'relative',
+                overflow: 'hidden',
+                animation: 'fadeUp 0.4s ease',
+            };
+
+            if (kind === 'automod') {
+                const rules = [
+                    { on: true, name: 'Phishing links', pat: 'regex · 12 sources', hits: 47, color: 'var(--danger)' },
+                    { on: true, name: 'Mass mentions', pat: '> 5 mentions/msg', hits: 12, color: 'var(--warn)' },
+                    { on: true, name: 'Discord invites', pat: 'allowlist: 2 servers', hits: 3, color: 'var(--warn)' },
+                    { on: false, name: 'Capitals spam', pat: '> 70% caps, > 30 chars', hits: 0, color: 'var(--fg-faint)' },
+                    { on: true, name: 'New-account flood', pat: 'age < 24h + 5 joins/min', hits: 9, color: 'var(--danger)' },
+                ];
+                return (
+                    <div style={base} {...baseTiltProps}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+                            <div className="mono" style={{ fontSize: 11, color: 'var(--fg-faint)', letterSpacing: '0.05em' }}>AUTOMOD RULES</div>
+                            <div className="mono" style={{ fontSize: 11, color: 'var(--ok)' }}>● 4 active</div>
+                        </div>
+                        {rules.map((r, i) => (
+                            <div key={i} style={{
+                                padding: '14px 0',
+                                borderTop: '1px solid var(--line-soft)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 14,
+                            }}>
+                                <div style={{
+                                    width: 32, height: 18, borderRadius: 9,
+                                    background: r.on ? 'var(--accent)' : 'var(--bg-elev-2)',
+                                    border: '1px solid var(--line)',
+                                    position: 'relative',
+                                    transition: 'background 0.2s',
+                                }}>
+                                    <div style={{
+                                        position: 'absolute',
+                                        top: 2, left: r.on ? 16 : 2,
+                                        width: 12, height: 12,
+                                        borderRadius: 6,
+                                        background: '#fff',
+                                        transition: 'left 0.2s',
+                                    }} />
+                                </div>
+                                <div style={{ flex: 1 }}>
+                                    <div style={{ fontSize: 13, fontWeight: 500, color: r.on ? 'var(--fg)' : 'var(--fg-faint)' }}>{r.name}</div>
+                                    <div className="mono" style={{ fontSize: 11, color: 'var(--fg-faint)', marginTop: 2 }}>{r.pat}</div>
+                                </div>
+                                <div className="mono" style={{ fontSize: 11, color: r.color, minWidth: 50, textAlign: 'right' }}>
+                                    <AnimatedNumber value={r.hits} /> hits · 7d
+                                </div>
+                            </div>
+                        ))}
+                        <button style={{
+                            marginTop: 16,
+                            padding: '10px 14px',
+                            width: '100%',
+                            border: '1px dashed var(--line)',
+                            borderRadius: 8,
+                            fontSize: 12,
+                            color: 'var(--fg-dim)',
+                        }}>+ new rule</button>
+                    </div>
+                );
+            }
+
+            if (kind === 'cases') {
+                const cases = [
+                    { id: 'C-0412', action: 'BAN', user: 'sp4m_b0t_4471', mod: 'auto', reason: 'phishing pattern', time: '3m ago', color: 'var(--danger)' },
+                    { id: 'C-0411', action: 'MUTE', user: 'loud_user', mod: 'mira', reason: '1h · spam caps', time: '17m ago', color: 'var(--warn)' },
+                    { id: 'C-0410', action: 'WARN', user: 'new_person', mod: 'jun', reason: 'off-topic in #books', time: '1h ago', color: 'var(--fg-dim)' },
+                    { id: 'C-0409', action: 'BAN', user: 'account_9921', mod: 'auto', reason: 'raid cohort', time: '2h ago', color: 'var(--danger)' },
+                    { id: 'C-0408', action: 'NOTE', user: 'alex', mod: 'mira', reason: 'repeat offender watch', time: '3h ago', color: 'var(--fg-dim)' },
+                ];
+                return (
+                    <div style={base} {...baseTiltProps}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
+                            <div className="mono" style={{ fontSize: 11, color: 'var(--fg-faint)', letterSpacing: '0.05em' }}>CASE TIMELINE</div>
+                            <div style={{ display: 'flex', gap: 6 }}>
+                                {['ALL', 'BAN', 'MUTE', 'WARN'].map((t, i) => (
+                                    <span key={i} className="mono" style={{
+                                        fontSize: 10, padding: '3px 7px', borderRadius: 4,
+                                        background: i === 0 ? 'var(--bg-elev-2)' : 'transparent',
+                                        color: i === 0 ? 'var(--fg)' : 'var(--fg-faint)',
+                                        border: '1px solid var(--line-soft)',
+                                    }}>{t}</span>
+                                ))}
+                            </div>
+                        </div>
+                        <div style={{ position: 'relative', paddingLeft: 18 }}>
+                            <div style={{ position: 'absolute', left: 4, top: 6, bottom: 6, width: 1, background: 'var(--line)' }} />
+                            {cases.map((c) => (
+                                <div key={c.id} style={{ position: 'relative', padding: '14px 0', borderBottom: '1px solid var(--line-soft)' }}>
+                                    <div style={{ position: 'absolute', left: -18, top: 18, width: 9, height: 9, borderRadius: 5, background: c.color, border: '2px solid var(--bg-elev)' }} />
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                        <span className="mono" style={{ fontSize: 11, color: 'var(--fg-faint)' }}>{c.id}</span>
+                                        <span className="mono" style={{
+                                            fontSize: 10, padding: '2px 6px', borderRadius: 4,
+                                            background: c.color, color: '#0b0b0d', fontWeight: 600,
+                                        }}>{c.action}</span>
+                                        <span style={{ fontSize: 13, fontWeight: 500 }}>{c.user}</span>
+                                        <span className="mono" style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--fg-faint)' }}>{c.time}</span>
+                                    </div>
+                                    <div style={{ fontSize: 12, color: 'var(--fg-dim)', marginTop: 4, marginLeft: 0 }}>
+                                        {c.reason} <span className="mono" style={{ color: 'var(--fg-faint)' }}>· by {c.mod}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                );
+            }
+
+            if (kind === 'dashboard') {
+                return (
+                    <div style={base} {...baseTiltProps}>
+                        <div style={{ display: 'flex', gap: 12, marginBottom: 18 }}>
+                            <span style={{ width: 10, height: 10, borderRadius: 5, background: '#ff5f57' }} />
+                            <span style={{ width: 10, height: 10, borderRadius: 5, background: '#febc2e' }} />
+                            <span style={{ width: 10, height: 10, borderRadius: 5, background: '#28c840' }} />
+                            <span className="mono" style={{ fontSize: 11, color: 'var(--fg-faint)', marginLeft: 'auto' }}>kozzyx.app/dashboard</span>
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: 16 }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                {['Overview', 'Automod', 'Cases', 'Appeals', 'Roles', 'Welcome', 'Logs', 'Settings'].map((x, i) => (
+                                    <div key={x} style={{
+                                        padding: '8px 10px', fontSize: 12, borderRadius: 6,
+                                        background: i === 1 ? 'var(--accent-soft)' : 'transparent',
+                                        color: i === 1 ? 'var(--accent)' : 'var(--fg-dim)',
+                                        fontWeight: i === 1 ? 600 : 400,
+                                    }}>{x}</div>
+                                ))}
+                            </div>
+                            <div>
+                                <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 10 }}>Automod › Phishing detection</div>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                                    <DashField label="Sensitivity" val="Medium" />
+                                    <DashField label="Action on match" val="Ban + delete" hl />
+                                    <DashField label="Allowlist" val="2 domains" />
+                                    <DashField label="Notify channel" val="#mod-log" />
+                                </div>
+                                <div style={{ marginTop: 14, padding: 12, background: 'var(--bg-elev-2)', borderRadius: 8, border: '1px dashed var(--line)' }}>
+                                    <div className="mono" style={{ fontSize: 10, color: 'var(--fg-faint)', marginBottom: 6 }}>PREVIEW · LAST 24h</div>
+                                    <div style={{ display: 'flex', alignItems: 'flex-end', gap: 3, height: 48 }}>
+                                        {[3, 7, 2, 12, 5, 8, 14, 4, 9, 18, 11, 6, 3, 7, 15, 9, 4, 12, 8, 5, 10, 13, 7, 4].map((v, i) => (
+                                            <div key={i} style={{ flex: 1, height: `${v * 2.5}px`, background: 'var(--accent)', opacity: 0.3 + v / 30, borderRadius: 1 }} />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (kind === 'raid') {
+                return (
+                    <div style={{ ...base, padding: 0 }}>
+                        <div style={{ padding: 28, background: 'linear-gradient(180deg, var(--accent-soft), transparent)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18 }}>
+                                <div style={{ width: 10, height: 10, borderRadius: 5, background: 'var(--danger)', animation: 'pulse 1.5s infinite' }} />
+                                <span className="mono" style={{ fontSize: 11, color: 'var(--danger)', letterSpacing: '0.1em', fontWeight: 600 }}>RAID SHIELD · ACTIVE</span>
+                            </div>
+                            <div style={{ fontSize: 28, fontWeight: 500, letterSpacing: '-0.02em' }}>12 suspicious joins</div>
+                            <div style={{ fontSize: 13, color: 'var(--fg-dim)', marginTop: 4 }}>in the last 60 seconds · threshold was 4</div>
+
+                            <div style={{ marginTop: 20, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+                                {[
+                                    { k: 'Verification', v: 'Raised to ★★★' },
+                                    { k: 'Slowmode', v: '30s everywhere' },
+                                    { k: 'Waiting room', v: '5 min hold' },
+                                ].map((x, i) => (
+                                    <div key={i} style={{ padding: 12, background: 'var(--bg-elev-2)', borderRadius: 8, border: '1px solid var(--line-soft)' }}>
+                                        <div className="mono" style={{ fontSize: 10, color: 'var(--fg-faint)' }}>{x.k}</div>
+                                        <div style={{ fontSize: 12, fontWeight: 500, marginTop: 4 }}>{x.v}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div style={{ padding: 20 }}>
+                            <div className="mono" style={{ fontSize: 11, color: 'var(--fg-faint)', marginBottom: 10 }}>JOIN FEED</div>
+                            {[
+                                { n: 'lmao_9821', age: '2h', flag: 'new + no avatar' },
+                                { n: 'free_nitro_', age: '1h', flag: 'new + sus name' },
+                                { n: 'xyz_4471', age: '40m', flag: 'new + no avatar' },
+                                { n: 'tempuser88', age: '2d', flag: 'cohort match' },
+                            ].map((u, i) => (
+                                <div key={i} style={{
+                                    display: 'flex', alignItems: 'center', gap: 10,
+                                    padding: '8px 0', borderTop: '1px solid var(--line-soft)', fontSize: 12,
+                                }}>
+                                    <div style={{ width: 20, height: 20, borderRadius: 10, background: 'var(--bg-elev-2)' }} />
+                                    <span style={{ fontWeight: 500 }}>{u.n}</span>
+                                    <span className="mono" style={{ color: 'var(--fg-faint)' }}>· {u.age}</span>
+                                    <span className="mono" style={{ marginLeft: 'auto', color: 'var(--danger)', fontSize: 10 }}>⚑ {u.flag}</span>
+                                </div>
+                            ))}
+                        </div>
+                        <style>{`@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }`}</style>
+                    </div>
+                );
+            }
+        }
+
+        function DashField({ label, val, hl }) {
+            return (
+                <div style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    padding: '10px 12px', background: 'var(--bg-elev-2)', borderRadius: 8,
+                    border: '1px solid ' + (hl ? 'color-mix(in oklab, var(--accent) 40%, var(--line))' : 'var(--line-soft)'),
+                }}>
+                    <span style={{ fontSize: 12, color: 'var(--fg-dim)' }}>{label}</span>
+                    <span className="mono" style={{ fontSize: 12, color: hl ? 'var(--accent)' : 'var(--fg)' }}>{val}</span>
+                </div>
+            );
+        }
+
+        Object.assign(window, { Features });
+
+
+        // ==== src/commands.jsx ====
+        function Commands() {
+            const [q, setQ] = React.useState('');
+            const [cat, setCat] = React.useState('all');
+            const [cmdType, setCmdType] = React.useState('all'); // 'all' | 'slash' | 'prefix'
+            const [copied, setCopied] = React.useState(null);
+
+            const cats = [
+                { id: 'all', label: 'All' },
+                { id: 'mod', label: 'Moderation' },
+                { id: 'ai', label: 'AI' },
+                { id: 'utility', label: 'Utility' },
+                { id: 'setup', label: 'Setup & Config' },
+                { id: 'tickets', label: 'Tickets' },
+            ];
+
+            const filtered = window.KOZZ.COMMANDS.filter(cmd => {
+                const matchQ = !q || cmd.cmd.toLowerCase().includes(q.toLowerCase()) || cmd.desc.toLowerCase().includes(q.toLowerCase());
+                const matchCat = cat === 'all' || cmd.cat === cat;
+                const matchType = cmdType === 'all' || (cmdType === 'prefix' ? cmd.prefix : !cmd.prefix);
+                return matchQ && matchCat && matchType;
+            });
+
+            const copy = (cmd) => {
+                navigator.clipboard?.writeText(cmd);
+                setCopied(cmd);
+                setTimeout(() => setCopied(null), 1400);
+            };
+
+            return (
+                <section id="commands" style={{
+                    padding: '120px 40px',
+                    maxWidth: 1320,
+                    margin: '0 auto',
+                }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 24, marginBottom: 40 }}>
+                        <div>
+                            <div className="mono" style={{ fontSize: 12, color: 'var(--fg-faint)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>§ 03 — commands</div>
+                            <h2 style={{ fontSize: 'clamp(36px, 4vw, 56px)', margin: '12px 0 0', fontWeight: 500, letterSpacing: '-0.03em', lineHeight: 1 }}>
+                                {window.KOZZ.COMMANDS.length} commands.<br />
+                                <span className="serif" style={{ fontStyle: 'italic', color: 'var(--fg-dim)', fontWeight: 400 }}>slash + prefix, none paywalled.</span>
+                            </h2>
+                        </div>
+
+                        {/* Search */}
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 10,
+                            padding: '10px 14px',
+                            background: 'var(--bg-elev)',
+                            border: '1px solid var(--line)',
+                            borderRadius: 10,
+                            minWidth: 320,
+                        }}>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ color: 'var(--fg-faint)' }}><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
+                            <input
+                                value={q}
+                                onChange={(e) => setQ(e.target.value)}
+                                placeholder="Search commands..."
+                                style={{
+                                    flex: 1,
+                                    background: 'transparent',
+                                    border: 'none',
+                                    outline: 'none',
+                                    color: 'var(--fg)',
+                                    fontSize: 14,
+                                    fontFamily: 'inherit',
+                                }}
+                            />
+                            <span className="mono" style={{ fontSize: 10, color: 'var(--fg-faint)', padding: '2px 5px', background: 'var(--bg-elev-2)', borderRadius: 3 }}>⌘K</span>
+                        </div>
+                    </div>
+
+                    {/* Type toggle + Category pills */}
+                    <div style={{ display: 'flex', gap: 10, marginBottom: 18, alignItems: 'center', flexWrap: 'wrap' }}>
+                        {/* Slash / Prefix toggle */}
+                        <div style={{ display: 'flex', background: 'var(--bg-elev)', border: '1px solid var(--line)', borderRadius: 8, padding: 3, gap: 2, flexShrink: 0 }}>
+                            {[
+                                { id: 'all',    label: 'All' },
+                                { id: 'slash',  label: '/ Slash' },
+                                { id: 'prefix', label: ', Prefix' },
+                            ].map((t) => (
+                                <button key={t.id} onClick={() => setCmdType(t.id)} className="mono" style={{
+                                    padding: '6px 12px', fontSize: 12, borderRadius: 5,
+                                    background: cmdType === t.id ? 'var(--bg-elev-2)' : 'transparent',
+                                    color: cmdType === t.id ? 'var(--fg)' : 'var(--fg-faint)',
+                                    fontWeight: cmdType === t.id ? 600 : 400,
+                                    border: '1px solid ' + (cmdType === t.id ? 'var(--line)' : 'transparent'),
+                                    transition: 'all 0.15s',
+                                }}>{t.label}</button>
+                            ))}
+                        </div>
+
+                        <div style={{ width: 1, height: 24, background: 'var(--line)', flexShrink: 0 }} />
+
+                        {/* Category pills */}
+                        {cats.map((cat_item) => (
+                            <button key={cat_item.id}
+                                onClick={() => setCat(cat_item.id)}
+                                style={{
+                                    padding: '8px 14px',
+                                    fontSize: 13,
+                                    borderRadius: 100,
+                                    border: '1px solid ' + (cat === cat_item.id ? 'var(--accent)' : 'var(--line)'),
+                                    background: cat === cat_item.id ? 'var(--accent-soft)' : 'transparent',
+                                    color: cat === cat_item.id ? 'var(--accent)' : 'var(--fg-dim)',
+                                    fontWeight: cat === cat_item.id ? 600 : 400,
+                                    transition: 'all 0.15s',
+                                }}>
+                                {cat_item.label}
+                                <span className="mono" style={{ marginLeft: 6, fontSize: 11, opacity: 0.7 }}>
+                                    {cat_item.id === 'all'
+                                        ? window.KOZZ.COMMANDS.filter(x => cmdType === 'all' || (cmdType === 'prefix' ? x.prefix : !x.prefix)).length
+                                        : window.KOZZ.COMMANDS.filter(x => x.cat === cat_item.id && (cmdType === 'all' || (cmdType === 'prefix' ? x.prefix : !x.prefix))).length}
+                                </span>
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Command grid */}
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(2, 1fr)',
+                        gap: 1,
+                        background: 'var(--line)',
+                        border: '1px solid var(--line)',
+                        borderRadius: 12,
+                        overflow: 'hidden',
+                    }}>
+                        {filtered.map((c) => {
+                            const full = `${c.cmd} ${c.args}`;
+                            const isCopied = copied === full;
+                            return (
+                                <div key={c.cmd} style={{
+                                    padding: '20px 22px',
+                                    background: 'var(--bg)',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: 6,
+                                    position: 'relative',
+                                    transition: 'background 0.15s',
+                                    cursor: 'pointer',
+                                }}
+                                    onClick={() => copy(full)}
+                                    onMouseEnter={(e) => e.currentTarget.style.background = 'var(--bg-elev)'}
+                                    onMouseLeave={(e) => e.currentTarget.style.background = 'var(--bg)'}
+                                >
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                        <span className="mono" style={{ fontSize: 14, fontWeight: 600, color: c.prefix ? 'var(--warn)' : 'var(--accent)' }}>{c.cmd}</span>
+                                        <span className="mono" style={{ fontSize: 11, color: 'var(--fg-faint)' }}>{c.args}</span>
+                                        {c.prefix ? (
+                                            <span className="mono" style={{
+                                                fontSize: 9, padding: '2px 6px',
+                                                background: 'color-mix(in oklab, var(--warn) 12%, transparent)',
+                                                color: 'var(--warn)',
+                                                borderRadius: 3, letterSpacing: '0.05em', fontWeight: 600,
+                                                border: '1px solid color-mix(in oklab, var(--warn) 25%, transparent)',
+                                            }}>PREFIX</span>
+                                        ) : (
+                                            <span className="mono" style={{
+                                                fontSize: 9, padding: '2px 6px',
+                                                background: 'var(--accent-soft)',
+                                                color: 'var(--accent)',
+                                                borderRadius: 3, letterSpacing: '0.05em', fontWeight: 600,
+                                            }}>SLASH</span>
+                                        )}
+                                        {c.popular && (
+                                            <span className="mono" style={{
+                                                fontSize: 9,
+                                                padding: '2px 6px',
+                                                background: 'var(--bg-elev-2)',
+                                                color: 'var(--fg-dim)',
+                                                borderRadius: 3,
+                                                letterSpacing: '0.05em',
+                                                fontWeight: 600,
+                                            }}>★</span>
+                                        )}
+                                        <span style={{
+                                            marginLeft: 'auto',
+                                            fontSize: 11,
+                                            color: isCopied ? 'var(--ok)' : 'var(--fg-faint)',
+                                            opacity: isCopied ? 1 : 0,
+                                            transition: 'opacity 0.2s',
+                                        }} className="mono">
+                                            {isCopied ? '✓ copied' : ''}
+                                        </span>
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+                                            style={{ color: 'var(--fg-faint)', opacity: isCopied ? 0 : 0.6, transition: 'opacity 0.2s' }}>
+                                            <rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                        </svg>
+                                    </div>
+                                    <div style={{ fontSize: 13, color: 'var(--fg-dim)', lineHeight: 1.45 }}>{c.desc}</div>
+                                </div>
+                            );
+                        })}
+                        {filtered.length === 0 && (
+                            <div style={{ padding: 40, textAlign: 'center', color: 'var(--fg-faint)', gridColumn: '1 / -1', background: 'var(--bg)' }}>
+                                <div style={{ fontSize: 14 }}>No commands match "{q}"</div>
+                                <div className="mono" style={{ fontSize: 11, marginTop: 6 }}>try /ask, ,ban, or /server_setup</div>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="mono" style={{ textAlign: 'center', marginTop: 24, fontSize: 11, color: 'var(--fg-faint)' }}>
+                        click any command to copy · permissions configurable per-role
+                    </div>
+                </section>
+            );
+        }
+
+        Object.assign(window, { Commands });
+
+
+        // ==== src/dashboard.jsx ====
+        function Dashboard() {
+            return (
+                <section id="dashboard" style={{
+                    padding: '120px 40px',
+                    maxWidth: 1320,
+                    margin: '0 auto',
+                }}>
+                    <div style={{ maxWidth: 720, marginBottom: 48 }}>
+                        <div className="mono" style={{ fontSize: 12, color: 'var(--fg-faint)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>§ 04 — the dashboard</div>
+                        <h2 style={{ fontSize: 'clamp(36px, 4vw, 56px)', margin: '12px 0 0', fontWeight: 500, letterSpacing: '-0.03em', lineHeight: 1 }}>
+                            Configure in a browser,<br />
+                            <span className="serif" style={{ fontStyle: 'italic', color: 'var(--accent)', fontWeight: 400 }}>forget about it</span>.
+                        </h2>
+                        <p style={{ fontSize: 17, color: 'var(--fg-dim)', lineHeight: 1.5, marginTop: 20, maxWidth: 560 }}>
+                            The bot handles Discord. The dashboard handles you. Keyboard-first, role-scoped, undoable.
+                        </p>
+                    </div>
+
+                    <div style={{
+                        background: 'var(--bg-elev)',
+                        border: '1px solid var(--line)',
+                        borderRadius: 16,
+                        overflow: 'hidden',
+                        boxShadow: '0 30px 80px -30px rgba(0,0,0,0.6)',
+                    }}>
+                        {/* Browser chrome */}
+                        <div style={{
+                            display: 'flex', alignItems: 'center', gap: 12,
+                            padding: '10px 16px', background: 'var(--bg-elev-2)',
+                            borderBottom: '1px solid var(--line)',
+                        }}>
+                            <div style={{ display: 'flex', gap: 6 }}>
+                                <span style={{ width: 11, height: 11, borderRadius: 6, background: '#ff5f57' }} />
+                                <span style={{ width: 11, height: 11, borderRadius: 6, background: '#febc2e' }} />
+                                <span style={{ width: 11, height: 11, borderRadius: 6, background: '#28c840' }} />
+                            </div>
+                            <div className="mono" style={{
+                                flex: 1, maxWidth: 420, margin: '0 auto',
+                                padding: '5px 12px', borderRadius: 6,
+                                background: 'var(--bg)', fontSize: 11, color: 'var(--fg-dim)',
+                                textAlign: 'center',
+                            }}>🔒 kozzyx.app/dashboard/book-club/overview</div>
+                            <span className="mono" style={{ fontSize: 11, color: 'var(--fg-faint)' }}>mira@</span>
+                        </div>
+
+                        {/* App body */}
+                        <div className="dashboard-body" style={{ display: 'grid', gridTemplateColumns: '220px 1fr', minHeight: 520 }}>
+                            {/* Sidebar */}
+                            <div className="dashboard-sidebar" style={{ padding: 16, borderRight: '1px solid var(--line)', background: 'var(--bg-elev-2)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 8px 14px', borderBottom: '1px solid var(--line-soft)' }}>
+                                    <div style={{ width: 24, height: 24, borderRadius: 6, background: 'var(--accent)', display: 'grid', placeItems: 'center', color: 'var(--accent-fg)', fontSize: 12, fontWeight: 700 }}>B</div>
+                                    <div>
+                                        <div style={{ fontSize: 12, fontWeight: 600 }}>book club</div>
+                                        <div className="mono" style={{ fontSize: 10, color: 'var(--fg-faint)' }}>214 members</div>
+                                    </div>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--fg-faint)', marginLeft: 'auto' }}><path d="m6 9 6 6 6-6" /></svg>
+                                </div>
+                                {[
+                                    { g: 'Overview', items: [{ n: 'Home', active: true, hint: '⌘1' }, { n: 'Live feed', hint: '⌘2' }] },
+                                    { g: 'Config', items: [{ n: 'Automod' }, { n: 'Welcome' }, { n: 'Roles' }, { n: 'Permissions' }] },
+                                    { g: 'Records', items: [{ n: 'Cases', badge: 412 }, { n: 'Appeals', badge: 3 }, { n: 'Audit log' }] },
+                                ].map((grp, gi) => (
+                                    <div key={gi} style={{ marginTop: 16 }}>
+                                        <div className="mono" style={{ fontSize: 9, color: 'var(--fg-faint)', letterSpacing: '0.12em', padding: '4px 8px' }}>{grp.g.toUpperCase()}</div>
+                                        {grp.items.map((it, i) => (
+                                            <div key={i} style={{
+                                                display: 'flex', alignItems: 'center', gap: 8,
+                                                padding: '6px 8px', borderRadius: 6, fontSize: 12,
+                                                background: it.active ? 'var(--accent-soft)' : 'transparent',
+                                                color: it.active ? 'var(--accent)' : 'var(--fg-dim)',
+                                                fontWeight: it.active ? 600 : 400,
+                                                cursor: 'pointer',
+                                            }}>
+                                                {it.n}
+                                                {it.badge && <span className="mono" style={{ marginLeft: 'auto', fontSize: 10, padding: '1px 5px', background: 'var(--bg)', borderRadius: 3, color: 'var(--fg-dim)' }}>{it.badge}</span>}
+                                                {it.hint && <span className="mono" style={{ marginLeft: 'auto', fontSize: 10, color: 'var(--fg-faint)' }}>{it.hint}</span>}
+                                            </div>
+                                        ))}
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Main */}
+                            <div style={{ padding: 24 }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24 }}>
+                                    <div>
+                                        <div className="mono" style={{ fontSize: 11, color: 'var(--fg-faint)' }}>Overview › Home</div>
+                                        <div style={{ fontSize: 22, fontWeight: 500, marginTop: 4 }}>Good afternoon, mira.</div>
+                                        <div style={{ fontSize: 13, color: 'var(--fg-dim)', marginTop: 4 }}>Nothing's on fire. 1 appeal waiting on you.</div>
+                                    </div>
+                                    <div style={{ display: 'flex', gap: 8 }}>
+                                        <button style={{ padding: '7px 12px', fontSize: 12, border: '1px solid var(--line)', borderRadius: 6, color: 'var(--fg-dim)' }}>Export logs</button>
+                                        <button style={{ padding: '7px 12px', fontSize: 12, background: 'var(--accent)', color: 'var(--accent-fg)', borderRadius: 6, fontWeight: 600 }}>+ New rule</button>
+                                    </div>
+                                </div>
+
+                                {/* KPI row */}
+                                <div className="kpi-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 20 }}>
+                                    {[
+                                        { k: 'Actions today', v: '14', d: '-32% vs avg', ok: true },
+                                        { k: 'Queue', v: '3', d: '1 appeal, 2 reports' },
+                                        { k: 'Raid risk', v: 'LOW', d: 'last scanned 30s ago', ok: true },
+                                        { k: 'Uptime · 30d', v: '99.99%', d: 'single 4m blip' },
+                                    ].map((k, i) => (
+                                        <div key={i} style={{ padding: 14, background: 'var(--bg)', border: '1px solid var(--line-soft)', borderRadius: 8 }}>
+                                            <div className="mono" style={{ fontSize: 10, color: 'var(--fg-faint)', letterSpacing: '0.05em' }}>{k.k.toUpperCase()}</div>
+                                            <div style={{ fontSize: 24, fontWeight: 500, marginTop: 6, color: k.ok ? 'var(--ok)' : 'var(--fg)' }}>{k.v}</div>
+                                            <div className="mono" style={{ fontSize: 10, color: 'var(--fg-faint)', marginTop: 4 }}>{k.d}</div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Activity chart */}
+                                <div style={{ padding: 18, background: 'var(--bg)', border: '1px solid var(--line-soft)', borderRadius: 8 }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+                                        <div style={{ fontSize: 13, fontWeight: 500 }}>Activity · last 7 days</div>
+                                        <div className="mono" style={{ fontSize: 11, color: 'var(--fg-faint)' }}>actions per hour</div>
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'flex-end', gap: 2, height: 80 }}>
+                                        {Array.from({ length: 48 }).map((_, i) => {
+                                            const h = 10 + Math.abs(Math.sin(i / 3) * 40) + Math.abs(Math.cos(i / 7) * 20);
+                                            return <div key={i} style={{ flex: 1, height: `${h}%`, background: 'var(--accent)', opacity: 0.3 + (h / 100), borderRadius: 1 }} />;
+                                        })}
+                                    </div>
+                                    <div className="mono" style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: 'var(--fg-faint)', marginTop: 8 }}>
+                                        <span>Apr 11</span><span>Apr 14</span><span>Apr 18</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        Object.assign(window, { Dashboard });
+
+
+        // ==== src/footer.jsx ====
+        function Footer() {
+            return (
+                <footer style={{
+                    marginTop: 80,
+                    borderTop: '1px solid var(--line)',
+                    padding: '72px 40px 40px',
+                    position: 'relative',
+                    overflow: 'hidden',
+                }}>
+                    {/* subtle gradient glow */}
+                    <div style={{
+                        position: 'absolute',
+                        top: 0, left: '50%', transform: 'translateX(-50%)',
+                        width: '80%', height: 1,
+                        background: 'linear-gradient(90deg, transparent, var(--accent), transparent)',
+                        opacity: 0.5,
+                    }} />
+
+                    <div className="footer-grid" style={{
+                        maxWidth: 1320, margin: '0 auto',
+                        display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr 1fr', gap: 56,
+                    }}>
+                        {/* Brand column */}
+                        <div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+                                <MascotMini size={28} />
+                                <span style={{ fontSize: 18, fontWeight: 600, letterSpacing: '-0.01em' }}>kozzyx</span>
+                            </div>
+                            <p style={{ fontSize: 13, color: 'var(--fg-dim)', lineHeight: 1.6, maxWidth: 320, margin: 0 }}>
+                                An all-in-one Discord bot — moderation, AI, tickets, and server setup. Built by one person, running on GCP, powered by the Claude API.
+                            </p>
+
+                            {/* Social icon row */}
+                            <div style={{ marginTop: 22, display: 'flex', gap: 8 }}>
+                                <a href="https://discord.gg/fPG29xv7EA" target="_blank" rel="noopener" title="Join the support server"
+                                    style={{ width: 36, height: 36, borderRadius: 8, border: '1px solid var(--line)', display: 'grid', placeItems: 'center', color: 'var(--fg-dim)', transition: 'all 0.15s' }}
+                                    onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--accent)'; e.currentTarget.style.borderColor = 'var(--accent)'; }}
+                                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--fg-dim)'; e.currentTarget.style.borderColor = 'var(--line)'; }}
+                                >
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.54 0c1.356 0 2.46 1.104 2.46 2.472v21.528l-2.58-2.28-1.452-1.344-1.536-1.428.636 2.22H3.42C2.064 21.168.96 20.064.96 18.696V2.472C.96 1.104 2.064 0 3.42 0h16.12zM12 5.5s-1.5 1.2-3.6 1.2c0 0-.4 2.5 1.8 4.6 0 0 .9-1 1.8-1s1.8 1 1.8 1c2.2-2.1 1.8-4.6 1.8-4.6-2.1 0-3.6-1.2-3.6-1.2z" /></svg>
+                                </a>
+                                <a href="https://github.com/kozzyxofficialx/my-discord-bot" target="_blank" rel="noopener" title="View on GitHub"
+                                    style={{ width: 36, height: 36, borderRadius: 8, border: '1px solid var(--line)', display: 'grid', placeItems: 'center', color: 'var(--fg-dim)', transition: 'all 0.15s' }}
+                                    onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--accent)'; e.currentTarget.style.borderColor = 'var(--accent)'; }}
+                                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--fg-dim)'; e.currentTarget.style.borderColor = 'var(--line)'; }}
+                                >
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" /></svg>
+                                </a>
+                            </div>
+                        </div>
+
+                        {/* Product column */}
+                        <div>
+                            <div className="mono" style={{ fontSize: 11, color: 'var(--fg-faint)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 16 }}>Product</div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
+                                <a href="#features" style={{ fontSize: 13, color: 'var(--fg-dim)', transition: 'color 0.15s' }}
+                                    onMouseEnter={(e) => e.currentTarget.style.color = 'var(--fg)'}
+                                    onMouseLeave={(e) => e.currentTarget.style.color = 'var(--fg-dim)'}>Features</a>
+                                <a href="#commands" style={{ fontSize: 13, color: 'var(--fg-dim)', transition: 'color 0.15s' }}
+                                    onMouseEnter={(e) => e.currentTarget.style.color = 'var(--fg)'}
+                                    onMouseLeave={(e) => e.currentTarget.style.color = 'var(--fg-dim)'}>Commands</a>
+                                <a href="#changelog" style={{ fontSize: 13, color: 'var(--fg-dim)', transition: 'color 0.15s' }}
+                                    onMouseEnter={(e) => e.currentTarget.style.color = 'var(--fg)'}
+                                    onMouseLeave={(e) => e.currentTarget.style.color = 'var(--fg-dim)'}>Changelog</a>
+                                <a href="#faq" style={{ fontSize: 13, color: 'var(--fg-dim)', transition: 'color 0.15s' }}
+                                    onMouseEnter={(e) => e.currentTarget.style.color = 'var(--fg)'}
+                                    onMouseLeave={(e) => e.currentTarget.style.color = 'var(--fg-dim)'}>FAQ</a>
+                                <a href={window.KOZZ.INVITE_URL} target="_blank" rel="noopener" style={{ fontSize: 13, color: 'var(--fg-dim)', transition: 'color 0.15s' }}
+                                    onMouseEnter={(e) => e.currentTarget.style.color = 'var(--fg)'}
+                                    onMouseLeave={(e) => e.currentTarget.style.color = 'var(--fg-dim)'}>Add to Discord</a>
+                                <a href="https://github.com/kozzyxofficialx/my-discord-bot" target="_blank" rel="noopener" style={{ fontSize: 13, color: 'var(--fg-dim)', transition: 'color 0.15s' }}
+                                    onMouseEnter={(e) => e.currentTarget.style.color = 'var(--fg)'}
+                                    onMouseLeave={(e) => e.currentTarget.style.color = 'var(--fg-dim)'}>Source code</a>
+                            </div>
+                        </div>
+
+                        {/* Support column */}
+                        <div>
+                            <div className="mono" style={{ fontSize: 11, color: 'var(--fg-faint)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 16 }}>Support</div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
+                                <a href="https://discord.gg/fPG29xv7EA" target="_blank" rel="noopener" style={{ fontSize: 13, color: 'var(--fg-dim)', transition: 'color 0.15s', display: 'inline-flex', alignItems: 'center', gap: 6 }}
+                                    onMouseEnter={(e) => e.currentTarget.style.color = 'var(--fg)'}
+                                    onMouseLeave={(e) => e.currentTarget.style.color = 'var(--fg-dim)'}>
+                                    Support server
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M7 17L17 7M7 7h10v10" /></svg>
+                                </a>
+                                <a href="https://github.com/kozzyxofficialx/my-discord-bot/issues" target="_blank" rel="noopener" style={{ fontSize: 13, color: 'var(--fg-dim)', transition: 'color 0.15s', display: 'inline-flex', alignItems: 'center', gap: 6 }}
+                                    onMouseEnter={(e) => e.currentTarget.style.color = 'var(--fg)'}
+                                    onMouseLeave={(e) => e.currentTarget.style.color = 'var(--fg-dim)'}>
+                                    Report a bug
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M7 17L17 7M7 7h10v10" /></svg>
+                                </a>
+                                <span style={{ fontSize: 13, color: 'var(--fg-faint)' }}><code className="mono" style={{ fontSize: 12, padding: '1px 5px', background: 'var(--bg-elev-2)', borderRadius: 3 }}>/help</code> in Discord</span>
+                                <span style={{ fontSize: 13, color: 'var(--fg-faint)' }}><code className="mono" style={{ fontSize: 12, padding: '1px 5px', background: 'var(--bg-elev-2)', borderRadius: 3 }}>/modhelp</code> for mod cmds</span>
+                            </div>
+                        </div>
+
+                        {/* Legal column */}
+                        <div>
+                            <div className="mono" style={{ fontSize: 11, color: 'var(--fg-faint)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 16 }}>Legal</div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
+                                <a href="/privacy" style={{ fontSize: 13, color: 'var(--fg-dim)', transition: 'color 0.15s' }}
+                                    onMouseEnter={(e) => e.currentTarget.style.color = 'var(--fg)'}
+                                    onMouseLeave={(e) => e.currentTarget.style.color = 'var(--fg-dim)'}>Privacy policy</a>
+                                <a href="/terms" style={{ fontSize: 13, color: 'var(--fg-dim)', transition: 'color 0.15s' }}
+                                    onMouseEnter={(e) => e.currentTarget.style.color = 'var(--fg)'}
+                                    onMouseLeave={(e) => e.currentTarget.style.color = 'var(--fg-dim)'}>Terms of service</a>
+                                <a href="https://github.com/kozzyxofficialx/my-discord-bot/blob/main/LICENSE" target="_blank" rel="noopener" style={{ fontSize: 13, color: 'var(--fg-dim)', transition: 'color 0.15s' }}
+                                    onMouseEnter={(e) => e.currentTarget.style.color = 'var(--fg)'}
+                                    onMouseLeave={(e) => e.currentTarget.style.color = 'var(--fg-dim)'}>License</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* bottom strip */}
+                    <div style={{
+                        maxWidth: 1320, margin: '56px auto 0',
+                        paddingTop: 24, borderTop: '1px solid var(--line-soft)',
+                        display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12,
+                    }}>
+                        <div className="mono" style={{ fontSize: 11, color: 'var(--fg-faint)' }}>
+                            © 2026 kozzyx · not affiliated with Discord Inc.
+                        </div>
+                        <div className="mono" style={{ fontSize: 11, color: 'var(--fg-faint)', display: 'flex', gap: 14, alignItems: 'center' }}>
+                            <span>made by <a href="https://github.com/kozzyxofficialx" target="_blank" rel="noopener" style={{ color: 'var(--fg-dim)', textDecoration: 'underline', textDecorationColor: 'var(--line)', textUnderlineOffset: 2 }}
+                                onMouseEnter={(e) => e.currentTarget.style.color = 'var(--accent)'}
+                                onMouseLeave={(e) => e.currentTarget.style.color = 'var(--fg-dim)'}>@kozzyxofficialx</a></span>
+                            <span style={{ color: 'var(--fg-faint)' }}>·</span>
+                            <span>🇭🇺 hungary</span>
+                        </div>
+                    </div>
+                </footer>
+            );
+        }
+
+        Object.assign(window, { Footer });
+
+
+        // ==== src/tweaks.jsx ====
+        function TweakPanel({ accent, setAccent, visible }) {
+            const accents = window.KOZZ.ACCENTS;
+            if (!visible) return null;
+            return (
+                <div style={{
+                    position: 'fixed',
+                    bottom: 20,
+                    right: 20,
+                    zIndex: 1000,
+                    background: 'var(--bg-elev)',
+                    border: '1px solid var(--line)',
+                    borderRadius: 12,
+                    padding: 16,
+                    boxShadow: '0 20px 60px -10px rgba(0,0,0,0.6)',
+                    minWidth: 240,
+                }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+                        <div className="mono" style={{ fontSize: 11, color: 'var(--fg-faint)', letterSpacing: '0.1em' }}>TWEAKS</div>
+                        <MascotMini size={18} />
+                    </div>
+                    <div style={{ fontSize: 12, color: 'var(--fg-dim)', marginBottom: 10 }}>Accent color</div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
+                        {Object.values(accents).map((a) => (
+                            <button key={a.name}
+                                onClick={() => setAccent(a.name)}
+                                style={{
+                                    padding: '10px 8px',
+                                    borderRadius: 8,
+                                    border: '1px solid ' + (accent === a.name ? 'var(--fg)' : 'var(--line)'),
+                                    background: 'var(--bg)',
+                                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+                                    transition: 'all 0.15s',
+                                }}>
+                                <span style={{ width: 20, height: 20, borderRadius: 10, background: `oklch(${a.oklch})` }} />
+                                <span style={{ fontSize: 11, color: accent === a.name ? 'var(--fg)' : 'var(--fg-dim)' }}>{a.label}</span>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        Object.assign(window, { TweakPanel });
+
+
+        // ==== src/marquee.jsx ====
+        function MarqueeDivider() {
+            return (
+                <div className="marquee-divider" style={{ transform: 'rotate(-2deg) scale(1.05)' }}>
+                    <div className="marquee-inner">
+                        <span className="marquee-item">/// 50+ COMMANDS</span>
+                        <span className="marquee-item">/// CLAUDE AI</span>
+                        <span className="marquee-item">/// IMPENETRABLE AUTOMOD</span>
+                        <span className="marquee-item">/// INSTANT TICKETS</span>
+                        <span className="marquee-item">/// DEEP ANALYTICS</span>
+                        <span className="marquee-item">/// 50+ COMMANDS</span>
+                        <span className="marquee-item">/// CLAUDE AI</span>
+                        <span className="marquee-item">/// IMPENETRABLE AUTOMOD</span>
+                        <span className="marquee-item">/// INSTANT TICKETS</span>
+                    </div>
+                </div>
+            );
+        }
+
+        // ==== src/dynamicisland.jsx ====
+        function DynamicIsland() {
+            const [visible, setVisible] = React.useState(false);
+            React.useEffect(() => {
+                const onScroll = () => setVisible(window.scrollY > 500);
+                window.addEventListener('scroll', onScroll, { passive: true });
+                return () => window.removeEventListener('scroll', onScroll);
+            }, []);
+            return (
+                <div className={`dynamic-island ${visible ? 'visible' : ''}`}>
+                    <a href="#features" className="island-link">⌘ Features</a>
+                    <a href="#commands" className="island-link">⌘ Commands</a>
+                    <a href={window.KOZZ.INVITE_URL} target="_blank" className="island-link btn-glitch" style={{ background: 'var(--accent)', color: 'var(--accent-fg)' }}>Invite</a>
+                </div>
+            );
+        }
+
+        // ==== src/cursorblob.jsx ====
+        function CursorBlob() {
+            const ref = React.useRef(null);
+            React.useEffect(() => {
+                const onMove = (e) => {
+                    if (ref.current) {
+                        ref.current.style.transform = `translate(calc(${e.clientX}px - 50%), calc(${e.clientY}px - 50%))`;
+                    }
+                };
+                const onDown = () => ref.current?.classList.add('active');
+                const onUp = () => ref.current?.classList.remove('active');
+                window.addEventListener('mousemove', onMove, { passive: true });
+                window.addEventListener('mousedown', onDown);
+                window.addEventListener('mouseup', onUp);
+                return () => {
+                    window.removeEventListener('mousemove', onMove);
+                    window.removeEventListener('mousedown', onDown);
+                    window.removeEventListener('mouseup', onUp);
+                }
+            }, []);
+            return <div id="cursor-blob" ref={ref}></div>;
+        }
+
+        // ==== src/animatednumber.jsx ====
+        function AnimatedNumber({ value }) {
+            const [display, setDisplay] = React.useState(0);
+            const ref = React.useRef(null);
+            
+            React.useEffect(() => {
+                const observer = new IntersectionObserver(([entry]) => {
+                    if (entry.isIntersecting) {
+                        let current = 0;
+                        const duration = 1200;
+                        const startTime = performance.now();
+                        
+                        const animate = (now) => {
+                            const progress = Math.min((now - startTime) / duration, 1);
+                            // ease out expo
+                            const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+                            setDisplay(Math.floor(ease * value));
+                            if (progress < 1) requestAnimationFrame(animate);
+                        };
+                        requestAnimationFrame(animate);
+                        observer.disconnect();
+                    }
+                }, { threshold: 0.1 });
+                if (ref.current) observer.observe(ref.current);
+                return () => observer.disconnect();
+            }, [value]);
+
+            return <span ref={ref}>{display}</span>;
+        }
+
+
+        // ==== src/howitworks.jsx ====
+        function HowItWorks() {
+            const steps = [
+                {
+                    num: '01',
+                    icon: (
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M19.54 0c1.356 0 2.46 1.104 2.46 2.472v21.528l-2.58-2.28-1.452-1.344-1.536-1.428.636 2.22H3.42C2.064 21.168.96 20.064.96 18.696V2.472C.96 1.104 2.064 0 3.42 0h16.12z"/>
+                        </svg>
+                    ),
+                    title: 'Invite kozzyx',
+                    desc: 'Click "Add to Discord", pick your server, grant admin perms. Takes 30 seconds.',
+                    tag: 'one click',
+                },
+                {
+                    num: '02',
+                    icon: (
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+                        </svg>
+                    ),
+                    title: 'Run /server_setup',
+                    desc: 'One command scaffolds channels, roles, and config. Pick a preset or go bare.',
+                    tag: '~30 seconds',
+                },
+                {
+                    num: '03',
+                    icon: (
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        </svg>
+                    ),
+                    title: 'Forget about it',
+                    desc: 'Automod runs. Raids get blocked. AI answers questions. You moderate when it matters.',
+                    tag: 'hands-free',
+                },
+            ];
+
+            return (
+                <section style={{ padding: '100px 40px', maxWidth: 1320, margin: '0 auto' }} data-reveal="up">
+                    <div style={{ maxWidth: 600, marginBottom: 56 }}>
+                        <div className="mono" style={{ fontSize: 12, color: 'var(--fg-faint)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>§ 01.5 — setup in 3 steps</div>
+                        <h2 style={{ fontSize: 'clamp(32px, 4vw, 52px)', margin: '12px 0 0', fontWeight: 500, letterSpacing: '-0.03em', lineHeight: 1.05 }}>
+                            Up and running<br />
+                            <span className="serif" style={{ fontStyle: 'italic', color: 'var(--accent)', fontWeight: 400 }}>in under a minute</span>.
+                        </h2>
+                    </div>
+
+                    <div className="how-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }} data-stagger>
+                        {steps.map((s, i) => (
+                            <div key={i} className="how-step" style={{ position: 'relative' }}>
+                                {i < steps.length - 1 && (
+                                    <div className="how-step-connector" />
+                                )}
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+                                    <div style={{
+                                        width: 52, height: 52, borderRadius: 14,
+                                        background: 'var(--accent-soft)',
+                                        border: '1px solid color-mix(in oklab, var(--accent) 30%, var(--line))',
+                                        display: 'grid', placeItems: 'center',
+                                        color: 'var(--accent)',
+                                    }}>
+                                        {s.icon}
+                                    </div>
+                                    <span className="mono" style={{ fontSize: 10, padding: '4px 10px', borderRadius: 100, background: 'var(--bg-elev-2)', color: 'var(--fg-faint)', border: '1px solid var(--line-soft)' }}>
+                                        {s.tag}
+                                    </span>
+                                </div>
+                                <div className="mono how-step-number">{s.num}</div>
+                                <div style={{ fontSize: 20, fontWeight: 600, letterSpacing: '-0.02em', marginBottom: 10 }}>{s.title}</div>
+                                <div style={{ fontSize: 14, color: 'var(--fg-dim)', lineHeight: 1.55 }}>{s.desc}</div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Separator line with centered label */}
+                    <div style={{ marginTop: 80, display: 'flex', alignItems: 'center', gap: 24 }}>
+                        <div style={{ flex: 1, height: 1, background: 'var(--line-soft)' }} />
+                        <span className="mono" style={{ fontSize: 11, color: 'var(--fg-faint)', letterSpacing: '0.08em', whiteSpace: 'nowrap' }}>
+                            THEN YOU JUST WATCH IT WORK
+                        </span>
+                        <div style={{ flex: 1, height: 1, background: 'var(--line-soft)' }} />
+                    </div>
+                </section>
+            );
+        }
+
+        Object.assign(window, { HowItWorks });
+
+        // ==== src/changelog.jsx ====
+        const GITHUB_REPO = 'kozzyxofficialx/my-discord-bot';
+
+        // Parse GitHub release markdown body into structured items
+        // Expects sections like: ### New, ### Fixed, ### Changed with - bullet lines
+        function parseReleaseBody(body) {
+            if (!body) return [];
+            const items = [];
+            let currentType = 'new';
+            const typeMap = { 'new': 'new', 'added': 'new', 'fixed': 'fix', 'fix': 'fix', 'changed': 'change', 'change': 'change', 'breaking': 'change' };
+            body.split('\n').forEach(line => {
+                const heading = line.match(/^#{1,3}\s+(.+)/);
+                if (heading) {
+                    const key = heading[1].toLowerCase().trim();
+                    currentType = typeMap[key] || 'new';
+                    return;
+                }
+                const bullet = line.match(/^[-*]\s+(.+)/);
+                if (bullet) {
+                    items.push({ type: currentType, text: bullet[1].trim() });
+                }
+            });
+            // If no structured sections found, treat every bullet as 'new'
+            if (items.length === 0) {
+                body.split('\n').forEach(line => {
+                    const bullet = line.match(/^[-*]\s+(.+)/);
+                    if (bullet) items.push({ type: 'new', text: bullet[1].trim() });
+                });
+            }
+            return items;
+        }
+
+        function Changelog() {
+            const [entries, setEntries] = React.useState([]);
+            const [loading, setLoading] = React.useState(true);
+            const [error, setError] = React.useState(false);
+
+            React.useEffect(() => {
+                fetch(`https://api.github.com/repos/${GITHUB_REPO}/releases`)
+                    .then(r => {
+                        if (!r.ok) throw new Error('GitHub API error');
+                        return r.json();
+                    })
+                    .then(releases => {
+                        const parsed = releases.slice(0, 8).map(r => ({
+                            version: r.tag_name,
+                            date: new Date(r.published_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+                            tag: r.prerelease ? 'beta' : (r.tag_name.includes('patch') || /\d+\.\d+\.\d+[1-9]$/.test(r.tag_name) ? 'patch' : 'major'),
+                            items: parseReleaseBody(r.body),
+                            url: r.html_url,
+                        }));
+                        setEntries(parsed);
+                        setLoading(false);
+                    })
+                    .catch(() => { setError(true); setLoading(false); });
+            }, []);
+
+            const tagColor = { major: 'var(--accent)', patch: 'var(--fg-faint)', beta: 'var(--warn)' };
+            const typeIcon = { new: { icon: '+', color: 'var(--ok)' }, fix: { icon: '↗', color: 'var(--warn)' }, change: { icon: '~', color: 'var(--accent)' } };
+
+            return (
+                <section id="changelog" style={{ padding: '120px 40px', maxWidth: 1320, margin: '0 auto' }} data-reveal="up">
+                    <div style={{ maxWidth: 720, marginBottom: 56 }}>
+                        <div className="mono" style={{ fontSize: 12, color: 'var(--fg-faint)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>§ 05 — changelog</div>
+                        <h2 style={{ fontSize: 'clamp(36px, 4vw, 56px)', margin: '12px 0 0', fontWeight: 500, letterSpacing: '-0.03em', lineHeight: 1 }}>
+                            What's changed.<br />
+                            <span className="serif" style={{ fontStyle: 'italic', color: 'var(--accent)', fontWeight: 400 }}>honestly documented</span>.
+                        </h2>
+                        <div style={{ marginTop: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style={{ color: 'var(--fg-faint)' }}><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                            <span className="mono" style={{ fontSize: 11, color: 'var(--fg-faint)' }}>auto-generated from GitHub Releases</span>
+                        </div>
+                    </div>
+
+                    {loading && (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                            {[1,2,3].map(i => (
+                                <div key={i} style={{ display: 'grid', gridTemplateColumns: '180px 1fr', gap: 40, borderTop: '1px solid var(--line-soft)', padding: '36px 0' }}>
+                                    <div style={{ height: 60, background: 'var(--bg-elev)', borderRadius: 8, animation: 'shimmer 1.4s infinite' }} />
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                                        {[1,2,3].map(j => <div key={j} style={{ height: 44, background: 'var(--bg-elev)', borderRadius: 10, animation: 'shimmer 1.4s infinite', animationDelay: `${j * 0.1}s` }} />)}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {error && (
+                        <div style={{ padding: '40px', textAlign: 'center', border: '1px solid var(--line)', borderRadius: 12, color: 'var(--fg-faint)' }}>
+                            <div style={{ fontSize: 14 }}>Couldn't load releases from GitHub.</div>
+                            <a href={`https://github.com/${GITHUB_REPO}/releases`} target="_blank" rel="noopener"
+                                style={{ fontSize: 13, color: 'var(--accent)', marginTop: 8, display: 'inline-block' }}>
+                                View on GitHub →
+                            </a>
+                        </div>
+                    )}
+
+                    {!loading && !error && entries.length === 0 && (
+                        <div style={{ padding: '40px', textAlign: 'center', border: '1px solid var(--line)', borderRadius: 12, color: 'var(--fg-faint)' }}>
+                            <div style={{ fontSize: 14 }}>No releases yet.</div>
+                            <div className="mono" style={{ fontSize: 12, marginTop: 8 }}>Push a tag like <code>v1.0.0</code> to create the first one.</div>
+                        </div>
+                    )}
+
+                    {!loading && !error && (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+                            {entries.map((e, ei) => (
+                                <div key={ei} className="changelog-row" style={{ display: 'grid', gridTemplateColumns: '180px 1fr', gap: 40, borderTop: '1px solid var(--line-soft)', padding: '36px 0' }}>
+                                    <div style={{ paddingTop: 2 }}>
+                                        <a href={e.url} target="_blank" rel="noopener"
+                                            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, transition: 'color 0.15s' }}
+                                            onMouseEnter={ev => ev.currentTarget.style.color = 'var(--accent)'}
+                                            onMouseLeave={ev => ev.currentTarget.style.color = 'var(--fg)'}>
+                                            <span className="mono" style={{ fontSize: 18, fontWeight: 600, letterSpacing: '-0.02em' }}>{e.version}</span>
+                                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                                        </a>
+                                        <div className="mono" style={{ fontSize: 12, color: 'var(--fg-faint)', marginTop: 6 }}>{e.date}</div>
+                                        <span style={{
+                                            display: 'inline-block', marginTop: 10,
+                                            fontSize: 9, fontFamily: 'Geist Mono, monospace',
+                                            fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase',
+                                            padding: '3px 8px', borderRadius: 100,
+                                            background: `color-mix(in oklab, ${tagColor[e.tag] ?? 'var(--accent)'} 14%, transparent)`,
+                                            color: tagColor[e.tag] ?? 'var(--accent)',
+                                            border: `1px solid color-mix(in oklab, ${tagColor[e.tag] ?? 'var(--accent)'} 30%, transparent)`,
+                                        }}>{e.tag}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                                        {e.items.length > 0 ? e.items.map((item, ii) => (
+                                            <div key={ii} style={{
+                                                display: 'flex', gap: 12, alignItems: 'flex-start',
+                                                padding: '12px 16px', borderRadius: 10,
+                                                background: 'var(--bg-elev)', border: '1px solid var(--line-soft)',
+                                                fontSize: 14, lineHeight: 1.5,
+                                            }}>
+                                                <span className="mono" style={{
+                                                    flexShrink: 0, width: 18, height: 18, borderRadius: 4,
+                                                    background: `color-mix(in oklab, ${typeIcon[item.type]?.color ?? 'var(--fg-faint)'} 14%, transparent)`,
+                                                    color: typeIcon[item.type]?.color ?? 'var(--fg-faint)',
+                                                    display: 'grid', placeItems: 'center',
+                                                    fontSize: 11, fontWeight: 700, marginTop: 1,
+                                                }}>{typeIcon[item.type]?.icon ?? '·'}</span>
+                                                <span style={{ color: 'var(--fg-dim)' }}>{item.text}</span>
+                                            </div>
+                                        )) : (
+                                            <div style={{ padding: '12px 16px', borderRadius: 10, background: 'var(--bg-elev)', border: '1px solid var(--line-soft)', fontSize: 13, color: 'var(--fg-faint)' }}>
+                                                No structured notes — <a href={e.url} target="_blank" rel="noopener" style={{ color: 'var(--accent)' }}>view on GitHub</a>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    <style>{`
+                        @keyframes shimmer {
+                            0%, 100% { opacity: 0.4; }
+                            50% { opacity: 0.8; }
+                        }
+                    `}</style>
+                </section>
+            );
+        }
+
+        // ==== src/faq.jsx ====
+        function FAQ() {
+            const [open, setOpen] = React.useState(null);
+
+            const items = [
+                {
+                    q: 'Is kozzyx free to use?',
+                    a: 'Yes, entirely. All 50+ commands are available with no paywalled tier, premium plan, or hidden feature gating. The bot is self-hosted on Google Cloud and I pay for it myself.',
+                },
+                {
+                    q: 'How does the AI work — is it sending my messages somewhere?',
+                    a: '/ask and /summarize send the relevant message content to the Claude API (Anthropic). /imagine sends your prompt to Pollinations.ai. Nothing is stored permanently — conversation context is kept in memory per-user per-server and can be wiped with /clear_memory.',
+                },
+                {
+                    q: 'What permissions does kozzyx need?',
+                    a: 'Administrator is recommended for /server_setup to work fully. For moderation-only use, you need: Kick Members, Ban Members, Manage Messages, Manage Channels, Manage Roles, and Manage Nicknames. The bot won\'t function correctly with fewer permissions than what the commands require.',
+                },
+                {
+                    q: 'What\'s the difference between slash commands and prefix commands?',
+                    a: 'Slash commands (/) are Discord\'s built-in system — they show up in the menu when you type /. Prefix commands (,) are typed directly and are faster for quick actions. Most moderation tools have both. New features are generally added as slash commands first.',
+                },
+                {
+                    q: 'The bot went offline. What\'s happening?',
+                    a: 'kozzyx runs on a Google Cloud VM (always-on). Downtime is rare but possible during updates or GCP hiccups. If it\'s been more than 10 minutes, join the support server and let me know — I\'ll restart it.',
+                },
+                {
+                    q: 'Can I self-host kozzyx?',
+                    a: 'The source isn\'t fully public yet, but it\'s on the roadmap. The bot is built with discord.js and Node.js. If you want early access, join the support server.',
+                },
+                {
+                    q: 'How do I report a bug or request a feature?',
+                    a: 'Open an issue on GitHub or message in the support Discord. I read everything. Features that make sense for a general-purpose bot and aren\'t insane to build will get added.',
+                },
+            ];
+
+            return (
+                <section id="faq" style={{ padding: '120px 40px', maxWidth: 1320, margin: '0 auto' }} data-reveal="up">
+                    <div style={{ maxWidth: 720, marginBottom: 56 }}>
+                        <div className="mono" style={{ fontSize: 12, color: 'var(--fg-faint)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>§ 06 — FAQ</div>
+                        <h2 style={{ fontSize: 'clamp(36px, 4vw, 56px)', margin: '12px 0 0', fontWeight: 500, letterSpacing: '-0.03em', lineHeight: 1 }}>
+                            Common questions.<br />
+                            <span className="serif" style={{ fontStyle: 'italic', color: 'var(--accent)', fontWeight: 400 }}>actual answers</span>.
+                        </h2>
+                    </div>
+
+                    <div style={{ maxWidth: 860, display: 'flex', flexDirection: 'column', gap: 0 }}>
+                        {items.map((item, i) => {
+                            const isOpen = open === i;
+                            return (
+                                <div key={i} style={{
+                                    borderTop: '1px solid var(--line-soft)',
+                                    ...(i === items.length - 1 ? { borderBottom: '1px solid var(--line-soft)' } : {}),
+                                }}>
+                                    <button
+                                        onClick={() => setOpen(isOpen ? null : i)}
+                                        style={{
+                                            width: '100%', textAlign: 'left', padding: '22px 0',
+                                            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20,
+                                            fontSize: 16, fontWeight: 500, color: isOpen ? 'var(--fg)' : 'var(--fg-dim)',
+                                            transition: 'color 0.2s',
+                                        }}
+                                    >
+                                        {item.q}
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+                                            style={{ flexShrink: 0, transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.25s cubic-bezier(0.22,1,0.36,1)', color: 'var(--fg-faint)' }}>
+                                            <path d="m6 9 6 6 6-6"/>
+                                        </svg>
+                                    </button>
+                                    <div style={{
+                                        overflow: 'hidden',
+                                        maxHeight: isOpen ? 300 : 0,
+                                        transition: 'max-height 0.35s cubic-bezier(0.22, 1, 0.36, 1)',
+                                    }}>
+                                        <p style={{
+                                            margin: 0, paddingBottom: 22,
+                                            fontSize: 15, color: 'var(--fg-dim)', lineHeight: 1.65,
+                                        }}>{item.a}</p>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </section>
+            );
+        }
+
+        Object.assign(window, { Changelog, FAQ });
+
+
+        // ==== src/app.jsx ====
+        function App() {
+            const [theme, setTheme] = React.useState('dark');
+            const [accent, setAccent] = React.useState(window.KOZZ_TWEAKS?.accent || 'violet');
+            const [editMode, setEditMode] = React.useState(false);
+
+            // Apply theme
+            React.useEffect(() => {
+                document.documentElement.setAttribute('data-theme', theme);
+            }, [theme]);
+
+            // Apply accent
+            React.useEffect(() => {
+                const a = window.KOZZ.ACCENTS[accent];
+                if (!a) return;
+                document.documentElement.style.setProperty('--accent', `oklch(${a.oklch})`);
+                document.documentElement.style.setProperty('--accent-soft', `oklch(${a.oklch} / 0.14)`);
+                // on light accents, use dark fg; otherwise white
+                const L = parseFloat(a.oklch.split(' ')[0]);
+                document.documentElement.style.setProperty('--accent-fg', L > 0.78 ? '#0b0b0d' : '#ffffff');
+            }, [accent]);
+
+            // Edit-mode protocol
+            React.useEffect(() => {
+                const onMsg = (e) => {
+                    if (e.data?.type === '__activate_edit_mode') setEditMode(true);
+                    if (e.data?.type === '__deactivate_edit_mode') setEditMode(false);
+                };
+                window.addEventListener('message', onMsg);
+                window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+                return () => window.removeEventListener('message', onMsg);
+            }, []);
+
+            // Keyboard: ⌘K focuses search
+            React.useEffect(() => {
+                const onKey = (e) => {
+                    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                        e.preventDefault();
+                        document.querySelector('#commands input')?.focus();
+                    }
+                };
+                window.addEventListener('keydown', onKey);
+                return () => window.removeEventListener('keydown', onKey);
+            }, []);
+
+            const handleSetAccent = (a) => {
+                setAccent(a);
+                window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { accent: a } }, '*');
+            };
+
+            return (
+                <>
+                    <CursorBlob />
+                    <Nav theme={theme} setTheme={setTheme} />
+                    <Hero />
+                    <MarqueeDivider />
+                    <Stats />
+                    <HowItWorks />
+                    <Features />
+                    <Commands />
+                    <Changelog />
+                    <FAQ />
+                    <ClosingCTA />
+                    <Footer />
+                    <DynamicIsland />
+                    <TweakPanel accent={accent} setAccent={handleSetAccent} visible={editMode} />
+                </>
+            );
+        }
+
+        function ClosingCTA() {
+            return (
+                <section style={{
+                    padding: '120px 40px',
+                    maxWidth: 1320,
+                    margin: '0 auto',
+                    textAlign: 'center',
+                    position: 'relative',
+                }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 24 }}>
+                        <Mascot size={140} mood="happy" />
+                    </div>
+                    <h2 style={{ fontSize: 'clamp(40px, 5vw, 72px)', margin: 0, fontWeight: 500, letterSpacing: '-0.03em', lineHeight: 1 }}>
+                        Add kozzyx to<br />
+                        <span className="serif" style={{ fontStyle: 'italic', color: 'var(--accent)', fontWeight: 400 }}>your server</span>.
+                    </h2>
+                    <p style={{ fontSize: 17, color: 'var(--fg-dim)', marginTop: 20, maxWidth: 480, margin: '20px auto 0' }}>
+                        Takes 30 seconds. Admin perms required for /server_setup.
+                    </p>
+                    <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginTop: 32, flexWrap: 'wrap' }}>
+                        <a href={window.KOZZ.INVITE_URL} target="_blank" rel="noopener" style={{
+                            padding: '15px 26px',
+                            background: 'var(--accent)',
+                            color: 'var(--accent-fg)',
+                            borderRadius: 10,
+                            fontSize: 15,
+                            fontWeight: 600,
+                            display: 'inline-block',
+                        }}>Add to Discord →</a>
+                        <a href="#commands" style={{
+                            padding: '15px 22px',
+                            border: '1px solid var(--line)',
+                            borderRadius: 10,
+                            fontSize: 15,
+                            color: 'var(--fg)',
+                            display: 'inline-block',
+                        }}>See commands</a>
+                    </div>
+                </section>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+
+        // ===================== ANIMATION RUNTIME =====================
+        // Runs after React mounts. Adds scroll-reveal, magnetic buttons,
+        // cursor trail on mascot area, and floating particles in hero.
+
+        requestAnimationFrame(() => setTimeout(() => {
+            // ---------- Scroll reveal ----------
+            const revealTargets = [
+                ['section > div > h2', 'up'],
+                ['section > div .serif', 'up'],
+                ['section p', 'up'],
+                ['.discord-preview, [style*="border-radius: 16"]', 'scale'],
+            ];
+            // Generic: tag every section direct child
+            document.querySelectorAll('section').forEach((sec) => {
+                if (!sec.hasAttribute('data-reveal')) sec.setAttribute('data-reveal', 'up');
+            });
+            const io = new IntersectionObserver((entries) => {
+                entries.forEach((e) => {
+                    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+                });
+            }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+            document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
+
+            // ---------- Magnetic buttons ----------
+            document.querySelectorAll('a, button').forEach((el) => {
+                const isCta = (el.textContent || '').match(/Add to Discord|View commands|Read the docs|See commands/);
+                if (!isCta) return;
+                el.classList.add('magnetic', 'glow-ring', 'btn-glitch');
+                el.addEventListener('mousemove', (e) => {
+                    const r = el.getBoundingClientRect();
+                    const x = (e.clientX - r.left - r.width / 2) * 0.25;
+                    const y = (e.clientY - r.top - r.height / 2) * 0.4;
+                    el.style.transform = `translate(${x}px, ${y}px)`;
+                });
+                el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+            });
+
+            // ---------- Cursor trail (sparkles that fade) ----------
+            const canvas = document.getElementById('trail');
+            const ctx = canvas.getContext('2d');
+            const resize = () => { if (canvas) { canvas.width = innerWidth; canvas.height = innerHeight; } };
+            resize(); addEventListener('resize', resize);
+            const trail = [];
+            let active = false;
+            addEventListener('mousemove', (e) => {
+                active = true;
+                trail.push({ x: e.clientX, y: e.clientY, life: 1, size: 2 + Math.random() * 3 });
+                if (trail.length > 40) trail.shift();
+            });
+            let cachedAccent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || 'violet';
+            const accentObserver = new MutationObserver(() => {
+                cachedAccent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || 'violet';
+            });
+            accentObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['style'] });
+            (function loop() {
+                if (!canvas) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (let i = trail.length - 1; i >= 0; i--) {
+                    const p = trail[i];
+                    p.life -= 0.035;
+                    if (p.life <= 0) { trail.splice(i, 1); continue; }
+                    ctx.beginPath();
+                    ctx.fillStyle = cachedAccent;
+                    ctx.globalAlpha = p.life * 0.7;
+                    ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.globalAlpha = 1;
+                requestAnimationFrame(loop);
+            })();
+
+            // ---------- Floating particles in hero ----------
+            const hero = document.querySelector('section');
+            if (hero) {
+                const particles = document.createElement('div');
+                particles.className = 'particles';
+                for (let i = 0; i < 18; i++) {
+                    const p = document.createElement('div');
+                    p.className = 'particle';
+                    p.style.left = Math.random() * 100 + '%';
+                    p.style.top = 100 + Math.random() * 10 + '%';
+                    p.style.setProperty('--tx', (Math.random() - 0.5) * 200 + 'px');
+                    p.style.setProperty('--ty', -(400 + Math.random() * 400) + 'px');
+                    p.style.setProperty('--dur', (12 + Math.random() * 16) + 's');
+                    p.style.animationDelay = -(Math.random() * 20) + 's';
+                    particles.appendChild(p);
+                }
+                hero.appendChild(particles);
+            }
+
+            // ---------- Parallax on hero mascot ----------
+            const mascotWrap = document.querySelector('section [style*="animation: float"]');
+            if (mascotWrap) {
+                addEventListener('scroll', () => {
+                    const y = scrollY * 0.15;
+                    mascotWrap.style.setProperty('transform', `translateY(${-y}px)`);
+                }, { passive: true });
+            }
+
+            // ---------- Tilt and Spotlight on feature visuals + dashboard ----------
+            document.querySelectorAll('[data-tiltcard]').forEach((card) => {
+                
+                card.classList.add('spotlight-card');
+                card.style.transition = 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)';
+                
+                card.addEventListener('mousemove', (e) => {
+                    const r = card.getBoundingClientRect();
+                    
+                    card.style.setProperty('--mouse-x', `${e.clientX - r.left}px`);
+                    card.style.setProperty('--mouse-y', `${e.clientY - r.top}px`);
+                    
+                    const rx = ((e.clientY - r.top) / r.height - 0.5) * -6;
+                    const ry = ((e.clientX - r.left) / r.width - 0.5) * 6;
+                    card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+                });
+                card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+            });
+
+            // ---------- Bootloader Reveal ----------
+            const loader = document.getElementById('boot-loader');
+            const fill = document.getElementById('boot-fill');
+            const bootText = document.getElementById('boot-text');
+            if (loader && fill) {
+                setTimeout(() => { fill.style.width = '30%'; }, 100);
+                setTimeout(() => { fill.style.width = '70%'; bootText.textContent = 'ESTABLISHING CONNECTION...'; }, 400);
+                setTimeout(() => { fill.style.width = '100%'; bootText.textContent = 'SYSTEM READY.'; }, 800);
+                setTimeout(() => { loader.classList.add('hidden'); }, 1200);
+            }
+
+            // ---------- Apply text shine to hero italic ----------
+            const heroItalic = document.querySelector('h1 .serif');
+            if (heroItalic) heroItalic.classList.add('shine');
+
+            // ---------- Scroll progress bar ----------
+            const progressBar = document.getElementById('scroll-progress');
+            if (progressBar) {
+                addEventListener('scroll', () => {
+                    const total = document.body.scrollHeight - innerHeight;
+                    progressBar.style.width = (scrollY / total * 100) + '%';
+                }, { passive: true });
+            }
+
+            // ---------- Stagger reveal for .how-grid and stats grid ----------
+            const staggerObs = new IntersectionObserver((entries) => {
+                entries.forEach((e) => {
+                    if (e.isIntersecting) { e.target.classList.add('in'); staggerObs.unobserve(e.target); }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('[data-stagger]').forEach((el) => staggerObs.observe(el));
+
+            // ---------- Counter pop on stat cells ----------
+            const statCells = document.querySelectorAll('[data-statcell]');
+            const popObs = new IntersectionObserver((entries) => {
+                entries.forEach((e) => {
+                    if (e.isIntersecting) {
+                        e.target.classList.add('counter-pop');
+                        popObs.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.4 });
+            statCells.forEach(el => popObs.observe(el));
+
+            // ---------- Keyboard shortcut toast ----------
+            let kShown = false;
+            addEventListener('keydown', (e) => {
+                if ((e.metaKey || e.ctrlKey) && e.key === 'k' && !kShown) {
+                    kShown = true;
+                    const toast = document.createElement('div');
+                    toast.textContent = '⌘K — jumped to search';
+                    Object.assign(toast.style, {
+                        position: 'fixed', bottom: '96px', left: '50%',
+                        transform: 'translateX(-50%)',
+                        background: 'var(--bg-elev)', border: '1px solid var(--line)',
+                        borderRadius: '8px', padding: '8px 16px',
+                        fontSize: '13px', color: 'var(--fg-dim)',
+                        zIndex: '99999', fontFamily: 'Geist Mono, monospace',
+                        animation: 'fadeUp 0.3s ease',
+                        pointerEvents: 'none',
+                    });
+                    document.body.appendChild(toast);
+                    setTimeout(() => toast.remove(), 2000);
+                }
+            });
+
+        }, 300));
+
+
+
+    </script>
+</body>
+
+</html>
