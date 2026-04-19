@@ -1,0 +1,110 @@
+{
+  "1443557051078021164": {
+    "caseChannelId": "1492683813434687700",
+    "ticketPanelChannelId": "1492683807923376179",
+    "ticket": {
+      "panelTitle": "🎫 Support Tickets",
+      "panelText": "Pick a category below to open a ticket.\n\nTickets are private.\nYou can open up to **3 tickets per hour**.",
+      "categories": [
+        {
+          "id": "general",
+          "label": "📝 General Support",
+          "style": "Primary"
+        },
+        {
+          "id": "report",
+          "label": "🚨 Report User",
+          "style": "Danger"
+        },
+        {
+          "id": "bot",
+          "label": "🤖 Bot Error",
+          "style": "Secondary"
+        },
+        {
+          "id": "other",
+          "label": "❓ Other",
+          "style": "Success"
+        }
+      ],
+      "autoCloseMs": 0,
+      "displayRoleId": null
+    },
+    "autoresponderFilterOn": true,
+    "applyChannelId": null,
+    "applicationsOpen": false,
+    "warnThresholds": [],
+    "nickLocks": {},
+    "embedColors": {
+      "info": 5793266,
+      "success": 5763719,
+      "warning": 16426522,
+      "error": 15548997,
+      "ticket": 5793266,
+      "mod": 16705372,
+      "case": 5793266,
+      "afk": 10181046,
+      "autoresponder": 3066993,
+      "settings": 3447003
+    },
+    "badWords": [],
+    "boosterWelcomeBonus": {
+      "enabled": true,
+      "title": "Server Booster"
+    }
+  },
+  "1492686163310411919": {
+    "caseChannelId": "1492687186460545046",
+    "ticketPanelChannelId": "1492687180898762812",
+    "ticket": {
+      "panelTitle": "🎫 Support Tickets",
+      "panelText": "Pick a category below to open a ticket.\n\nTickets are private.\nYou can open up to **3 tickets per hour**.",
+      "categories": [
+        {
+          "id": "general",
+          "label": "📝 General Support",
+          "style": "Primary"
+        },
+        {
+          "id": "report",
+          "label": "🚨 Report User",
+          "style": "Danger"
+        },
+        {
+          "id": "bot",
+          "label": "🤖 Bot Error",
+          "style": "Secondary"
+        },
+        {
+          "id": "other",
+          "label": "❓ Other",
+          "style": "Success"
+        }
+      ],
+      "autoCloseMs": 0,
+      "displayRoleId": null
+    },
+    "autoresponderFilterOn": true,
+    "applyChannelId": null,
+    "applicationsOpen": false,
+    "warnThresholds": [],
+    "nickLocks": {},
+    "embedColors": {
+      "info": 5793266,
+      "success": 5763719,
+      "warning": 16426522,
+      "error": 15548997,
+      "ticket": 5793266,
+      "mod": 16705372,
+      "case": 5793266,
+      "afk": 10181046,
+      "autoresponder": 3066993,
+      "settings": 3447003
+    },
+    "badWords": [],
+    "boosterWelcomeBonus": {
+      "enabled": true,
+      "title": "Server Booster"
+    }
+  }
+}
