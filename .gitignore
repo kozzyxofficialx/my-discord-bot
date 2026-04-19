@@ -3,3 +3,9 @@ node_modules/
 .DS_Store
 __pycache__/
 *.log
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
