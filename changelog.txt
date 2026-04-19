@@ -1,3 +1,6 @@
+[2026-04-19] feat: add /test command
+- Added /test slash command that replies with "good"
+
 [2026-04-19] feat: add softban command
 - Added ,softban @user [reason] prefix command to mod-bot
 - Bans the user with 7 days of message deletion, then immediately unbans so they can rejoin
