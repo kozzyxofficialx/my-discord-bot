@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KOZZYX ⬡ The Next-Gen Moderation Bot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #050505;
+            --surface-1: rgba(255, 255, 255, 0.03);
+            --surface-2: rgba(255, 255, 255, 0.06);
+            --border: rgba(255, 255, 255, 0.08);
+            --text-main: #FFFFFF;
+            --text-muted: #888888;
+            --accent-1: #00F0FF; /* Electric Blue */
+            --accent-2: #FF0055; /* Neon Pink */
+            --accent-glow: rgba(0, 240, 255, 0.3);
+            
+            --font-head: 'Outfit', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            cursor: default;
+        }
+
+        ::selection {
+            background: var(--accent-1);
+            color: #000;
+        }
+
+        /* ----- BACKGROUND CANVAS ----- */
+        #particles-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+
+        .grain-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            mix-blend-mode: overlay;
+        }
+
+        /* ----- WRAPPER ----- */
+        .wrapper {
+            position: relative;
+            z-index: 10;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 5%;
+        }
+
+        /* ----- NAVBAR ----- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 0;
+            position: relative;
+            z-index: 50;
+        }
+
+        .logo {
+            font-family: var(--font-head);
+            font-weight: 900;
+            font-size: 24px;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-main);
+            text-decoration: none;
+        }
+
+        .logo svg {
+            width: 28px;
+            height: 28px;
+            fill: url(#gradient-accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-main);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-family: var(--font-body);
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            inset: 1px;
+            background: var(--bg);
+            border-radius: 7px;
+            z-index: -1;
+            transition: opacity 0.3s ease;
+            opacity: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px -10px var(--accent-glow);
+        }
+        
+        .btn-primary:hover::before {
+            opacity: 0.1;
+        }
+
+        /* ----- HERO SECTION ----- */
+        .hero {
+            min-height: 85vh;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            align-items: center;
+            gap: 60px;
+            padding-top: 40px;
+        }
+
+        .hero-content h1 {
+            font-family: var(--font-head);
+            font-size: clamp(48px, 6vw, 92px);
+            line-height: 1.05;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            margin-bottom: 24px;
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #FFF, var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .text-neon {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero-content p {
+            font-size: 18px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 40px;
+            max-width: 480px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn-secondary {
+            background: var(--surface-1);
+            color: var(--text-main);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--surface-2);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        /* ----- TERMINAL WINDOW ----- */
+        .terminal {
+            background: rgba(10, 10, 10, 0.7);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05) inset;
+            transform: perspective(1000px) rotateY(-5deg) rotateX(2deg);
+            transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .terminal:hover {
+            transform: perspective(1000px) rotateY(-2deg) rotateX(1deg);
+        }
+
+        .terminal-header {
+            background: rgba(255,255,255,0.03);
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .mac-btn { width: 12px; height: 12px; border-radius: 50%; }
+        .mac-close { background: #FF5F56; }
+        .mac-min { background: #FFBD2E; }
+        .mac-max { background: #27C93F; }
+
+        .terminal-title {
+            font-family: var(--font-code);
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-left: auto;
+            margin-right: auto;
+            transform: translateX(-18px);
+        }
+
+        .terminal-body {
+            padding: 24px;
+            font-family: var(--font-code);
+            font-size: 14px;
+            height: 340px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .term-line {
+            display: flex; gap: 12px;
+            opacity: 0; transform: translateY(10px);
+            animation: termIn 0.3s forwards;
+        }
+
+        @keyframes termIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .term-prompt { color: var(--accent-1); font-weight: 500; }
+        .term-cmd { color: var(--text-main); }
+        .term-sys { color: var(--text-muted); }
+        .term-success { color: #27C93F; }
+        .term-warn { color: #FFBD2E; }
+        .term-danger { color: #FF5F56; }
+
+        /* ----- BENTO BOX FEATURES ----- */
+        .features { padding: 120px 0; }
+        .section-tag {
+            font-family: var(--font-code);
+            font-size: 12px;
+            color: var(--accent-1);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+            display: inline-block;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 100px;
+            background: rgba(0, 240, 255, 0.05);
+        }
+        .section-title {
+            font-family: var(--font-head);
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 60px;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 300px);
+            gap: 24px;
+        }
+
+        .bento-card {
+            background: var(--surface-1);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bento-card:hover {
+            border-color: rgba(255,255,255,0.2);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .bento-title { font-size: 24px; font-weight: 600; margin-top: auto; margin-bottom: 8px; }
+        .bento-desc { color: var(--text-muted); font-size: 15px; }
+        
+        .card-large { grid-column: span 2; }
+        .card-tall { grid-row: span 2; }
+
+        /* ----- COMMANDS SEARCH ----- */
+        .commands-section { padding: 100px 0; }
+        .search-container {
+            margin-bottom: 40px;
+            position: relative;
+        }
+        .search-input {
+            width: 100%;
+            background: var(--surface-1);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px 24px;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .search-input:focus { border-color: var(--accent-1); background: var(--surface-2); }
+
+        .cmd-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+        .cmd-card {
+            background: var(--surface-1);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.2s;
+        }
+        .cmd-card:hover { background: var(--surface-2); border-color: var(--text-muted); }
+        .cmd-name { font-family: var(--font-code); color: var(--accent-1); font-weight: 600; margin-bottom: 4px; }
+        .cmd-desc { font-size: 14px; color: var(--text-muted); }
+
+        /* FOOTER */
+        footer { padding: 100px 0 60px; text-align: center; border-top: 1px solid var(--border); margin-top: 80px; }
+        .footer-logo { font-family: var(--font-head); font-weight: 800; font-size: 32px; margin-bottom: 12px; display: block; }
+        .footer-links { display: flex; justify-content: center; gap: 24px; margin-top: 32px; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; }
+
+        @media (max-width: 900px) {
+            .hero { grid-template-columns: 1fr; text-align: center; }
+            .hero-content p { margin: 0 auto 40px; }
+            .hero-buttons { justify-content: center; }
+            .bento-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
+            .card-large, .card-tall { grid-column: span 1; grid-row: span 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <svg width="0" height="0" style="position:absolute;">
+        <defs>
+            <linearGradient id="gradient-accent" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00F0FF" />
+                <stop offset="100%" stop-color="#FF0055" />
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <canvas id="particles-bg"></canvas>
+    <div class="grain-overlay"></div>
+
+    <div class="wrapper">
+        <nav>
+            <a href="#" class="logo">
+                <svg viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5zM12 10l-2.5 5h5L12 10z"/></svg>
+                KOZZYX
+            </a>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#commands">Commands</a>
+                <a href="https://discord.com" target="_blank">Invite</a>
+                <a href="#" class="btn-primary">Dashboard</a>
+            </div>
+        </nav>
+
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Moderation, <br><span class="text-neon">Redefined.</span></h1>
+                <p>Advanced security and AI tools for your Discord community. Built for speed, scale, and seamless automation.</p>
+                <div class="hero-buttons">
+                    <a href="#" class="btn-primary">Add to Discord</a>
+                    <a href="#features" class="btn-secondary">Learn More</a>
+                </div>
+            </div>
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="mac-btn mac-close"></div>
+                    <div class="mac-btn mac-min"></div>
+                    <div class="mac-btn mac-max"></div>
+                    <div class="terminal-title">kozzyx-kernel ~ zsh</div>
+                </div>
+                <div class="terminal-body" id="term-body"></div>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <span class="section-tag">Powerful Core</span>
+            <h2 class="section-title">Everything you need.</h2>
+            <div class="bento-grid">
+                <div class="bento-card card-large">
+                    <h3 class="bento-title">Smart Automod</h3>
+                    <p class="bento-desc">Detect spam, phishing, and toxicity before they hit the chat.</p>
+                </div>
+                <div class="bento-card">
+                    <h3 class="bento-title">Tickets</h3>
+                    <p class="bento-desc">High-speed support channels.</p>
+                </div>
+                <div class="bento-card card-tall">
+                    <h3 class="bento-title">Claude AI</h3>
+                    <p class="bento-desc">Stateful, context-aware AI conversations embedded in your server.</p>
+                </div>
+                <div class="bento-card card-large">
+                    <h3 class="bento-title">Advanced Logs</h3>
+                    <p class="bento-desc">See every event with crystal clarity and deep audit trails.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="commands" class="commands-section">
+            <span class="section-tag">Interaction</span>
+            <h2 class="section-title">Browse Commands</h2>
+            <div class="search-container">
+                <input type="text" id="cmd-search" class="search-input" placeholder="Search commands (e.g. /ban, /ask)...">
+            </div>
+            <div class="cmd-grid" id="cmd-grid">
+                <!-- Data injected here -->
+            </div>
+        </section>
+
+        <footer>
+            <span class="footer-logo">KOZZYX</span>
+            <p>Empowering 10,000+ communities worldwide.</p>
+            <div class="footer-links">
+                <a href="/privacy">Privacy</a>
+                <a href="/terms">Terms</a>
+                <a href="https://discord.gg">Support</a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        /*COMMANDS-DATA-BEGIN*/
+        const COMMANDS = [
+            // Automatically Synced Commands
+            {
+                        "cmd": "/afk",
+                        "args": "",
+                        "desc": "Set your AFK status",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/ask",
+                        "args": "",
+                        "desc": "Ask Claude AI a question",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/avatar",
+                        "args": "",
+                        "desc": "Show a user's avatar",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/modhelp",
+                        "args": "",
+                        "desc": "Show moderation help pages",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/summarize",
+                        "args": "",
+                        "desc": "Summarize the last few messages",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/features",
+                        "args": "",
+                        "desc": "Show bot features pages",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/translate",
+                        "args": "",
+                        "desc": "Translate text using AI",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/vc",
+                        "args": "",
+                        "desc": "Manage your dynamic voice channel.",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/serverinfo",
+                        "args": "",
+                        "desc": "Show info about this server",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/plugins",
+                        "args": "",
+                        "desc": "Enable or disable optional bot features.",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/generate_rules",
+                        "args": "",
+                        "desc": "Use AI to generate a custom rules embed for this server.",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/Flux (default)",
+                        "args": "",
+                        "desc": "Generate an image using Pollinations.ai",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/define",
+                        "args": "",
+                        "desc": "Define an English word",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/wipe_server",
+                        "args": "",
+                        "desc": "\u26a0\ufe0f DANGER: Delete ALL channels and roles. Server owner only.",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/invites",
+                        "args": "",
+                        "desc": "Check invite stats for yourself or another user.",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/help",
+                        "args": "",
+                        "desc": "Show help pages",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/todo",
+                        "args": "",
+                        "desc": "Manage your simple to-do list",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/remind",
+                        "args": "",
+                        "desc": "Set a reminder",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/nuke",
+                        "args": "",
+                        "desc": "Delete messages from this channel.",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/banner",
+                        "args": "",
+                        "desc": "Show a user's banner",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/\ud83d\udc51 Owner",
+                        "args": "",
+                        "desc": "Everything: roles, info, community, voice, support, staff tools.",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/Full Community Server",
+                        "args": "",
+                        "desc": "Delete everything server_setup created and optionally redo it.",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/decide",
+                        "args": "",
+                        "desc": "Pick between options",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/clear_memory",
+                        "args": "",
+                        "desc": "Clear Claude's conversation history for you in this server.",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/userinfo",
+                        "args": "",
+                        "desc": "Show info about a user",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/appeal",
+                        "args": "",
+                        "desc": "Submit a ban appeal to a server.",
+                        "cat": "utility",
+                        "popular": false
+            },
+            {
+                        "cmd": "/afk",
+                        "args": "",
+                        "desc": "Set your AFK status",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/ask",
+                        "args": "",
+                        "desc": "Ask Claude AI a question",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/avatar",
+                        "args": "",
+                        "desc": "Show a user's avatar",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/modhelp",
+                        "args": "",
+                        "desc": "Show moderation help pages",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/summarize",
+                        "args": "",
+                        "desc": "Summarize the last few messages",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/features",
+                        "args": "",
+                        "desc": "Show bot features pages",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/translate",
+                        "args": "",
+                        "desc": "Translate text using AI",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/vc",
+                        "args": "",
+                        "desc": "Manage your dynamic voice channel.",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/serverinfo",
+                        "args": "",
+                        "desc": "Show info about this server",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/plugins",
+                        "args": "",
+                        "desc": "Enable or disable optional bot features.",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/generate_rules",
+                        "args": "",
+                        "desc": "Use AI to generate a custom rules embed for this server.",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/Flux (default)",
+                        "args": "",
+                        "desc": "Generate an image using Pollinations.ai",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/define",
+                        "args": "",
+                        "desc": "Define an English word",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/wipe_server",
+                        "args": "",
+                        "desc": "\u26a0\ufe0f DANGER: Delete ALL channels and roles. Server owner only.",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/invites",
+                        "args": "",
+                        "desc": "Check invite stats for yourself or another user.",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/help",
+                        "args": "",
+                        "desc": "Show help pages",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/todo",
+                        "args": "",
+                        "desc": "Manage your simple to-do list",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/remind",
+                        "args": "",
+                        "desc": "Set a reminder",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/nuke",
+                        "args": "",
+                        "desc": "Delete messages from this channel.",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/banner",
+                        "args": "",
+                        "desc": "Show a user's banner",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/\ud83d\udc51 Owner",
+                        "args": "",
+                        "desc": "Everything: roles, info, community, voice, support, staff tools.",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/Full Community Server",
+                        "args": "",
+                        "desc": "Delete everything server_setup created and optionally redo it.",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/decide",
+                        "args": "",
+                        "desc": "Pick between options",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/clear_memory",
+                        "args": "",
+                        "desc": "Clear Claude's conversation history for you in this server.",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/userinfo",
+                        "args": "",
+                        "desc": "Show info about a user",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/appeal",
+                        "args": "",
+                        "desc": "Submit a ban appeal to a server.",
+                        "cat": "tickets",
+                        "popular": false
+            },
+            {
+                        "cmd": "/modhelp",
+                        "args": "",
+                        "desc": "Show moderation help pages",
+                        "cat": "mod",
+                        "popular": false
+            },
+            {
+                        "cmd": "/appeal",
+                        "args": "",
+                        "desc": "Submit a ban appeal to a server.",
+                        "cat": "mod",
+                        "popular": false
+            },
+            {
+                        "cmd": "/ask",
+                        "args": "",
+                        "desc": "Ask Claude AI a question",
+                        "cat": "ai",
+                        "popular": false
+            },
+            {
+                        "cmd": "/summarize",
+                        "args": "",
+                        "desc": "Summarize the last few messages",
+                        "cat": "ai",
+                        "popular": false
+            },
+            {
+                        "cmd": "/translate",
+                        "args": "",
+                        "desc": "Translate text using AI",
+                        "cat": "ai",
+                        "popular": false
+            },
+            {
+                        "cmd": "/generate_rules",
+                        "args": "",
+                        "desc": "Use AI to generate a custom rules embed for this server.",
+                        "cat": "ai",
+                        "popular": false
+            },
+            {
+                        "cmd": "/Flux (default)",
+                        "args": "",
+                        "desc": "Generate an image using Pollinations.ai",
+                        "cat": "ai",
+                        "popular": false
+            },
+            {
+                        "cmd": "/clear_memory",
+                        "args": "",
+                        "desc": "Clear Claude's conversation history for you in this server.",
+                        "cat": "ai",
+                        "popular": false
+            }
+];
+        /*COMMANDS-DATA-END*/
+
+        // Render Commands
+        const grid = document.getElementById('cmd-grid');
+        const search = document.getElementById('cmd-search');
+
+        function render(filter = '') {
+            grid.innerHTML = '';
+            const filtered = COMMANDS.filter(c => 
+                c.cmd.toLowerCase().includes(filter.toLowerCase()) || 
+                c.desc.toLowerCase().includes(filter.toLowerCase())
+            );
+            filtered.forEach(c => {
+                const card = document.createElement('div');
+                card.className = 'cmd-card';
+                card.innerHTML = `<div class="cmd-name">${c.cmd}</div><div class="cmd-desc">${c.desc}</div>`;
+                grid.appendChild(card);
+            });
+        }
+
+        search.addEventListener('input', (e) => render(e.target.value));
+        render();
+
+        // Terminal Effect
+        const termLines = [
+            { type: 'cmd', text: '/setup' },
+            { type: 'sys', text: 'Initializing Kozzyx Kernel...' },
+            { type: 'success', text: 'Modules loaded. Anti-raid active.' },
+            { type: 'warn', text: 'Detected 12 suspicious joins. Quarantining...' },
+            { type: 'success', text: 'Done. Server stabilized.' }
+        ];
+        const termBody = document.getElementById('term-body');
+        async function runTerminal() {
+            for(let line of termLines) {
+                const block = document.createElement('div');
+                block.className = 'term-line';
+                block.innerHTML = `<span class="term-prompt">❯</span> <span class="term-${line.type}">${line.text}</span>`;
+                termBody.appendChild(block);
+                await new Promise(r => setTimeout(r, 1500));
+            }
+        }
+        runTerminal();
+
+        // Particles
+        const canvas = document.getElementById('particles-bg');
+        const ctx = canvas.getContext('2d');
+        let w, h, pts = [];
+        function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+        window.onresize = resize; resize();
+        class Pt {
+            constructor() { 
+                this.x = Math.random() * w; this.y = Math.random() * h;
+                this.vx = (Math.random()-0.5)*0.5; this.vy = (Math.random()-0.5)*0.5;
+            }
+            draw() {
+                this.x += this.vx; this.y += this.vy;
+                if(this.x<0 || this.x>w) this.vx*=-1;
+                if(this.y<0 || this.y>h) this.vy*=-1;
+                ctx.fillStyle = 'rgba(0, 240, 255, 0.3)';
+                ctx.beginPath(); ctx.arc(this.x, this.y, 1.5, 0, Math.PI*2); ctx.fill();
+            }
+        }
+        for(let i=0; i<60; i++) pts.push(new Pt());
+        function anim() {
+            ctx.clearRect(0,0,w,h);
+            pts.forEach(p => p.draw());
+            requestAnimationFrame(anim);
+        }
+        anim();
+    </script>
+</body>
+</html>
