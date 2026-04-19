@@ -1,3 +1,6 @@
+[2026-04-19] feat: add /stats command
+- Shows server count, ping, uptime, memory usage, Node.js version, discord.js version
+
 [2026-04-19] feat: add /pong command
 - Added /pong slash command that replies with "/ping"
 
