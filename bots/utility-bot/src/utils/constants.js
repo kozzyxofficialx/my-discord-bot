@@ -16,6 +16,7 @@ export const funHelpCommands = [
     "/hug — Send a hug",
     "/roast — Roast someone",
     "/topic — Conversation topic",
+    "/random — Generate something random",
 ];
 
 export const featureList = [
