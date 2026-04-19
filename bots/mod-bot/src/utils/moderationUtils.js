@@ -92,6 +92,36 @@ export async function doBan(message, target, reason) {
     }
 }
 
+export async function doSoftban(message, target, reason) {
+    try {
+        await trySendModDM({
+            user: target,
+            guild: message.guild,
+            type: "mod",
+            title: "🔨 You were softbanned",
+            description: "You were temporarily banned to purge your recent messages. You can rejoin with an invite link.",
+            moderatorTag: message.author.tag,
+            reason,
+        });
+        await message.guild.members.ban(target.id, { deleteMessageSeconds: 7 * 24 * 60 * 60, reason });
+        await message.guild.members.unban(target.id, "Softban — auto unban");
+
+        await replyEmbed(message, {
+            type: "mod",
+            title: "🔨 Softban",
+            description: `Softbanned **${target.tag}** — messages purged, user can rejoin.\n**Reason:** ${reason}`,
+        });
+
+        await postCase(message.guild, caseEmbed(message.guild.id, "🔨 Softban", [
+            `**User:** ${target.tag}`,
+            `**By:** ${message.author.tag}`,
+            `**Reason:** ${reason}`,
+        ]), message.channel.id);
+    } catch {
+        return replyEmbed(message, { type: "error", title: "❌ Softban Failed", description: "Failed to softban that user." });
+    }
+}
+
 export async function doTimeout(message, target, ms) {
     try {
         const minutes = Math.round(ms / 60000);
