@@ -1,0 +1,48 @@
+name: Sync Bot Commands to Website
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/**' # Only runs when you change bot code
+
+jobs:
+  update-web:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Extract Commands and Update HTML
+        run: |
+          # 1. Scans your src folder for command data
+          # This looks for 'name:' and 'description:' lines in your .js files
+          COMMANDS_JSON=$(grep -rE "name:|description:" src/ --include="*.js" | awk -F: '{print $2}' | sed 's/[",]//g' | xargs -n2 | jq -R -s -c 'split("\n") | map(select(length > 0) | split(" ") | {cmd: ("/" + .[0]), desc: .[1], cat: "auto"})')
+          
+          # 2. Injects that data into the index.html
+          # This replaces the old list with the new automated list
+          python3 -c "
+          import json
+          with open('index.html', 'r') as f:
+              html = f.read()
+          
+          start_marker = 'const COMMANDS = ['
+          end_marker = '];'
+          
+          new_data = 'const COMMANDS = ' + json.dumps($COMMANDS_JSON, indent=4) + ';'
+          
+          import re
+          updated_html = re.sub(r'const COMMANDS = \[.*?\];', new_data, html, flags=re.DOTALL)
+          
+          with open('index.html', 'w') as f:
+              f.write(updated_html)
+          "
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "KozzyX-Auto-Sync"
+          git config --global user.email "bot@kozzyx.app"
+          git add index.html
+          git commit -m "auto: sync bot commands to website" || echo "No changes to commit"
+          git push origin main
