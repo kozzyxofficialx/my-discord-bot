@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Privacy Policy · kozzyx</title>
+<meta name="description" content="What data kozzyx stores, why, and how long." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0b0d;
+    --bg-elev: #131316;
+    --bg-elev-2: #1a1a1f;
+    --fg: #ededf0;
+    --fg-dim: #a0a0a8;
+    --fg-faint: #5a5a62;
+    --line: #242428;
+    --line-soft: #1c1c20;
+    --accent: oklch(0.72 0.17 280);
+    --accent-soft: oklch(0.72 0.17 280 / 0.14);
+    --accent-fg: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); font-family: 'Geist', -apple-system, system-ui, sans-serif; font-feature-settings: 'ss01', 'cv01'; -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; line-height: 1.6; }
+  a { color: inherit; text-decoration: none; }
+  .mono { font-family: 'Geist Mono', ui-monospace, monospace; }
+  .serif { font-family: 'Instrument Serif', serif; }
+  ::selection { background: var(--accent); color: var(--accent-fg); }
+
+  .grain { position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.035; mix-blend-mode: overlay; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); }
+
+  /* ============ AURORA BACKGROUND ============ */
+  .aurora {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+  }
+  .aurora::before, .aurora::after {
+      content: '';
+      position: absolute;
+      width: 70vw; height: 70vw;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.35;
+      will-change: transform;
+  }
+  .aurora::before {
+      background: radial-gradient(circle, var(--accent) 0%, transparent 60%);
+      top: -20%; left: -20%;
+      animation: auroraA 22s ease-in-out infinite alternate;
+  }
+  .aurora::after {
+      background: radial-gradient(circle, oklch(0.6 0.22 220) 0%, transparent 60%);
+      bottom: -30%; right: -20%;
+      animation: auroraB 28s ease-in-out infinite alternate;
+      opacity: 0.22;
+  }
+  @keyframes auroraA {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30vw, 20vh) scale(1.2); }
+  }
+  @keyframes auroraB {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-25vw, -20vh) scale(1.3); }
+  }
+
+  /* ============ 3D CYBER GRID ============ */
+  .cyber-grid {
+      position: absolute;
+      bottom: -50vh; left: -50vw;
+      width: 200vw; height: 100vh;
+      background-image: 
+          linear-gradient(to right, var(--line-soft) 1px, transparent 1px),
+          linear-gradient(to bottom, var(--line-soft) 1px, transparent 1px);
+      background-size: 60px 60px;
+      transform: perspective(600px) rotateX(75deg);
+      animation: gridMove 10s linear infinite;
+      opacity: 0.2;
+      z-index: 0;
+      pointer-events: none;
+      -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 80%);
+      mask-image: linear-gradient(to top, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 80%);
+  }
+  @keyframes gridMove {
+      0% { transform: perspective(600px) rotateX(75deg) translateY(0); }
+      100% { transform: perspective(600px) rotateX(75deg) translateY(60px); }
+  }
+
+  .page { 
+      max-width: 860px; 
+      margin: 40px auto; 
+      padding: 60px 40px 100px; 
+      position: relative; 
+      z-index: 10; 
+      background: rgba(19, 19, 22, 0.4);
+      backdrop-filter: blur(24px) saturate(140%);
+      -webkit-backdrop-filter: blur(24px) saturate(140%);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+  }
+
+  @media (max-width: 640px) {
+      .page { margin: 0; border-radius: 0; border: none; padding: 32px 20px 80px; }
+  }
+
+  .backlink {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; color: var(--fg-faint);
+    padding: 8px 0; margin-bottom: 32px;
+    transition: color 0.15s;
+  }
+  .backlink:hover { color: var(--fg); }
+
+  .eyebrow {
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 11px; color: var(--fg-faint);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 500; letter-spacing: -0.035em; line-height: 1;
+    margin: 0 0 20px;
+  }
+  h1 .italic {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic; font-weight: 400; color: var(--accent);
+  }
+
+  .meta {
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 12px; color: var(--fg-faint);
+    margin-bottom: 56px; padding-bottom: 32px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  section { margin-bottom: 48px; }
+
+  h2 {
+    font-size: 22px; font-weight: 500;
+    letter-spacing: -0.02em; margin: 0 0 16px;
+    display: flex; align-items: baseline; gap: 14px;
+  }
+  h2 .num {
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 11px; font-weight: 400;
+    color: var(--fg-faint); letter-spacing: 0.08em;
+    min-width: 32px;
+  }
+
+  p { color: var(--fg-dim); margin: 0 0 14px; font-size: 15px; line-height: 1.65; }
+  p:last-child { margin-bottom: 0; }
+  p strong { color: var(--fg); font-weight: 500; }
+
+  ul { list-style: none; padding: 0; margin: 0 0 14px; }
+  ul li {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 10px 0;
+    border-top: 1px solid var(--line-soft);
+    color: var(--fg-dim);
+    font-size: 14px; line-height: 1.55;
+  }
+  ul li:first-child { border-top: none; padding-top: 4px; }
+  ul li::before {
+    content: "→"; color: var(--accent);
+    flex-shrink: 0; margin-top: 2px;
+  }
+  ul li strong { color: var(--fg); font-weight: 500; }
+
+  code {
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 0.88em;
+    padding: 2px 6px;
+    background: var(--bg-elev-2);
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+    color: var(--accent);
+  }
+
+  .data-table {
+    margin-top: 8px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--bg-elev);
+  }
+  .data-row {
+    display: grid;
+    grid-template-columns: 160px 1fr 1fr;
+    gap: 16px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 13px;
+  }
+  .data-row:last-child { border-bottom: none; }
+  .data-row.head {
+    background: var(--bg-elev-2);
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 10px;
+    color: var(--fg-faint);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .data-row .k { color: var(--fg); font-weight: 500; }
+  .data-row .v, .data-row .why { color: var(--fg-dim); line-height: 1.5; }
+  @media (max-width: 640px) {
+    .data-row { grid-template-columns: 1fr; gap: 6px; padding: 16px; }
+    .data-row.head { display: none; }
+    .data-row .k { font-size: 14px; }
+    .data-row .v, .data-row .why { font-size: 12px; }
+  }
+
+  .callout {
+    border-left: 2px solid var(--accent);
+    padding: 14px 0 14px 20px;
+    margin: 20px 0;
+    color: var(--fg-dim);
+    font-size: 14px;
+    background: linear-gradient(90deg, var(--accent-soft), transparent 40%);
+    border-radius: 0 6px 6px 0;
+  }
+
+  a.link {
+    color: var(--accent);
+    border-bottom: 1px solid color-mix(in oklab, var(--accent) 40%, transparent);
+    transition: border-color 0.15s;
+  }
+  a.link:hover { border-bottom-color: var(--accent); }
+
+  .bot-footer {
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 1px solid var(--line-soft);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 12px;
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 11px;
+    color: var(--fg-faint);
+  }
+  .bot-footer a { color: var(--fg-dim); transition: color 0.15s; }
+  .bot-footer a:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="aurora">
+    <div class="cyber-grid"></div>
+</div>
+<div class="grain"></div>
+
+<div class="page">
+
+  <a href="/" class="backlink">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Back to kozzyx
+  </a>
+
+  <div class="eyebrow">§ legal — privacy</div>
+  <h1>Privacy <span class="italic">policy</span>.</h1>
+  <div class="meta">Last updated Apr 18, 2026 · effective immediately</div>
+
+  <section>
+    <h2><span class="num">§ 01</span> Overview</h2>
+    <p>This policy explains what data kozzyx collects, why, how long it keeps it, and what rights you have over it.</p>
+    <p>By adding kozzyx to your Discord server or using any of its commands, you agree to the collection and use of data described here. If you don't agree, remove the bot from your server.</p>
+  </section>
+
+  <section>
+    <h2><span class="num">§ 02</span> What gets stored</h2>
+    <p>Only what's needed to make features work. Full breakdown:</p>
+    <div class="data-table">
+      <div class="data-row head">
+        <div>Data</div><div>What's stored</div><div>Why</div>
+      </div>
+      <div class="data-row">
+        <div class="k">User ID</div>
+        <div class="v">Discord snowflake ID</div>
+        <div class="why">Identify you across features</div>
+      </div>
+      <div class="data-row">
+        <div class="k">AFK status</div>
+        <div class="v">Reason text, timestamp</div>
+        <div class="why">Show AFK notice when you're mentioned</div>
+      </div>
+      <div class="data-row">
+        <div class="k">Warnings</div>
+        <div class="v">User ID, server ID, reason, history</div>
+        <div class="why">Moderation warn system</div>
+      </div>
+      <div class="data-row">
+        <div class="k">Mod audit log</div>
+        <div class="v">Action type, target, executor, reason</div>
+        <div class="why">Staff audit trail within your server</div>
+      </div>
+      <div class="data-row">
+        <div class="k">Appeals</div>
+        <div class="v">User ID, server ID, reason, status</div>
+        <div class="why">Ban/warn appeal submissions</div>
+      </div>
+      <div class="data-row">
+        <div class="k">Invite tracking</div>
+        <div class="v">Inviter ID, invite code, join timestamp</div>
+        <div class="why">Track who invited which members</div>
+      </div>
+      <div class="data-row">
+        <div class="k">AI chat history</div>
+        <div class="v">Message history per user per server</div>
+        <div class="why">Context for <code>/ask</code></div>
+      </div>
+      <div class="data-row">
+        <div class="k">Booster roles</div>
+        <div class="v">User ID, role ID</div>
+        <div class="why">Persist custom booster roles</div>
+      </div>
+      <div class="data-row">
+        <div class="k">Voice channels</div>
+        <div class="v">Channel ID, owner ID, server ID</div>
+        <div class="why">Track auto-created voice channels</div>
+      </div>
+      <div class="data-row">
+        <div class="k">Server settings</div>
+        <div class="v">Guild ID, configuration JSON</div>
+        <div class="why">Per-server plugin and bot settings</div>
+      </div>
+      <div class="data-row">
+        <div class="k">Autoresponders</div>
+        <div class="v">Guild ID, trigger, response</div>
+        <div class="why">Automated message responses</div>
+      </div>
+      <div class="data-row">
+        <div class="k">Tickets</div>
+        <div class="v">Ticket ID, channel, creator, status</div>
+        <div class="why">Support ticket system</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">§ 03</span> AI features</h2>
+    <p>The <code>/ask</code>, <code>/imagine</code>, and <code>/translate</code> commands use a third-party AI API (Anthropic / Claude). When you use them:</p>
+    <ul>
+      <li>Your message content gets sent to the AI provider to generate a response.</li>
+      <li>Conversation history is stored locally to maintain context between messages.</li>
+      <li>You can delete your AI chat history any time with <code>/clear_memory</code>.</li>
+      <li>The AI provider has its own data retention policy — see <a class="link" href="https://www.anthropic.com/privacy" target="_blank" rel="noopener">Anthropic's Privacy Policy</a>.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">§ 04</span> How data is used</h2>
+    <ul>
+      <li>To operate and deliver the features listed above.</li>
+      <li>To let server admins moderate their own communities.</li>
+      <li><strong>Never</strong> sold, shared with advertisers, or used for any commercial purpose.</li>
+      <li>Not shared with any third party except the AI provider (only when you explicitly use AI commands).</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">§ 05</span> Where it lives</h2>
+    <p>All data is stored in a local SQLite database on the server hosting kozzyx. No cloud database, no shared storage. Access is limited to the bot process.</p>
+    <div class="callout">
+      Server settings and moderation data persist as long as the bot stays in your server. Personal user data (AFK, AI history, warnings) persists until manually deleted or the bot is removed.
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">§ 06</span> Deleting your data</h2>
+    <p>You can request deletion at any time:</p>
+    <ul>
+      <li>Use <code>/clear_memory</code> to delete your AI chat history.</li>
+      <li>AFK status clears automatically when you send a message.</li>
+      <li>For full deletion of anything else, contact the bot owner (see § 09).</li>
+    </ul>
+    <p>Server admins can request full removal of their server's data by removing the bot and contacting the owner.</p>
+  </section>
+
+  <section>
+    <h2><span class="num">§ 07</span> Children's privacy</h2>
+    <p>kozzyx is not directed at children under 13. No data is knowingly collected from anyone under 13. If you believe a minor's data has been collected, contact us and it'll be removed.</p>
+  </section>
+
+  <section>
+    <h2><span class="num">§ 08</span> Changes to this policy</h2>
+    <p>This policy may be updated over time. When it is, the <strong>Last updated</strong> date at the top changes. Continued use of kozzyx after changes means you accept the new policy.</p>
+  </section>
+
+  <section>
+    <h2><span class="num">§ 09</span> Contact</h2>
+    <p>Questions, data deletion requests, or anything else:</p>
+    <ul>
+      <li><strong>Discord</strong> — <a class="link" href="https://discord.gg/fPG29xv7EA" target="_blank" rel="noopener">support server</a></li>
+      <li><strong>Email</strong> — <a class="link" href="mailto:ckazros@proton.me">ckazros@proton.me</a></li>
+    </ul>
+  </section>
+
+  <div class="bot-footer">
+    <span>© 2026 kozzyx · not affiliated with Discord Inc.</span>
+    <span><a href="/">home</a> · <a href="/terms">terms</a></span>
+  </div>
+
+</div>
+</body>
+</html>

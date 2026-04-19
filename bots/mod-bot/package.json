@@ -1,0 +1,17 @@
+{
+  "name": "mod-bot",
+  "version": "1.0.0",
+  "description": "Moderation-only Discord bot — bans, kicks, warns, anti-raid, audit log, appeals.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.17.3",
+    "dotenv": "^16.4.7",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
+  }
+}
