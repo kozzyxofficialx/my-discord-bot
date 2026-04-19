@@ -1,3 +1,6 @@
+[2026-04-19] feat: add /pong command
+- Added /pong slash command that replies with "/ping"
+
 [2026-04-19] feat: add /test command
 - Added /test slash command that replies with "good"
 
