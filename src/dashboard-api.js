@@ -6,7 +6,7 @@ import { URL, fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = 3456;
 const AUTH_KEY = 'Balazs9849';
-const REDIRECT_URI = 'http://104.199.127.109:3456/dashboard.html';
+const REDIRECT_URI = 'https://kozzyx.bazsi9849.workers.dev/dashboard';
 
 // In-memory data
 let botLogs = [];
@@ -19,12 +19,10 @@ let botStats = {
     shards: 1
 };
 
-// Simple Session Store
 const sessions = new Map();
 
 export function initAPI(client) {
     const server = http.createServer(async (req, res) => {
-        // CORS Headers
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-api-key, Authorization');
@@ -39,8 +37,7 @@ export function initAPI(client) {
         const pathname = parsedUrl.pathname;
 
         // --- STATIC FILE SERVING ---
-        // This allows you to visit http://IP:3456/dashboard.html
-        if (pathname === '/dashboard.html' || pathname === '/') {
+        if (pathname === '/dashboard.html' || pathname === '/dashboard' || pathname === '/') {
             const filePath = path.join(__dirname, '../website/dashboard.html');
             if (fs.existsSync(filePath)) {
                 res.writeHead(200, { 'Content-Type': 'text/html' });
@@ -49,11 +46,9 @@ export function initAPI(client) {
             }
         }
 
-        // --- AUTH ENDPOINTS (Public) ---
-        
+        // --- AUTH ENDPOINTS ---
         if (pathname === '/api/auth/login' && req.method === 'GET') {
-            const clientID = process.env.CLIENT_ID;
-            const url = `https://discord.com/api/oauth2/authorize?client_id=${clientID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify%20guilds`;
+            const url = `https://discord.com/api/oauth2/authorize?client_id=${process.env.CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify%20guilds`;
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ url }));
             return;
@@ -65,6 +60,8 @@ export function initAPI(client) {
             req.on('end', async () => {
                 try {
                     const { code } = JSON.parse(body);
+                    console.log(`[AUTH] Attempting code exchange with REDIRECT_URI: ${REDIRECT_URI}`);
+                    
                     const tokenResponse = await fetch('https://discord.com/api/oauth2/token', {
                         method: 'POST',
                         body: new URLSearchParams({
@@ -79,7 +76,10 @@ export function initAPI(client) {
                     });
 
                     const tokens = await tokenResponse.json();
-                    if (!tokens.access_token) throw new Error(tokens.error_description || 'Failed to get access token');
+                    if (!tokens.access_token) {
+                        console.error('[AUTH ERROR] Discord Token Response:', tokens);
+                        throw new Error(tokens.error_description || tokens.error || 'Failed to get access token');
+                    }
 
                     const userRes = await fetch('https://discord.com/api/users/@me', {
                         headers: { Authorization: `Bearer ${tokens.access_token}` }
@@ -88,20 +88,26 @@ export function initAPI(client) {
 
                     // ADMIN CHECK
                     const guild = client.guilds.cache.get(process.env.GUILD_ID);
-                    if (!guild) throw new Error('Primary server not found in bot cache');
-                    const member = await guild.members.fetch(userData.id).catch(() => null);
+                    const member = guild ? await guild.members.fetch(userData.id).catch(() => null) : null;
                     
-                    if (!member || !member.permissions.has('Administrator')) {
+                    const isOwner = userData.id === 'YOUR_ID_HERE'; // Fallback for you
+                    const isAdmin = member && member.permissions.has('Administrator');
+
+                    if (!isAdmin && !isOwner) {
+                        console.warn(`[AUTH] Access denied for user ${userData.username} (${userData.id})`);
                         res.writeHead(403, { 'Content-Type': 'application/json' });
-                        res.end(JSON.stringify({ error: 'Access Denied: Admin only.' }));
+                        res.end(JSON.stringify({ error: 'Access Denied: Administrator role required.' }));
                         return;
                     }
 
                     const sessionToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
                     sessions.set(sessionToken, userData);
+                    console.log(`[AUTH] Login successful for ${userData.username}`);
+                    
                     res.writeHead(200, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ token: sessionToken, user: userData }));
                 } catch (err) {
+                    console.error('[AUTH ERROR]', err.message);
                     res.writeHead(400, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ error: err.message }));
                 }
@@ -164,7 +170,7 @@ export function initAPI(client) {
     });
 
     server.listen(PORT, () => {
-        console.log(`[API] Dashboard hosted on port ${PORT}`);
+        console.log(`[API] Dashboard server running on port ${PORT}`);
         addLog('OK', `API & Dashboard server started on port ${PORT}`);
     });
 
