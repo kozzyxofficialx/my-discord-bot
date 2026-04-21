@@ -1,0 +1,886 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>kozzyx — control panel</title>
+    <meta name="description"
+        content="kozzyx control panel: full browser-based management for your Discord bot. Moderation, messaging, roles, config, and live logs." />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect x='6' y='8' width='28' height='26' rx='8' fill='%238b5cf6'/><rect x='11' y='13' width='18' height='13' rx='4' fill='%230b0b0d'/><circle cx='16' cy='19.5' r='1.6' fill='white'/><circle cx='24' cy='19.5' r='1.6' fill='white'/><line x1='20' y1='8' x2='20' y2='4' stroke='%238b5cf6' stroke-width='1.5' stroke-linecap='round'/><circle cx='20' cy='3' r='1.5' fill='%238b5cf6'/></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0b0d;
+            --bg-elev: #131316;
+            --bg-elev-2: #1a1a1f;
+            --bg-elev-3: #202028;
+            --fg: #ededf0;
+            --fg-dim: #a0a0a8;
+            --fg-faint: #5a5a62;
+            --line: #242428;
+            --line-soft: #1c1c20;
+            --accent: oklch(0.72 0.17 280);
+            --accent-soft: oklch(0.72 0.17 280 / 0.14);
+            --accent-fg: #ffffff;
+            --danger: oklch(0.70 0.18 25);
+            --danger-soft: oklch(0.70 0.18 25 / 0.14);
+            --ok: oklch(0.78 0.15 155);
+            --ok-soft: oklch(0.78 0.15 155 / 0.14);
+            --warn: oklch(0.80 0.15 80);
+            --warn-soft: oklch(0.80 0.15 80 / 0.14);
+            --info: oklch(0.72 0.15 220);
+        }
+
+        html[data-theme="light"] {
+            --bg: #f7f7f5;
+            --bg-elev: #ffffff;
+            --bg-elev-2: #f0f0ec;
+            --bg-elev-3: #e6e6e2;
+            --fg: #111113;
+            --fg-dim: #5a5a62;
+            --fg-faint: #9a9aa4;
+            --line: #e4e4e0;
+            --line-soft: #ededea;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0; padding: 0;
+            background: var(--bg);
+            color: var(--fg);
+            font-family: 'Geist', -apple-system, system-ui, sans-serif;
+            font-feature-settings: 'ss01', 'cv01';
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+        a { color: inherit; text-decoration: none; }
+        input, select, textarea { font-family: inherit; }
+
+        .mono { font-family: 'Geist Mono', ui-monospace, monospace; }
+        .serif { font-family: 'Instrument Serif', serif; }
+        ::selection { background: var(--accent); color: var(--accent-fg); }
+
+        /* Grain */
+        .grain {
+            position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+            opacity: 0.03; mix-blend-mode: overlay;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+        }
+
+        /* Aurora bg (subtle on dashboard) */
+        .aurora {
+            position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+        }
+        .aurora::before {
+            content: ''; position: absolute; width: 60vw; height: 60vw;
+            border-radius: 50%; filter: blur(110px); opacity: 0.18;
+            background: radial-gradient(circle, var(--accent) 0%, transparent 60%);
+            top: -25%; right: -15%;
+            animation: auroraA 30s ease-in-out infinite alternate;
+        }
+        @keyframes auroraA {
+            0% { transform: translate(0,0) scale(1); }
+            100% { transform: translate(-10vw, 15vh) scale(1.15); }
+        }
+
+        /* ============ LAYOUT ============ */
+        .app {
+            position: relative; z-index: 1;
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: color-mix(in oklab, var(--bg-elev) 70%, transparent);
+            backdrop-filter: blur(14px) saturate(140%);
+            -webkit-backdrop-filter: blur(14px) saturate(140%);
+            border-right: 1px solid var(--line-soft);
+            padding: 22px 16px;
+            display: flex; flex-direction: column; gap: 4px;
+            position: sticky; top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+
+        .sidebar-brand {
+            display: flex; align-items: center; gap: 12px;
+            padding: 6px 10px 18px;
+            border-bottom: 1px solid var(--line-soft);
+            margin-bottom: 10px;
+        }
+        .sidebar-brand-text {
+            display: flex; flex-direction: column; line-height: 1.1;
+        }
+        .sidebar-brand-text b { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+        .sidebar-brand-text small { font-size: 10px; color: var(--fg-faint); font-family: 'Geist Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+
+        .nav-section-label {
+            font-size: 10px; color: var(--fg-faint); font-family: 'Geist Mono', monospace;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            padding: 14px 10px 6px;
+        }
+
+        .nav-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 9px 10px; border-radius: 8px;
+            font-size: 13.5px; font-weight: 500; color: var(--fg-dim);
+            transition: background 0.15s, color 0.15s;
+            position: relative;
+        }
+        .nav-item:hover { background: var(--bg-elev-2); color: var(--fg); }
+        .nav-item.active {
+            background: var(--accent-soft); color: var(--fg);
+        }
+        .nav-item.active::before {
+            content: ''; position: absolute; left: -16px; top: 50%; transform: translateY(-50%);
+            width: 3px; height: 16px; background: var(--accent); border-radius: 0 2px 2px 0;
+        }
+        .nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+        .nav-item .badge {
+            margin-left: auto; font-size: 10px; padding: 2px 7px;
+            background: var(--bg-elev-3); border-radius: 999px;
+            color: var(--fg-dim); font-family: 'Geist Mono', monospace;
+        }
+        .nav-item.active .badge { background: color-mix(in oklab, var(--accent) 30%, transparent); color: var(--fg); }
+
+        .sidebar-foot {
+            margin-top: auto; padding-top: 14px; border-top: 1px solid var(--line-soft);
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .server-switcher {
+            display: flex; align-items: center; gap: 10px;
+            padding: 9px 10px; border-radius: 8px;
+            background: var(--bg-elev-2);
+            border: 1px solid var(--line);
+            cursor: pointer;
+        }
+        .server-switcher:hover { background: var(--bg-elev-3); }
+        .server-icon {
+            width: 30px; height: 30px; border-radius: 8px;
+            background: linear-gradient(135deg, var(--accent), oklch(0.6 0.22 220));
+            display: grid; place-items: center; font-size: 13px; font-weight: 600; color: white;
+            flex-shrink: 0;
+        }
+        .server-switcher-text { flex: 1; min-width: 0; }
+        .server-switcher-text b { display: block; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .server-switcher-text small { display: block; font-size: 10.5px; color: var(--fg-faint); font-family: 'Geist Mono', monospace; }
+
+        /* Main */
+        .main {
+            display: flex; flex-direction: column;
+            min-width: 0;
+        }
+
+        /* Topbar */
+        .topbar {
+            position: sticky; top: 0; z-index: 20;
+            background: color-mix(in oklab, var(--bg) 75%, transparent);
+            backdrop-filter: blur(14px) saturate(140%);
+            -webkit-backdrop-filter: blur(14px) saturate(140%);
+            border-bottom: 1px solid var(--line-soft);
+            padding: 14px 28px;
+            display: flex; align-items: center; gap: 16px;
+        }
+        .breadcrumb {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 13px; color: var(--fg-dim);
+            font-family: 'Geist Mono', monospace;
+        }
+        .breadcrumb .sep { opacity: 0.4; }
+        .breadcrumb .cur { color: var(--fg); }
+
+        .topbar-right {
+            margin-left: auto;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .status-pill {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 11.5px; font-weight: 500;
+            padding: 5px 9px; border-radius: 999px;
+            background: var(--ok-soft); color: var(--ok);
+            font-family: 'Geist Mono', monospace;
+            letter-spacing: 0.02em;
+        }
+        .status-pill.offline { background: var(--danger-soft); color: var(--danger); }
+        .status-pill .dot {
+            width: 6px; height: 6px; border-radius: 50%; background: currentColor;
+            box-shadow: 0 0 0 0 currentColor;
+            animation: pulse 1.8s ease-out infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 color-mix(in oklab, currentColor 50%, transparent); }
+            70% { box-shadow: 0 0 0 6px transparent; }
+            100% { box-shadow: 0 0 0 0 transparent; }
+        }
+
+        .iconbtn {
+            width: 34px; height: 34px; border-radius: 8px;
+            display: grid; place-items: center;
+            color: var(--fg-dim);
+            border: 1px solid var(--line);
+            background: var(--bg-elev);
+            transition: all 0.15s;
+        }
+        .iconbtn:hover { color: var(--fg); background: var(--bg-elev-2); }
+        .iconbtn svg { width: 15px; height: 15px; }
+
+        /* Content */
+        .content {
+            padding: 32px 28px;
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        .page-head {
+            margin-bottom: 28px;
+        }
+        .page-head h1 {
+            font-size: 30px; font-weight: 600; letter-spacing: -0.02em;
+            margin: 0 0 6px;
+        }
+        .page-head h1 .serif { font-weight: 400; font-style: italic; }
+        .page-head p {
+            margin: 0; color: var(--fg-dim); font-size: 14px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-elev);
+            border: 1px solid var(--line-soft);
+            border-radius: 14px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .card-head {
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 16px;
+        }
+        .card-head h2 {
+            margin: 0; font-size: 15px; font-weight: 600; letter-spacing: -0.005em;
+        }
+        .card-head .badge {
+            font-size: 10px; padding: 2px 7px;
+            background: var(--bg-elev-2); border-radius: 999px;
+            color: var(--fg-dim); font-family: 'Geist Mono', monospace;
+            margin-left: auto;
+        }
+        .card-sub {
+            color: var(--fg-dim); font-size: 13px; margin-top: -10px; margin-bottom: 16px;
+        }
+
+        /* Grids */
+        .grid { display: grid; gap: 16px; }
+        .grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+        /* Stats */
+        .stat {
+            padding: 18px 20px;
+            background: var(--bg-elev);
+            border: 1px solid var(--line-soft);
+            border-radius: 14px;
+            position: relative; overflow: hidden;
+        }
+        .stat-label {
+            font-size: 11px; color: var(--fg-faint);
+            font-family: 'Geist Mono', monospace;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .stat-value {
+            font-size: 28px; font-weight: 600; letter-spacing: -0.02em;
+            line-height: 1;
+        }
+        .stat-delta {
+            margin-top: 8px; font-size: 12px; color: var(--ok);
+            font-family: 'Geist Mono', monospace;
+        }
+        .stat-delta.down { color: var(--danger); }
+        .stat-spark {
+            position: absolute; right: 14px; bottom: 14px; opacity: 0.5;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 9px 14px; border-radius: 8px;
+            font-size: 13px; font-weight: 500;
+            background: var(--bg-elev-2); color: var(--fg);
+            border: 1px solid var(--line);
+            transition: all 0.15s;
+        }
+        .btn:hover { background: var(--bg-elev-3); }
+        .btn.primary { background: var(--accent); color: var(--accent-fg); border-color: transparent; }
+        .btn.primary:hover { filter: brightness(1.1); }
+        .btn.danger { background: var(--danger-soft); color: var(--danger); border-color: color-mix(in oklab, var(--danger) 30%, transparent); }
+        .btn.danger:hover { background: var(--danger); color: white; }
+        .btn.warn { background: var(--warn-soft); color: var(--warn); border-color: color-mix(in oklab, var(--warn) 30%, transparent); }
+        .btn.ghost { background: transparent; border-color: transparent; }
+        .btn.ghost:hover { background: var(--bg-elev-2); }
+        .btn.sm { padding: 6px 10px; font-size: 12px; }
+        .btn svg { width: 14px; height: 14px; }
+
+        /* Inputs */
+        .input, .select, .textarea {
+            width: 100%;
+            padding: 9px 12px;
+            background: var(--bg-elev-2);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--fg);
+            transition: border-color 0.15s, background 0.15s;
+            outline: none;
+        }
+        .input:focus, .select:focus, .textarea:focus {
+            border-color: var(--accent);
+            background: var(--bg-elev);
+        }
+        .textarea { resize: vertical; min-height: 80px; font-family: inherit; }
+        .input-label {
+            display: block; font-size: 12px; color: var(--fg-dim);
+            margin-bottom: 6px; font-weight: 500;
+        }
+        .input-hint {
+            font-size: 11.5px; color: var(--fg-faint);
+            margin-top: 6px; font-family: 'Geist Mono', monospace;
+        }
+
+        /* Toggle */
+        .toggle {
+            position: relative; display: inline-block;
+            width: 38px; height: 22px; flex-shrink: 0;
+        }
+        .toggle input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider {
+            position: absolute; cursor: pointer; inset: 0;
+            background: var(--bg-elev-3); border: 1px solid var(--line);
+            border-radius: 999px;
+            transition: 0.2s;
+        }
+        .toggle-slider::before {
+            content: ''; position: absolute;
+            height: 14px; width: 14px; left: 3px; top: 50%;
+            transform: translateY(-50%);
+            background: var(--fg-dim); border-radius: 50%;
+            transition: 0.2s;
+        }
+        .toggle input:checked + .toggle-slider {
+            background: var(--accent);
+            border-color: transparent;
+        }
+        .toggle input:checked + .toggle-slider::before {
+            transform: translate(16px, -50%);
+            background: white;
+        }
+
+        /* Setting row */
+        .setting-row {
+            display: flex; align-items: center; gap: 16px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--line-soft);
+        }
+        .setting-row:last-child { border-bottom: none; }
+        .setting-row-text { flex: 1; min-width: 0; }
+        .setting-row-text b { display: block; font-size: 13.5px; font-weight: 500; margin-bottom: 2px; }
+        .setting-row-text small { display: block; font-size: 12px; color: var(--fg-dim); }
+
+        /* Table */
+        .tbl-wrap { overflow-x: auto; }
+        .tbl {
+            width: 100%; border-collapse: collapse;
+            font-size: 13px;
+        }
+        .tbl th {
+            text-align: left; font-weight: 500; font-size: 11px;
+            color: var(--fg-faint); font-family: 'Geist Mono', monospace;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--line-soft);
+        }
+        .tbl td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--line-soft);
+            vertical-align: middle;
+        }
+        .tbl tbody tr { transition: background 0.12s; }
+        .tbl tbody tr:hover { background: var(--bg-elev-2); }
+        .tbl tbody tr:last-child td { border-bottom: none; }
+
+        /* User pill */
+        .user-pill {
+            display: flex; align-items: center; gap: 10px;
+        }
+        .avatar {
+            width: 28px; height: 28px; border-radius: 50%;
+            display: grid; place-items: center;
+            color: white; font-size: 11px; font-weight: 600;
+            font-family: 'Geist Mono', monospace;
+            flex-shrink: 0;
+        }
+        .avatar.lg { width: 36px; height: 36px; font-size: 13px; }
+        .user-pill .uname { font-weight: 500; }
+        .user-pill .uhandle { color: var(--fg-faint); font-size: 12px; font-family: 'Geist Mono', monospace; }
+
+        /* Role chip */
+        .role-chip {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 3px 9px; border-radius: 999px;
+            font-size: 11.5px; font-weight: 500;
+            background: var(--bg-elev-2); border: 1px solid var(--line);
+        }
+        .role-chip::before {
+            content: ''; width: 6px; height: 6px; border-radius: 50%;
+            background: var(--accent);
+        }
+        .role-chip.mod::before { background: var(--warn); }
+        .role-chip.admin::before { background: var(--danger); }
+        .role-chip.vip::before { background: var(--info); }
+
+        /* Console / logs */
+        .console {
+            background: #050507;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 16px 18px;
+            font-family: 'Geist Mono', monospace;
+            font-size: 12.5px;
+            line-height: 1.7;
+            max-height: 420px;
+            overflow-y: auto;
+        }
+        html[data-theme="light"] .console { background: #1a1a1f; color: #ededf0; }
+        .console::-webkit-scrollbar { width: 8px; }
+        .console::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
+        .log-line {
+            display: grid; grid-template-columns: 80px 60px 1fr; gap: 12px;
+            padding: 3px 0;
+        }
+        .log-time { color: #5a5a62; }
+        .log-level { font-weight: 600; letter-spacing: 0.04em; }
+        .log-level.info { color: var(--info); }
+        .log-level.ok { color: var(--ok); }
+        .log-level.warn { color: var(--warn); }
+        .log-level.err { color: var(--danger); }
+        .log-level.cmd { color: var(--accent); }
+        .log-msg { color: #ededf0; }
+        html[data-theme="light"] .log-msg { color: #ededf0; }
+
+        /* Tabs */
+        .tabs {
+            display: flex; gap: 2px;
+            border-bottom: 1px solid var(--line-soft);
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 14px;
+            font-size: 13px; font-weight: 500;
+            color: var(--fg-dim);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: color 0.15s, border-color 0.15s;
+        }
+        .tab:hover { color: var(--fg); }
+        .tab.active { color: var(--fg); border-bottom-color: var(--accent); }
+
+        /* Command preview (Discord-ish) */
+        .discord-preview {
+            background: #1a1a1f;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 14px 18px;
+            font-size: 13.5px;
+            color: #dcddde;
+        }
+        .discord-msg { display: flex; gap: 12px; padding: 6px 0; }
+        .discord-msg .avatar { width: 32px; height: 32px; border-radius: 50%; }
+        .discord-msg .content { flex: 1; min-width: 0; }
+        .discord-msg .name { font-weight: 600; font-size: 14px; color: #fff; }
+        .discord-msg .name .bot-tag {
+            margin-left: 6px; font-size: 10px; background: #5865f2; color: #fff;
+            padding: 1px 5px; border-radius: 3px; font-weight: 500;
+            vertical-align: middle;
+        }
+        .discord-msg .timestamp { font-size: 11px; color: #72767d; margin-left: 8px; font-weight: 400; }
+
+        /* Kbd */
+        kbd {
+            display: inline-block;
+            padding: 2px 6px; border-radius: 4px;
+            background: var(--bg-elev-2); border: 1px solid var(--line);
+            font-family: 'Geist Mono', monospace;
+            font-size: 10.5px; color: var(--fg-dim);
+            vertical-align: middle;
+        }
+
+        /* Pages */
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.25s ease; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Split panel */
+        .split {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 20px;
+        }
+
+        /* Activity bars for stat */
+        .spark-bars {
+            display: flex; align-items: flex-end; gap: 2px; height: 30px;
+        }
+        .spark-bars span {
+            width: 4px; background: var(--accent); opacity: 0.4;
+            border-radius: 1px;
+        }
+
+        /* Mini chart */
+        .chart-bar-row {
+            display: grid; grid-template-columns: 80px 1fr 40px;
+            gap: 12px; align-items: center;
+            padding: 7px 0; font-size: 12.5px;
+        }
+        .chart-bar-track {
+            height: 8px; background: var(--bg-elev-2); border-radius: 4px; overflow: hidden;
+        }
+        .chart-bar-fill {
+            height: 100%; background: linear-gradient(90deg, var(--accent), oklch(0.6 0.22 220));
+            border-radius: 4px;
+        }
+        .chart-num { color: var(--fg-dim); font-family: 'Geist Mono', monospace; font-size: 11px; text-align: right; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--bg-elev-3); }
+
+        /* Dry-run banner */
+        .dry-banner {
+            background: var(--warn-soft);
+            border: 1px solid color-mix(in oklab, var(--warn) 30%, transparent);
+            color: var(--warn);
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 12.5px;
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 20px;
+            font-family: 'Geist Mono', monospace;
+        }
+        .dry-banner svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+        /* Mobile */
+        .mobile-menu-btn { display: none; }
+        @media (max-width: 900px) {
+            .app { grid-template-columns: 1fr; }
+            .sidebar {
+                position: fixed; top: 0; left: 0; width: 280px; z-index: 100;
+                transform: translateX(-100%);
+                transition: transform 0.25s ease;
+            }
+            .sidebar.open { transform: translateX(0); }
+            .mobile-menu-btn { display: grid; }
+            .topbar { padding: 12px 16px; }
+            .content { padding: 20px 16px; }
+            .grid.cols-2, .grid.cols-3, .grid.cols-4 { grid-template-columns: 1fr; }
+            .split { grid-template-columns: 1fr; }
+            .sidebar-overlay {
+                display: none; position: fixed; inset: 0; z-index: 99;
+                background: rgba(0,0,0,0.5); backdrop-filter: blur(2px);
+            }
+            .sidebar-overlay.show { display: block; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="grain"></div>
+    <div class="aurora"></div>
+
+    <div class="app">
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <svg viewBox="0 0 40 40" width="28" height="28" style="display:block">
+                    <rect x="6" y="8" width="28" height="26" rx="8" fill="var(--accent)" />
+                    <rect x="11" y="13" width="18" height="13" rx="4" fill="#0b0b0d" />
+                    <circle cx="16" cy="19.5" r="1.6" fill="#fff" />
+                    <circle cx="24" cy="19.5" r="1.6" fill="#fff" />
+                    <line x1="20" y1="8" x2="20" y2="4" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" />
+                    <circle cx="20" cy="3" r="1.5" fill="var(--accent)" />
+                </svg>
+                <div class="sidebar-brand-text">
+                    <b>kozzyx</b>
+                    <small>control panel</small>
+                </div>
+            </div>
+
+            <div class="nav-section-label">Overview</div>
+            <a class="nav-item active" data-page="overview" href="#overview">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+                Dashboard
+            </a>
+            <a class="nav-item" data-page="stats" href="#stats">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                Server stats
+            </a>
+            <a class="nav-item" data-page="logs" href="#logs">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                Live console
+                <span class="badge">LIVE</span>
+            </a>
+
+            <div class="nav-section-label">Moderation</div>
+            <a class="nav-item" data-page="members" href="#members">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Members
+            </a>
+            <a class="nav-item" data-page="modlog" href="#modlog">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Mod log
+            </a>
+            <a class="nav-item" data-page="automod" href="#automod">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                Automod
+                <span class="badge">7</span>
+            </a>
+
+            <div class="nav-section-label">Server</div>
+            <a class="nav-item" data-page="roles" href="#roles">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                Roles
+            </a>
+            <a class="nav-item" data-page="channels" href="#channels">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg>
+                Channels
+            </a>
+            <a class="nav-item" data-page="messaging" href="#messaging">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                Send message
+            </a>
+            <a class="nav-item" data-page="tickets" href="#tickets">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg>
+                Tickets
+                <span class="badge">3</span>
+            </a>
+
+            <div class="nav-section-label">Engine</div>
+            <a class="nav-item" data-page="commands" href="#commands">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                Commands
+            </a>
+            <a class="nav-item" data-page="scheduled" href="#scheduled">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Scheduled tasks
+            </a>
+            <a class="nav-item" data-page="ai" href="#ai">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                AI (Claude)
+            </a>
+            <a class="nav-item" data-page="config" href="#config">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                Bot config
+            </a>
+            <a class="nav-item" data-page="deploy" href="#deploy">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/><polyline points="16 16 12 12 8 16"/></svg>
+                Deploy & CI/CD
+            </a>
+
+            <div class="sidebar-foot">
+                <div class="server-switcher" onclick="alert('Server switcher — backend: GET /api/guilds')">
+                    <div class="server-icon">KO</div>
+                    <div class="server-switcher-text">
+                        <b>kozzy's lair</b>
+                        <small>1,247 members</small>
+                    </div>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--fg-faint)"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+            </div>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+        <!-- MAIN -->
+        <main class="main">
+            <!-- TOPBAR -->
+            <div class="topbar">
+                <button class="iconbtn mobile-menu-btn" onclick="toggleSidebar()" aria-label="Menu">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+                </button>
+                <div class="breadcrumb">
+                    <span>kozzy's lair</span>
+                    <span class="sep">/</span>
+                    <span class="cur" id="crumb">Dashboard</span>
+                </div>
+                <div class="topbar-right">
+                    <span class="status-pill"><span class="dot"></span>bot online</span>
+                    <button class="iconbtn" onclick="document.documentElement.dataset.theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'" title="Toggle theme">
+                        <svg id="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                    </button>
+                    <button class="iconbtn" title="Refresh" onclick="pulseConsole()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                    </button>
+                    <div class="avatar lg" style="background:linear-gradient(135deg,var(--accent),oklch(0.6 0.22 220))">KX</div>
+                </div>
+            </div>
+
+            <!-- CONTENT -->
+            <div class="content">
+                <!-- ==================== OVERVIEW ==================== -->
+                <section class="page active" data-page="overview">
+                    <div class="page-head">
+                        <h1>good morning, <span class="serif">kozzy.</span></h1>
+                        <p id="overview-summary">Connecting to bot...</p>
+                    </div>
+
+                    <div class="grid cols-4" style="margin-bottom: 20px;">
+                        <div class="stat">
+                            <div class="stat-label">Members</div>
+                            <div class="stat-value" id="stat-members">...</div>
+                            <div class="stat-delta">+... today</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">Uptime</div>
+                            <div class="stat-value" id="stat-uptime">...</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">Guilds</div>
+                            <div class="stat-value" id="stat-guilds">...</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">Status</div>
+                            <div class="stat-value" id="stat-status">...</div>
+                        </div>
+                    </div>
+                </section>
+                <!-- Existing sections... -->
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API = {
+            base: 'http://104.199.127.109:3456',
+            key: 'Balazs9849'
+        };
+
+        // Utility: API Fetch
+        async function apiFetch(path, options = {}) {
+            const res = await fetch(`${API.base}${path}`, {
+                ...options,
+                headers: {
+                    ...options.headers,
+                    'x-api-key': API.key,
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!res.ok) throw new Error(`API Error: ${res.status}`);
+            return res.json();
+        }
+
+        // Stats Refresh
+        async function refreshStats() {
+            try {
+                const stats = await apiFetch('/api/stats');
+                document.getElementById('stat-members').textContent = stats.members?.toLocaleString() || '0';
+                document.getElementById('stat-uptime').textContent = formatUptime(stats.uptime);
+                document.getElementById('stat-guilds').textContent = stats.guilds;
+                document.getElementById('stat-status').textContent = stats.online ? 'Online' : 'Offline';
+                document.getElementById('overview-summary').textContent = `Bot is ${stats.online ? 'online' : 'offline'} across ${stats.guilds} servers with ${stats.members?.toLocaleString()} members.`;
+            } catch (err) {
+                console.error('Stats refresh failed:', err);
+            }
+        }
+
+        function formatUptime(seconds) {
+            if (!seconds) return '0h 0m';
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            return `${h}h ${m}m`;
+        }
+
+        // Logs Refresh (Polling)
+        async function refreshLogs() {
+            try {
+                const logs = await apiFetch('/api/logs');
+                const consoleEl = document.getElementById('console');
+                if (!consoleEl) return;
+                
+                consoleEl.innerHTML = '';
+                logs.forEach(log => {
+                    const line = document.createElement('div');
+                    line.className = 'log-line';
+                    line.innerHTML = `
+                        <span class="log-time">${log.time}</span>
+                        <span class="log-level ${log.level.toLowerCase()}">${log.level}</span>
+                        <span class="log-msg">${log.msg}</span>
+                    `;
+                    consoleEl.appendChild(line);
+                });
+                if (document.getElementById('autoscroll')?.checked) consoleEl.scrollTop = consoleEl.scrollHeight;
+            } catch (err) {
+                console.error('Logs refresh failed:', err);
+            }
+        }
+
+        // Send Message
+        async function sendMessage() {
+            const channelId = document.getElementById('msg-channel-id')?.value;
+            const content = document.getElementById('msg-body')?.value;
+            if (!channelId || !content) return alert('Please fill in channel ID and message.');
+
+            try {
+                await apiFetch('/api/message', {
+                    method: 'POST',
+                    body: JSON.stringify({ channelId, content })
+                });
+                alert('Message sent!');
+            } catch (err) {
+                alert('Failed to send message: ' + err.message);
+            }
+        }
+
+        // Router & Navigation Logic
+        function navigate(name, push = true) {
+            document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.dataset.page === name));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.page === name));
+            document.getElementById('crumb').textContent = name.charAt(0).toUpperCase() + name.slice(1);
+            if (push) history.replaceState(null, '', '#' + name);
+        }
+
+        // Initialization
+        setInterval(refreshStats, 5000);
+        setInterval(refreshLogs, 3000);
+        refreshStats();
+        refreshLogs();
+
+        document.querySelectorAll('.nav-item').forEach(n => {
+            n.addEventListener('click', (e) => { e.preventDefault(); navigate(n.dataset.page); });
+        });
+    </script>
+</body>
+</html>
