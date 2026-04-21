@@ -771,470 +771,2901 @@
 
         /*COMMANDS-DATA-BEGIN*/
         const COMMANDS = [
-            {
-                        "cmd": "/Server",
-                        "args": "",
-                        "desc": "You have been kicked from the server.",
-                        "cat": "Utils",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/afk",
-                        "args": "",
-                        "desc": "Set your AFK status",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/ask",
-                        "args": "",
-                        "desc": "Ask Claude AI a question",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/avatar",
-                        "args": "",
-                        "desc": "Show a user",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/modhelp",
-                        "args": "",
-                        "desc": "Show moderation help pages",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/summarize",
-                        "args": "",
-                        "desc": "Summarize the last few messages",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/features",
-                        "args": "",
-                        "desc": "Show bot features pages",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/translate",
-                        "args": "",
-                        "desc": "Translate text using AI",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/vc",
-                        "args": "",
-                        "desc": "Manage your dynamic voice channel.",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/serverinfo",
-                        "args": "",
-                        "desc": "Show info about this server",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/plugins",
-                        "args": "",
-                        "desc": "Enable or disable optional bot features.",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/generate_rules",
-                        "args": "",
-                        "desc": "Use AI to generate a custom rules embed for this server.",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/Flux (default)",
-                        "args": "",
-                        "desc": "Generate an image using Pollinations.ai",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/define",
-                        "args": "",
-                        "desc": "Define an English word",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/wipe_server",
-                        "args": "",
-                        "desc": "\u26a0\ufe0f DANGER: Delete ALL channels and roles. Server owner only.",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/invites",
-                        "args": "",
-                        "desc": "Check invite stats for yourself or another user.",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/help",
-                        "args": "",
-                        "desc": "Show help pages",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/todo",
-                        "args": "",
-                        "desc": "Manage your simple to-do list",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/remind",
-                        "args": "",
-                        "desc": "Set a reminder",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/nuke",
-                        "args": "",
-                        "desc": "Delete messages from this channel.",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/banner",
-                        "args": "",
-                        "desc": "Show a user",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/\ud83d\udc51 Owner",
-                        "args": "",
-                        "desc": "Everything: roles, info, community, voice, support, staff tools.",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/Full Community Server",
-                        "args": "",
-                        "desc": "Delete everything server_setup created and optionally redo it.",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/decide",
-                        "args": "",
-                        "desc": "Pick between options",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/clear_memory",
-                        "args": "",
-                        "desc": "Clear Claude",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/userinfo",
-                        "args": "",
-                        "desc": "Show info about a user",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/appeal",
-                        "args": "",
-                        "desc": "Submit a ban appeal to a server.",
-                        "cat": "General",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/hug",
-                        "args": "",
-                        "desc": "Hug someone",
-                        "cat": "Fun",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/roast",
-                        "args": "",
-                        "desc": "Roast someone with AI",
-                        "cat": "Fun",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/topic",
-                        "args": "",
-                        "desc": "Get a random conversation topic",
-                        "cat": "Fun",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/ticket_ping",
-                        "args": "",
-                        "desc": "You need **Manage Server** to set ticket display role.",
-                        "cat": "Config",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/autoresponder_filter_on",
-                        "args": "",
-                        "desc": "You need **Manage Server** to change this.",
-                        "cat": "Config",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/ticket_channel",
-                        "args": "",
-                        "desc": "You need **Manage Server** to set the ticket panel channel.",
-                        "cat": "Config",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/appealschannel",
-                        "args": "",
-                        "desc": "You need **Manage Server**.",
-                        "cat": "Config",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/ticket",
-                        "args": "",
-                        "desc": "Ticket panel channel not set or invalid.",
-                        "cat": "Config",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/autoresponder",
-                        "args": "",
-                        "desc": "You need **Manage Messages** to edit autoresponders.",
-                        "cat": "Config",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/case_channel",
-                        "args": "",
-                        "desc": "You need **Manage Server** to set the case channel.",
-                        "cat": "Config",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/ticket_close",
-                        "args": "",
-                        "desc": "You need **Manage Server** to change ticket auto-close.",
-                        "cat": "Config",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/autoresponder_filter_off",
-                        "args": "",
-                        "desc": "You need **Manage Server** to change this.",
-                        "cat": "Config",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/ticket_edit",
-                        "args": "",
-                        "desc": "You need **Manage Server** to edit the ticket panel.",
-                        "cat": "Config",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/boosterrole",
-                        "args": "",
-                        "desc": "Only **Server Boosters** can use this.",
-                        "cat": "Features",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/warnings",
-                        "args": "",
-                        "desc": "**${target.user.tag}** has no warnings.",
-                        "cat": "Moderation",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/slowmode",
-                        "args": "",
-                        "desc": "You need **Manage Channels** to change slowmode.",
-                        "cat": "Moderation",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/warn",
-                        "args": "",
-                        "desc": "You need **Timeout Members** permission to warn.",
-                        "cat": "Moderation",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/unlock",
-                        "args": "",
-                        "desc": "You need **Manage Channels** to unlock channels.",
-                        "cat": "Moderation",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/unraid",
-                        "args": "",
-                        "desc": "Only admins can lift a raid lockdown.",
-                        "cat": "Moderation",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/heal",
-                        "args": "",
-                        "desc": "You need **Timeout Members** permission.",
-                        "cat": "Moderation",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/clear",
-                        "args": "",
-                        "desc": "You need **Manage Messages** to clear messages.",
-                        "cat": "Moderation",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/audit",
-                        "args": "",
-                        "desc": "You need **View Audit Log**.",
-                        "cat": "Moderation",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/nicklock",
-                        "args": "",
-                        "desc": "Locked nickname for **${target.user.tag}**.",
-                        "cat": "Moderation",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/nick",
-                        "args": "",
-                        "desc": "You need **Manage Nicknames** to change nicknames.",
-                        "cat": "Moderation",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/clearwarns",
-                        "args": "",
-                        "desc": "You need **Timeout Members** permission.",
-                        "cat": "Moderation",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/damage",
-                        "args": "",
-                        "desc": "You need **Timeout Members** permission.",
-                        "cat": "Moderation",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/kick",
-                        "args": "",
-                        "desc": "You need **Kick Members** permission.",
-                        "cat": "Moderation",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/ban",
-                        "args": "",
-                        "desc": "You need **Ban Members** permission.",
-                        "cat": "Moderation",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/lock",
-                        "args": "",
-                        "desc": "You need **Manage Channels** to lock channels.",
-                        "cat": "Moderation",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/nickunlock",
-                        "args": "",
-                        "desc": "Unlocked nickname for **${target.user.tag}**.",
-                        "cat": "Moderation",
-                        "popular": false,
-                        "prefix": true
-            },
-            {
-                        "cmd": "/warnthreshold",
-                        "args": "",
-                        "desc": "You need **Timeout Members** permission.",
-                        "cat": "Moderation",
-                        "popular": false,
-                        "prefix": true
-            }
+    {
+        "cmd": "/name",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/safeRespond(interaction",
+        "desc": "asEmbedPayload({",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/guildId",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/safeRespond(interaction",
+        "desc": "asEmbedPayload({",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/guildId",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/safeRespond(interaction",
+        "desc": "asEmbedPayload({",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/guildId",
+        "desc": "await",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/user.send({",
+        "desc": "embeds",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "safeRespond(interaction",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/asEmbedPayload({",
+        "desc": "guildId",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/await",
+        "desc": "user.send({",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/embeds",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/safeRespond(interaction",
+        "desc": "asEmbedPayload({",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/guildId",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!isBooster",
+        "desc": "&&",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/!isOwner)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!name)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!hex)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!roleId)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!role)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!title)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!text)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!id)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!label)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(existing)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!id)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!cats.length)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!trigger",
+        "desc": "||",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/!response)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(exists)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!trigger)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!list.length)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!target)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(ms",
+        "desc": "===",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/null",
+        "desc": "||",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/ms",
+        "desc": "===",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/0)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/if",
+        "desc": "(data.count",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/===",
+        "desc": "0)",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!target)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/if",
+        "desc": "(!target)",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!Number.isFinite(count)",
+        "desc": "||",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/count",
+        "desc": "<=",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/0)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(![timeout",
+        "desc": "kick",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/ban].includes(action))",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(action",
+        "desc": "===",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/timeout",
+        "desc": "&&",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!Number.isFinite(time)",
+        "desc": "||",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/time",
+        "desc": "<=",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/0))",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/if",
+        "desc": "(!target)",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/if",
+        "desc": "(!target)",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!target)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/if",
+        "desc": "(!target)",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "await",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/if",
+        "desc": "(!targetChannel",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/||",
+        "desc": "!targetChannel.isTextBased())",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!target)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/if",
+        "desc": "(!Number.isFinite(amount)",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/||",
+        "desc": "amount",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/<",
+        "desc": "1",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/||",
+        "desc": "amount",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/>",
+        "desc": "100)",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/if",
+        "desc": "(!target)",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!target)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!newNick)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/if",
+        "desc": "(!targetChannel",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/||",
+        "desc": "!targetChannel.isTextBased())",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "replyEmbed(message",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!targetChannel",
+        "desc": "||",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/!targetChannel.isTextBased())",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!amountStr)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(reason)",
+        "desc": "fields.push({",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(durationText)",
+        "desc": "fields.push({",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "fields.push({",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/replyEmbed(message",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "guildId",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/guildId",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/guildId",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "filename",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/fields",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/options",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "options",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "safeRespond(interaction",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/asEmbedPayload({",
+        "desc": "guildId",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/safeRespond(interaction",
+        "desc": "asEmbedPayload({",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/guildId",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/safeRespond(interaction",
+        "desc": "asEmbedPayload({",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/guildId",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/safeRespond(interaction",
+        "desc": "asEmbedPayload({",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/guildId",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/safeRespond(interaction",
+        "desc": "asEmbedPayload({",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/guildId",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/safeRespond(interaction",
+        "desc": "asEmbedPayload({",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/guildId",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/safeRespond(interaction",
+        "desc": "asEmbedPayload({",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/guildId",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/const",
+        "desc": "attachment",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/=",
+        "desc": "new",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/AttachmentBuilder(buffer",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "data",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/data",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/safeRespond(i",
+        "desc": "asEmbedPayload({",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/guildId",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "options",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/options",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/data",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "type",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/type",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "Name/Nickname",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "if",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/(!chunks.length)",
+        "desc": "return",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/[{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/emoji",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/emoji",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/emoji",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/emoji",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/emoji",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/emoji",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/emoji",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/emoji",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/if",
+        "desc": "(i.guild)",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/fields.push({",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/if",
+        "desc": "(roles.length)",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/fields.push({",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "safeRespond(interaction",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/asEmbedPayload({",
+        "desc": "guildId",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "safeRespond(i",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/asEmbedPayload({",
+        "desc": "guildId",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/if",
+        "desc": "(first?.partOfSpeech)",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/fields.push({",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/if",
+        "desc": "(defs[0]?.example)",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/fields.push({",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/.addFields(slice.map((f)",
+        "desc": "=>",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/({",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/data",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "options",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/options",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "safeRespond(interaction",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/asEmbedPayload({",
+        "desc": "guildId",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "fields",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "{",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/data",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/name",
+        "desc": "description",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/{",
+        "desc": "name",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/description",
+        "desc": "data",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/return",
+        "desc": "safeRespond(i",
+        "cat": "auto"
+    },
+    {
+        "cmd": "/asEmbedPayload({",
+        "desc": "guildId",
+        "cat": "auto"
+    }
 ];
         /*COMMANDS-DATA-END*/
 
