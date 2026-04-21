@@ -1,3 +1,12 @@
+[2026-04-21] refactor: consolidate all bots into single root bot
+- Removed bots/ folder structure (mod-bot, utility-bot, ticket-bot, ai-bot)
+- Merged ALL commands into one bot at the project root
+- Added slash commands: coinflip, hug, roast, topic, random (fun), afk, avatar, banner, clear_memory, decide, define, features, generate_rules, help, imagine, invites, nuke, plugins, redo_server_setup, remind, server_setup, serverinfo, summarize, todo, translate, userinfo, vc, wipe_server (general)
+- Added prefix commands: autoresponder, ticket config commands, afk, boosterrole (features), coinflip, random (fun)
+- Added voiceStateUpdate event handler
+- Added utils: ai, inviteTracker, reminders, ticketUtils
+- index.js and package.json now live at project root
+
 [2026-04-19] feat: add /stats command
 - Shows server count, ping, uptime, memory usage, Node.js version, discord.js version
 
@@ -17,4 +26,5 @@
 [2026-04-19] feat: add random command
 - Added /random slash command with subcommands: number, user, coinflip, dice, 8ball
 - Added ,random prefix command (aliases: ,rng)
+- Added standalone /coinflip slash command and ,coinflip prefix command
 - Integrated into the utility-bot fun category
