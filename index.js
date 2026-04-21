@@ -11,6 +11,7 @@ import guildAuditLogEntryCreate from "./src/events/guildAuditLogEntryCreate.js";
 import guildCreate from "./src/events/guildCreate.js";
 import voiceStateUpdate from "./src/events/voiceStateUpdate.js";
 import loadCommands from "./src/handlers/commandHandler.js";
+import { initAPI } from "./src/dashboard-api.js";
 
 const client = new ExtendedClient();
 
@@ -21,6 +22,7 @@ async function init() {
 
     await initDB();
     await loadCommands(client);
+    initAPI(client);
 
     client.on(interactionCreate.name,        (...args) => interactionCreate.execute(...args, client));
     client.on(messageCreate.name,            (...args) => messageCreate.execute(...args, client));
