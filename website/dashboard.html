@@ -438,6 +438,12 @@
             background: var(--bg-elev-2);
         }
 
+        .iconbtn.danger:hover {
+            color: var(--danger);
+            background: var(--danger-soft);
+            border-color: color-mix(in oklab, var(--danger) 30%, transparent);
+        }
+
         .iconbtn svg {
             width: 15px;
             height: 15px;
@@ -827,6 +833,7 @@
             width: 36px;
             height: 36px;
             font-size: 13px;
+            animation: floatAvatar 4s ease-in-out infinite;
         }
 
         .user-pill .uname {
@@ -1167,6 +1174,10 @@
         }
         @keyframes spinSlow {
             to { transform: rotate(360deg); }
+        }
+        @keyframes floatAvatar {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
         }
 
         .page.active > * {
@@ -2012,6 +2023,9 @@
                             <div class="uhandle" id="user-tag">@bot</div>
                         </div>
                     </div>
+                    <button class="iconbtn danger" title="Logout" onclick="logout()" style="margin-left: 8px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    </button>
                 </div>
             </div>
 
