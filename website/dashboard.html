@@ -50,10 +50,14 @@
             --line-soft: #ededea;
         }
 
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
-        html, body {
-            margin: 0; padding: 0;
+        html,
+        body {
+            margin: 0;
+            padding: 0;
             background: var(--bg);
             color: var(--fg);
             font-family: 'Geist', -apple-system, system-ui, sans-serif;
@@ -67,40 +71,86 @@
             transition: background 0.3s ease, color 0.3s ease;
         }
 
-        button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
-        a { color: inherit; text-decoration: none; }
-        input, select, textarea { font-family: inherit; }
+        button {
+            font-family: inherit;
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: inherit;
+        }
 
-        .mono { font-family: 'Geist Mono', ui-monospace, monospace; }
-        .serif { font-family: 'Instrument Serif', serif; }
-        ::selection { background: var(--accent); color: var(--accent-fg); }
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        input,
+        select,
+        textarea {
+            font-family: inherit;
+        }
+
+        .mono {
+            font-family: 'Geist Mono', ui-monospace, monospace;
+        }
+
+        .serif {
+            font-family: 'Instrument Serif', serif;
+        }
+
+        ::selection {
+            background: var(--accent);
+            color: var(--accent-fg);
+        }
 
         /* Grain */
         .grain {
-            position: fixed; inset: 0; pointer-events: none; z-index: 9999;
-            opacity: 0.03; mix-blend-mode: overlay;
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.03;
+            mix-blend-mode: overlay;
             background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
         }
 
         /* Aurora bg (subtle on dashboard) */
         .aurora {
-            position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
         }
+
         .aurora::before {
-            content: ''; position: absolute; width: 60vw; height: 60vw;
-            border-radius: 50%; filter: blur(110px); opacity: 0.18;
+            content: '';
+            position: absolute;
+            width: 60vw;
+            height: 60vw;
+            border-radius: 50%;
+            filter: blur(110px);
+            opacity: 0.18;
             background: radial-gradient(circle, var(--accent) 0%, transparent 60%);
-            top: -25%; right: -15%;
+            top: -25%;
+            right: -15%;
             animation: auroraA 30s ease-in-out infinite alternate;
         }
+
         @keyframes auroraA {
-            0% { transform: translate(0,0) scale(1); }
-            100% { transform: translate(-10vw, 15vh) scale(1.15); }
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(-10vw, 15vh) scale(1.15);
+            }
         }
 
         /* ============ LAYOUT ============ */
         .app {
-            position: relative; z-index: 1;
+            position: relative;
+            z-index: 1;
             display: grid;
             grid-template-columns: 260px 1fr;
             min-height: 100vh;
@@ -113,136 +163,285 @@
             -webkit-backdrop-filter: blur(14px) saturate(140%);
             border-right: 1px solid var(--line-soft);
             padding: 22px 16px;
-            display: flex; flex-direction: column; gap: 4px;
-            position: sticky; top: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            position: sticky;
+            top: 0;
             height: 100vh;
             overflow-y: auto;
         }
-        .sidebar::-webkit-scrollbar { width: 6px; }
-        .sidebar::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--line);
+            border-radius: 3px;
+        }
 
         .sidebar-brand {
-            display: flex; align-items: center; gap: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
             padding: 6px 10px 18px;
             border-bottom: 1px solid var(--line-soft);
             margin-bottom: 10px;
         }
+
         .sidebar-brand-text {
-            display: flex; flex-direction: column; line-height: 1.1;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
         }
-        .sidebar-brand-text b { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
-        .sidebar-brand-text small { font-size: 10px; color: var(--fg-faint); font-family: 'Geist Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+
+        .sidebar-brand-text b {
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .sidebar-brand-text small {
+            font-size: 10px;
+            color: var(--fg-faint);
+            font-family: 'Geist Mono', monospace;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
 
         .nav-section-label {
-            font-size: 10px; color: var(--fg-faint); font-family: 'Geist Mono', monospace;
-            letter-spacing: 0.1em; text-transform: uppercase;
+            font-size: 10px;
+            color: var(--fg-faint);
+            font-family: 'Geist Mono', monospace;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
             padding: 14px 10px 6px;
         }
 
         .nav-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 9px 10px; border-radius: 8px;
-            font-size: 13.5px; font-weight: 500; color: var(--fg-dim);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 9px 10px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--fg-dim);
             transition: background 0.15s, color 0.15s;
             position: relative;
         }
-        .nav-item:hover { background: var(--bg-elev-2); color: var(--fg); }
+
+        .nav-item:hover {
+            background: var(--bg-elev-2);
+            color: var(--fg);
+        }
+
         .nav-item.active {
-            background: var(--accent-soft); color: var(--fg);
+            background: var(--accent-soft);
+            color: var(--fg);
         }
+
         .nav-item.active::before {
-            content: ''; position: absolute; left: -16px; top: 50%; transform: translateY(-50%);
-            width: 3px; height: 16px; background: var(--accent); border-radius: 0 2px 2px 0;
+            content: '';
+            position: absolute;
+            left: -16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 16px;
+            background: var(--accent);
+            border-radius: 0 2px 2px 0;
         }
-        .nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+        .nav-item svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
         .nav-item .badge {
-            margin-left: auto; font-size: 10px; padding: 2px 7px;
-            background: var(--bg-elev-3); border-radius: 999px;
-            color: var(--fg-dim); font-family: 'Geist Mono', monospace;
+            margin-left: auto;
+            font-size: 10px;
+            padding: 2px 7px;
+            background: var(--bg-elev-3);
+            border-radius: 999px;
+            color: var(--fg-dim);
+            font-family: 'Geist Mono', monospace;
         }
-        .nav-item.active .badge { background: color-mix(in oklab, var(--accent) 30%, transparent); color: var(--fg); }
+
+        .nav-item.active .badge {
+            background: color-mix(in oklab, var(--accent) 30%, transparent);
+            color: var(--fg);
+        }
 
         .sidebar-foot {
-            margin-top: auto; padding-top: 14px; border-top: 1px solid var(--line-soft);
-            display: flex; flex-direction: column; gap: 10px;
+            margin-top: auto;
+            padding-top: 14px;
+            border-top: 1px solid var(--line-soft);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
+
         .server-switcher {
-            display: flex; align-items: center; gap: 10px;
-            padding: 9px 10px; border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            border-radius: 8px;
             background: var(--bg-elev-2);
             border: 1px solid var(--line);
             cursor: pointer;
         }
-        .server-switcher:hover { background: var(--bg-elev-3); }
+
+        .server-switcher:hover {
+            background: var(--bg-elev-3);
+        }
+
         .server-icon {
-            width: 30px; height: 30px; border-radius: 8px;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
             background: linear-gradient(135deg, var(--accent), oklch(0.6 0.22 220));
-            display: grid; place-items: center; font-size: 13px; font-weight: 600; color: white;
+            display: grid;
+            place-items: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: white;
             flex-shrink: 0;
         }
-        .server-switcher-text { flex: 1; min-width: 0; }
-        .server-switcher-text b { display: block; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .server-switcher-text small { display: block; font-size: 10.5px; color: var(--fg-faint); font-family: 'Geist Mono', monospace; }
+
+        .server-switcher-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .server-switcher-text b {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .server-switcher-text small {
+            display: block;
+            font-size: 10.5px;
+            color: var(--fg-faint);
+            font-family: 'Geist Mono', monospace;
+        }
 
         /* Main */
         .main {
-            display: flex; flex-direction: column;
+            display: flex;
+            flex-direction: column;
             min-width: 0;
         }
 
         /* Topbar */
         .topbar {
-            position: sticky; top: 0; z-index: 20;
+            position: sticky;
+            top: 0;
+            z-index: 20;
             background: color-mix(in oklab, var(--bg) 75%, transparent);
             backdrop-filter: blur(14px) saturate(140%);
             -webkit-backdrop-filter: blur(14px) saturate(140%);
             border-bottom: 1px solid var(--line-soft);
             padding: 14px 28px;
-            display: flex; align-items: center; gap: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
+
         .breadcrumb {
-            display: flex; align-items: center; gap: 8px;
-            font-size: 13px; color: var(--fg-dim);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--fg-dim);
             font-family: 'Geist Mono', monospace;
         }
-        .breadcrumb .sep { opacity: 0.4; }
-        .breadcrumb .cur { color: var(--fg); }
+
+        .breadcrumb .sep {
+            opacity: 0.4;
+        }
+
+        .breadcrumb .cur {
+            color: var(--fg);
+        }
 
         .topbar-right {
             margin-left: auto;
-            display: flex; align-items: center; gap: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .status-pill {
-            display: inline-flex; align-items: center; gap: 6px;
-            font-size: 11.5px; font-weight: 500;
-            padding: 5px 9px; border-radius: 999px;
-            background: var(--ok-soft); color: var(--ok);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11.5px;
+            font-weight: 500;
+            padding: 5px 9px;
+            border-radius: 999px;
+            background: var(--ok-soft);
+            color: var(--ok);
             font-family: 'Geist Mono', monospace;
             letter-spacing: 0.02em;
         }
-        .status-pill.offline { background: var(--danger-soft); color: var(--danger); }
+
+        .status-pill.offline {
+            background: var(--danger-soft);
+            color: var(--danger);
+        }
+
         .status-pill .dot {
-            width: 6px; height: 6px; border-radius: 50%; background: currentColor;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
             box-shadow: 0 0 0 0 currentColor;
             animation: pulse 1.8s ease-out infinite;
         }
+
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 color-mix(in oklab, currentColor 50%, transparent); }
-            70% { box-shadow: 0 0 0 6px transparent; }
-            100% { box-shadow: 0 0 0 0 transparent; }
+            0% {
+                box-shadow: 0 0 0 0 color-mix(in oklab, currentColor 50%, transparent);
+            }
+
+            70% {
+                box-shadow: 0 0 0 6px transparent;
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 transparent;
+            }
         }
 
         .iconbtn {
-            width: 34px; height: 34px; border-radius: 8px;
-            display: grid; place-items: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
             color: var(--fg-dim);
             border: 1px solid var(--line);
             background: var(--bg-elev);
             transition: all 0.15s;
         }
-        .iconbtn:hover { color: var(--fg); background: var(--bg-elev-2); }
-        .iconbtn svg { width: 15px; height: 15px; }
+
+        .iconbtn:hover {
+            color: var(--fg);
+            background: var(--bg-elev-2);
+        }
+
+        .iconbtn svg {
+            width: 15px;
+            height: 15px;
+        }
 
         /* Content */
         .content {
@@ -254,13 +453,23 @@
         .page-head {
             margin-bottom: 28px;
         }
+
         .page-head h1 {
-            font-size: 30px; font-weight: 600; letter-spacing: -0.02em;
+            font-size: 30px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
             margin: 0 0 6px;
         }
-        .page-head h1 .serif { font-weight: 400; font-style: italic; }
+
+        .page-head h1 .serif {
+            font-weight: 400;
+            font-style: italic;
+        }
+
         .page-head p {
-            margin: 0; color: var(--fg-dim); font-size: 14px;
+            margin: 0;
+            color: var(--fg-dim);
+            font-size: 14px;
         }
 
         /* Cards */
@@ -272,28 +481,55 @@
             position: relative;
             overflow: hidden;
         }
+
         .card-head {
-            display: flex; align-items: center; gap: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             margin-bottom: 16px;
         }
+
         .card-head h2 {
-            margin: 0; font-size: 15px; font-weight: 600; letter-spacing: -0.005em;
+            margin: 0;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: -0.005em;
         }
+
         .card-head .badge {
-            font-size: 10px; padding: 2px 7px;
-            background: var(--bg-elev-2); border-radius: 999px;
-            color: var(--fg-dim); font-family: 'Geist Mono', monospace;
+            font-size: 10px;
+            padding: 2px 7px;
+            background: var(--bg-elev-2);
+            border-radius: 999px;
+            color: var(--fg-dim);
+            font-family: 'Geist Mono', monospace;
             margin-left: auto;
         }
+
         .card-sub {
-            color: var(--fg-dim); font-size: 13px; margin-top: -10px; margin-bottom: 16px;
+            color: var(--fg-dim);
+            font-size: 13px;
+            margin-top: -10px;
+            margin-bottom: 16px;
         }
 
         /* Grids */
-        .grid { display: grid; gap: 16px; }
-        .grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
-        .grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
-        .grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+        .grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .grid.cols-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .grid.cols-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .grid.cols-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
 
         /* Stats */
         .stat {
@@ -301,49 +537,113 @@
             background: var(--bg-elev);
             border: 1px solid var(--line-soft);
             border-radius: 14px;
-            position: relative; overflow: hidden;
+            position: relative;
+            overflow: hidden;
         }
+
         .stat-label {
-            font-size: 11px; color: var(--fg-faint);
+            font-size: 11px;
+            color: var(--fg-faint);
             font-family: 'Geist Mono', monospace;
-            letter-spacing: 0.08em; text-transform: uppercase;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
             margin-bottom: 8px;
         }
+
         .stat-value {
-            font-size: 28px; font-weight: 600; letter-spacing: -0.02em;
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
             line-height: 1;
         }
+
         .stat-delta {
-            margin-top: 8px; font-size: 12px; color: var(--ok);
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--ok);
             font-family: 'Geist Mono', monospace;
         }
-        .stat-delta.down { color: var(--danger); }
+
+        .stat-delta.down {
+            color: var(--danger);
+        }
+
         .stat-spark {
-            position: absolute; right: 14px; bottom: 14px; opacity: 0.5;
+            position: absolute;
+            right: 14px;
+            bottom: 14px;
+            opacity: 0.5;
         }
 
         /* Buttons */
         .btn {
-            display: inline-flex; align-items: center; gap: 7px;
-            padding: 9px 14px; border-radius: 8px;
-            font-size: 13px; font-weight: 500;
-            background: var(--bg-elev-2); color: var(--fg);
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            background: var(--bg-elev-2);
+            color: var(--fg);
             border: 1px solid var(--line);
             transition: all 0.15s;
         }
-        .btn:hover { background: var(--bg-elev-3); }
-        .btn.primary { background: var(--accent); color: var(--accent-fg); border-color: transparent; }
-        .btn.primary:hover { filter: brightness(1.1); }
-        .btn.danger { background: var(--danger-soft); color: var(--danger); border-color: color-mix(in oklab, var(--danger) 30%, transparent); }
-        .btn.danger:hover { background: var(--danger); color: white; }
-        .btn.warn { background: var(--warn-soft); color: var(--warn); border-color: color-mix(in oklab, var(--warn) 30%, transparent); }
-        .btn.ghost { background: transparent; border-color: transparent; }
-        .btn.ghost:hover { background: var(--bg-elev-2); }
-        .btn.sm { padding: 6px 10px; font-size: 12px; }
-        .btn svg { width: 14px; height: 14px; }
+
+        .btn:hover {
+            background: var(--bg-elev-3);
+        }
+
+        .btn.primary {
+            background: var(--accent);
+            color: var(--accent-fg);
+            border-color: transparent;
+        }
+
+        .btn.primary:hover {
+            filter: brightness(1.1);
+        }
+
+        .btn.danger {
+            background: var(--danger-soft);
+            color: var(--danger);
+            border-color: color-mix(in oklab, var(--danger) 30%, transparent);
+        }
+
+        .btn.danger:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn.warn {
+            background: var(--warn-soft);
+            color: var(--warn);
+            border-color: color-mix(in oklab, var(--warn) 30%, transparent);
+        }
+
+        .btn.ghost {
+            background: transparent;
+            border-color: transparent;
+        }
+
+        .btn.ghost:hover {
+            background: var(--bg-elev-2);
+        }
+
+        .btn.sm {
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+
+        .btn svg {
+            width: 14px;
+            height: 14px;
+        }
 
         /* Inputs */
-        .input, .select, .textarea {
+        .input,
+        .select,
+        .textarea {
             width: 100%;
             padding: 9px 12px;
             background: var(--bg-elev-2);
@@ -354,110 +654,223 @@
             transition: border-color 0.15s, background 0.15s;
             outline: none;
         }
-        .input:focus, .select:focus, .textarea:focus {
+
+        .input:focus,
+        .select:focus,
+        .textarea:focus {
             border-color: var(--accent);
             background: var(--bg-elev);
         }
-        .textarea { resize: vertical; min-height: 80px; font-family: inherit; }
-        .input-label {
-            display: block; font-size: 12px; color: var(--fg-dim);
-            margin-bottom: 6px; font-weight: 500;
+
+        .textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
         }
+
+        .input-label {
+            display: block;
+            font-size: 12px;
+            color: var(--fg-dim);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
         .input-hint {
-            font-size: 11.5px; color: var(--fg-faint);
-            margin-top: 6px; font-family: 'Geist Mono', monospace;
+            font-size: 11.5px;
+            color: var(--fg-faint);
+            margin-top: 6px;
+            font-family: 'Geist Mono', monospace;
         }
 
         /* Toggle */
         .toggle {
-            position: relative; display: inline-block;
-            width: 38px; height: 22px; flex-shrink: 0;
+            position: relative;
+            display: inline-block;
+            width: 38px;
+            height: 22px;
+            flex-shrink: 0;
         }
-        .toggle input { opacity: 0; width: 0; height: 0; }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
         .toggle-slider {
-            position: absolute; cursor: pointer; inset: 0;
-            background: var(--bg-elev-3); border: 1px solid var(--line);
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background: var(--bg-elev-3);
+            border: 1px solid var(--line);
             border-radius: 999px;
             transition: 0.2s;
         }
+
         .toggle-slider::before {
-            content: ''; position: absolute;
-            height: 14px; width: 14px; left: 3px; top: 50%;
+            content: '';
+            position: absolute;
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            top: 50%;
             transform: translateY(-50%);
-            background: var(--fg-dim); border-radius: 50%;
+            background: var(--fg-dim);
+            border-radius: 50%;
             transition: 0.2s;
         }
-        .toggle input:checked + .toggle-slider {
+
+        .toggle input:checked+.toggle-slider {
             background: var(--accent);
             border-color: transparent;
         }
-        .toggle input:checked + .toggle-slider::before {
+
+        .toggle input:checked+.toggle-slider::before {
             transform: translate(16px, -50%);
             background: white;
         }
 
         /* Setting row */
         .setting-row {
-            display: flex; align-items: center; gap: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
             padding: 14px 0;
             border-bottom: 1px solid var(--line-soft);
         }
-        .setting-row:last-child { border-bottom: none; }
-        .setting-row-text { flex: 1; min-width: 0; }
-        .setting-row-text b { display: block; font-size: 13.5px; font-weight: 500; margin-bottom: 2px; }
-        .setting-row-text small { display: block; font-size: 12px; color: var(--fg-dim); }
+
+        .setting-row:last-child {
+            border-bottom: none;
+        }
+
+        .setting-row-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .setting-row-text b {
+            display: block;
+            font-size: 13.5px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .setting-row-text small {
+            display: block;
+            font-size: 12px;
+            color: var(--fg-dim);
+        }
 
         /* Table */
-        .tbl-wrap { overflow-x: auto; }
+        .tbl-wrap {
+            overflow-x: auto;
+        }
+
         .tbl {
-            width: 100%; border-collapse: collapse;
+            width: 100%;
+            border-collapse: collapse;
             font-size: 13px;
         }
+
         .tbl th {
-            text-align: left; font-weight: 500; font-size: 11px;
-            color: var(--fg-faint); font-family: 'Geist Mono', monospace;
-            letter-spacing: 0.08em; text-transform: uppercase;
+            text-align: left;
+            font-weight: 500;
+            font-size: 11px;
+            color: var(--fg-faint);
+            font-family: 'Geist Mono', monospace;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
             padding: 10px 14px;
             border-bottom: 1px solid var(--line-soft);
         }
+
         .tbl td {
             padding: 12px 14px;
             border-bottom: 1px solid var(--line-soft);
             vertical-align: middle;
         }
-        .tbl tbody tr { transition: background 0.12s; }
-        .tbl tbody tr:hover { background: var(--bg-elev-2); }
-        .tbl tbody tr:last-child td { border-bottom: none; }
+
+        .tbl tbody tr {
+            transition: background 0.12s;
+        }
+
+        .tbl tbody tr:hover {
+            background: var(--bg-elev-2);
+        }
+
+        .tbl tbody tr:last-child td {
+            border-bottom: none;
+        }
 
         /* User pill */
         .user-pill {
-            display: flex; align-items: center; gap: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
+
         .avatar {
-            width: 28px; height: 28px; border-radius: 50%;
-            display: grid; place-items: center;
-            color: white; font-size: 11px; font-weight: 600;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
             font-family: 'Geist Mono', monospace;
             flex-shrink: 0;
         }
-        .avatar.lg { width: 36px; height: 36px; font-size: 13px; }
-        .user-pill .uname { font-weight: 500; }
-        .user-pill .uhandle { color: var(--fg-faint); font-size: 12px; font-family: 'Geist Mono', monospace; }
+
+        .avatar.lg {
+            width: 36px;
+            height: 36px;
+            font-size: 13px;
+        }
+
+        .user-pill .uname {
+            font-weight: 500;
+        }
+
+        .user-pill .uhandle {
+            color: var(--fg-faint);
+            font-size: 12px;
+            font-family: 'Geist Mono', monospace;
+        }
 
         /* Role chip */
         .role-chip {
-            display: inline-flex; align-items: center; gap: 5px;
-            padding: 3px 9px; border-radius: 999px;
-            font-size: 11.5px; font-weight: 500;
-            background: var(--bg-elev-2); border: 1px solid var(--line);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 9px;
+            border-radius: 999px;
+            font-size: 11.5px;
+            font-weight: 500;
+            background: var(--bg-elev-2);
+            border: 1px solid var(--line);
         }
+
         .role-chip::before {
-            content: ''; width: 6px; height: 6px; border-radius: 50%;
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
             background: var(--accent);
         }
-        .role-chip.mod::before { background: var(--warn); }
-        .role-chip.admin::before { background: var(--danger); }
-        .role-chip.vip::before { background: var(--info); }
+
+        .role-chip.mod::before {
+            background: var(--warn);
+        }
+
+        .role-chip.admin::before {
+            background: var(--danger);
+        }
+
+        .role-chip.vip::before {
+            background: var(--info);
+        }
 
         /* Console / logs */
         .console {
@@ -471,39 +884,91 @@
             max-height: 420px;
             overflow-y: auto;
         }
-        html[data-theme="light"] .console { background: #1a1a1f; color: #ededf0; }
-        .console::-webkit-scrollbar { width: 8px; }
-        .console::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
+
+        html[data-theme="light"] .console {
+            background: #1a1a1f;
+            color: #ededf0;
+        }
+
+        .console::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .console::-webkit-scrollbar-thumb {
+            background: #222;
+            border-radius: 4px;
+        }
+
         .log-line {
-            display: grid; grid-template-columns: 80px 60px 1fr; gap: 12px;
+            display: grid;
+            grid-template-columns: 80px 60px 1fr;
+            gap: 12px;
             padding: 3px 0;
         }
-        .log-time { color: #5a5a62; }
-        .log-level { font-weight: 600; letter-spacing: 0.04em; }
-        .log-level.info { color: var(--info); }
-        .log-level.ok { color: var(--ok); }
-        .log-level.warn { color: var(--warn); }
-        .log-level.err { color: var(--danger); }
-        .log-level.cmd { color: var(--accent); }
-        .log-msg { color: #ededf0; }
-        html[data-theme="light"] .log-msg { color: #ededf0; }
+
+        .log-time {
+            color: #5a5a62;
+        }
+
+        .log-level {
+            font-weight: 600;
+            letter-spacing: 0.04em;
+        }
+
+        .log-level.info {
+            color: var(--info);
+        }
+
+        .log-level.ok {
+            color: var(--ok);
+        }
+
+        .log-level.warn {
+            color: var(--warn);
+        }
+
+        .log-level.err {
+            color: var(--danger);
+        }
+
+        .log-level.cmd {
+            color: var(--accent);
+        }
+
+        .log-msg {
+            color: #ededf0;
+        }
+
+        html[data-theme="light"] .log-msg {
+            color: #ededf0;
+        }
 
         /* Tabs */
         .tabs {
-            display: flex; gap: 2px;
+            display: flex;
+            gap: 2px;
             border-bottom: 1px solid var(--line-soft);
             margin-bottom: 20px;
         }
+
         .tab {
             padding: 10px 14px;
-            font-size: 13px; font-weight: 500;
+            font-size: 13px;
+            font-weight: 500;
             color: var(--fg-dim);
             border-bottom: 2px solid transparent;
             margin-bottom: -1px;
             transition: color 0.15s, border-color 0.15s;
         }
-        .tab:hover { color: var(--fg); }
-        .tab.active { color: var(--fg); border-bottom-color: var(--accent); }
+
+        .tab:hover {
+            color: var(--fg);
+        }
+
+        .tab.active {
+            color: var(--fg);
+            border-bottom-color: var(--accent);
+        }
 
         /* Command preview (Discord-ish) */
         .discord-preview {
@@ -514,33 +979,81 @@
             font-size: 13.5px;
             color: #dcddde;
         }
-        .discord-msg { display: flex; gap: 12px; padding: 6px 0; }
-        .discord-msg .avatar { width: 32px; height: 32px; border-radius: 50%; }
-        .discord-msg .content { flex: 1; min-width: 0; }
-        .discord-msg .name { font-weight: 600; font-size: 14px; color: #fff; }
+
+        .discord-msg {
+            display: flex;
+            gap: 12px;
+            padding: 6px 0;
+        }
+
+        .discord-msg .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+
+        .discord-msg .content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .discord-msg .name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #fff;
+        }
+
         .discord-msg .name .bot-tag {
-            margin-left: 6px; font-size: 10px; background: #5865f2; color: #fff;
-            padding: 1px 5px; border-radius: 3px; font-weight: 500;
+            margin-left: 6px;
+            font-size: 10px;
+            background: #5865f2;
+            color: #fff;
+            padding: 1px 5px;
+            border-radius: 3px;
+            font-weight: 500;
             vertical-align: middle;
         }
-        .discord-msg .timestamp { font-size: 11px; color: #72767d; margin-left: 8px; font-weight: 400; }
+
+        .discord-msg .timestamp {
+            font-size: 11px;
+            color: #72767d;
+            margin-left: 8px;
+            font-weight: 400;
+        }
 
         /* Kbd */
         kbd {
             display: inline-block;
-            padding: 2px 6px; border-radius: 4px;
-            background: var(--bg-elev-2); border: 1px solid var(--line);
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: var(--bg-elev-2);
+            border: 1px solid var(--line);
             font-family: 'Geist Mono', monospace;
-            font-size: 10.5px; color: var(--fg-dim);
+            font-size: 10.5px;
+            color: var(--fg-dim);
             vertical-align: middle;
         }
 
         /* Pages */
-        .page { display: none; }
-        .page.active { display: block; animation: fadeIn 0.25s ease; }
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.25s ease;
+        }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Split panel */
@@ -552,32 +1065,63 @@
 
         /* Activity bars for stat */
         .spark-bars {
-            display: flex; align-items: flex-end; gap: 2px; height: 30px;
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 30px;
         }
+
         .spark-bars span {
-            width: 4px; background: var(--accent); opacity: 0.4;
+            width: 4px;
+            background: var(--accent);
+            opacity: 0.4;
             border-radius: 1px;
         }
 
         /* Mini chart */
         .chart-bar-row {
-            display: grid; grid-template-columns: 80px 1fr 40px;
-            gap: 12px; align-items: center;
-            padding: 7px 0; font-size: 12.5px;
+            display: grid;
+            grid-template-columns: 80px 1fr 40px;
+            gap: 12px;
+            align-items: center;
+            padding: 7px 0;
+            font-size: 12.5px;
         }
+
         .chart-bar-track {
-            height: 8px; background: var(--bg-elev-2); border-radius: 4px; overflow: hidden;
+            height: 8px;
+            background: var(--bg-elev-2);
+            border-radius: 4px;
+            overflow: hidden;
         }
+
         .chart-bar-fill {
-            height: 100%; background: linear-gradient(90deg, var(--accent), oklch(0.6 0.22 220));
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), oklch(0.6 0.22 220));
             border-radius: 4px;
         }
-        .chart-num { color: var(--fg-dim); font-family: 'Geist Mono', monospace; font-size: 11px; text-align: right; }
+
+        .chart-num {
+            color: var(--fg-dim);
+            font-family: 'Geist Mono', monospace;
+            font-size: 11px;
+            text-align: right;
+        }
 
         /* Scrollbar */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--bg-elev-3); }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--line);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--bg-elev-3);
+        }
 
         /* Dry-run banner */
         .dry-banner {
@@ -587,70 +1131,649 @@
             border-radius: 10px;
             padding: 10px 14px;
             font-size: 12.5px;
-            display: flex; align-items: center; gap: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             margin-bottom: 20px;
             font-family: 'Geist Mono', monospace;
         }
-        .dry-banner svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+        .dry-banner svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+        }
+
+        /* ============ Enhanced animations ============ */
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(12px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes shimmer {
+            0% { background-position: -200px 0; }
+            100% { background-position: calc(200px + 100%) 0; }
+        }
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent) 40%, transparent); }
+            50% { box-shadow: 0 0 0 10px transparent; }
+        }
+        @keyframes spinSlow {
+            to { transform: rotate(360deg); }
+        }
+
+        .page.active > * {
+            animation: slideInUp 0.45s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+        }
+        .page.active > *:nth-child(1) { animation-delay: 0s; }
+        .page.active > *:nth-child(2) { animation-delay: 0.06s; }
+        .page.active > *:nth-child(3) { animation-delay: 0.12s; }
+        .page.active > *:nth-child(4) { animation-delay: 0.18s; }
+        .page.active > *:nth-child(5) { animation-delay: 0.24s; }
+        .page.active > *:nth-child(6) { animation-delay: 0.30s; }
+        .page.active > *:nth-child(7) { animation-delay: 0.36s; }
+
+        .card, .stat {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        border-color 0.25s, box-shadow 0.25s;
+        }
+        .card:hover, .stat:hover {
+            border-color: color-mix(in oklab, var(--accent) 30%, var(--line-soft));
+            box-shadow: 0 10px 32px -14px color-mix(in oklab, var(--accent) 35%, transparent);
+        }
+        .stat.lift:hover { transform: translateY(-2px); }
+
+        .btn {
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn:active { transform: scale(0.97); }
+
+        /* Skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, var(--bg-elev-2) 0%, var(--bg-elev-3) 50%, var(--bg-elev-2) 100%);
+            background-size: 200px 100%;
+            background-repeat: no-repeat;
+            border-radius: 4px;
+            display: inline-block;
+            animation: shimmer 1.6s ease-in-out infinite;
+        }
+
+        /* Timeline */
+        .timeline { position: relative; padding-left: 26px; }
+        .timeline::before {
+            content: ''; position: absolute;
+            left: 7px; top: 8px; bottom: 8px;
+            width: 2px; background: var(--line);
+        }
+        .timeline-item {
+            position: relative;
+            padding: 8px 0 18px;
+            animation: slideInRight 0.4s ease backwards;
+        }
+        .timeline-item::before {
+            content: ''; position: absolute;
+            left: -22px; top: 14px;
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 15%, transparent);
+        }
+        .timeline-item.warn::before { border-color: var(--warn); box-shadow: 0 0 0 3px color-mix(in oklab, var(--warn) 15%, transparent); }
+        .timeline-item.danger::before { border-color: var(--danger); box-shadow: 0 0 0 3px color-mix(in oklab, var(--danger) 15%, transparent); }
+        .timeline-item.ok::before { border-color: var(--ok); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ok) 15%, transparent); }
+        .timeline-time {
+            font-size: 11px; color: var(--fg-faint);
+            font-family: 'Geist Mono', monospace; margin-bottom: 3px;
+        }
+        .timeline-title { font-size: 13.5px; font-weight: 500; margin-bottom: 2px; }
+        .timeline-desc { font-size: 12.5px; color: var(--fg-dim); line-height: 1.5; }
+
+        /* Feed */
+        .feed-item {
+            display: flex; gap: 12px;
+            padding: 11px 0;
+            border-bottom: 1px solid var(--line-soft);
+            transition: background 0.15s;
+            border-radius: 6px;
+            padding-left: 8px; padding-right: 8px;
+            margin-left: -8px; margin-right: -8px;
+        }
+        .feed-item:hover { background: var(--bg-elev-2); }
+        .feed-item:last-child { border-bottom: none; }
+        .feed-icon {
+            width: 32px; height: 32px; border-radius: 8px;
+            display: grid; place-items: center; flex-shrink: 0;
+            background: var(--bg-elev-2); color: var(--fg-dim);
+        }
+        .feed-icon svg { width: 14px; height: 14px; }
+        .feed-icon.join { background: var(--ok-soft); color: var(--ok); }
+        .feed-icon.leave { background: var(--danger-soft); color: var(--danger); }
+        .feed-icon.ban { background: var(--danger-soft); color: var(--danger); }
+        .feed-icon.warn { background: var(--warn-soft); color: var(--warn); }
+        .feed-icon.cmd { background: var(--accent-soft); color: var(--accent); }
+        .feed-icon.msg { background: color-mix(in oklab, var(--info) 15%, transparent); color: var(--info); }
+        .feed-content { flex: 1; min-width: 0; }
+        .feed-title { font-size: 13px; margin-bottom: 2px; }
+        .feed-title b { font-weight: 600; }
+        .feed-time {
+            font-size: 11px; color: var(--fg-faint);
+            font-family: 'Geist Mono', monospace;
+        }
+
+        /* Heatmap */
+        .heatmap {
+            display: grid;
+            grid-template-columns: repeat(24, 1fr);
+            gap: 3px;
+        }
+        .heat-cell {
+            aspect-ratio: 1;
+            border-radius: 3px;
+            background: var(--bg-elev-2);
+            transition: transform 0.12s, box-shadow 0.12s;
+        }
+        .heat-cell:hover {
+            transform: scale(1.4);
+            box-shadow: 0 0 0 1px var(--accent);
+            z-index: 1; position: relative;
+        }
+
+        /* Embed (Discord style) */
+        .embed {
+            border-left: 4px solid var(--accent);
+            background: #2b2d31;
+            padding: 12px 14px;
+            border-radius: 4px;
+            max-width: 520px;
+            color: #dcddde;
+        }
+        .embed-title { font-weight: 600; color: #fff; margin-bottom: 6px; font-size: 14px; }
+        .embed-desc { font-size: 13.5px; line-height: 1.45; color: #dcddde; white-space: pre-wrap; }
+        .embed-footer { margin-top: 10px; font-size: 11px; color: #a3a6aa; }
+
+        /* Ring */
+        .ring { position: relative; width: 72px; height: 72px; }
+        .ring svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+        .ring-bg { fill: none; stroke: var(--bg-elev-3); stroke-width: 7; }
+        .ring-fg { fill: none; stroke: var(--accent); stroke-width: 7; stroke-linecap: round; transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .ring-text {
+            position: absolute; inset: 0;
+            display: grid; place-items: center;
+            font-size: 14px; font-weight: 600;
+            font-family: 'Geist Mono', monospace;
+        }
+
+        /* Action grid */
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+            gap: 10px;
+        }
+        .action-card {
+            padding: 14px;
+            background: var(--bg-elev-2);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: left;
+            display: flex; flex-direction: column; gap: 8px;
+        }
+        .action-card:hover {
+            border-color: color-mix(in oklab, var(--accent) 50%, transparent);
+            background: color-mix(in oklab, var(--accent) 5%, var(--bg-elev-2));
+            transform: translateY(-2px);
+        }
+        .action-card svg { width: 18px; height: 18px; color: var(--accent); }
+        .action-card b { font-size: 13px; font-weight: 600; }
+        .action-card small { font-size: 11.5px; color: var(--fg-dim); line-height: 1.4; }
+
+        /* Chips */
+        .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+        .chip {
+            padding: 5px 11px;
+            border-radius: 999px;
+            background: var(--bg-elev-2);
+            border: 1px solid var(--line);
+            font-size: 12px;
+            color: var(--fg-dim);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .chip:hover { color: var(--fg); border-color: var(--line); }
+        .chip.active {
+            background: var(--accent-soft);
+            color: var(--fg);
+            border-color: color-mix(in oklab, var(--accent) 50%, transparent);
+        }
+        .chip .count {
+            margin-left: 6px; opacity: 0.6;
+            font-family: 'Geist Mono', monospace; font-size: 11px;
+        }
+
+        /* Searchbar */
+        .searchbar { position: relative; margin-bottom: 14px; }
+        .searchbar input { padding-left: 36px; }
+        .searchbar svg {
+            position: absolute; left: 12px; top: 50%;
+            transform: translateY(-50%);
+            width: 14px; height: 14px;
+            color: var(--fg-faint); pointer-events: none;
+        }
+
+        /* Section sub-head */
+        .sub-head {
+            display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
+        }
+        .sub-head h3 { margin: 0; font-size: 14px; font-weight: 600; }
+        .sub-head .sub-actions { margin-left: auto; display: flex; gap: 8px; }
+
+        /* Ticket card */
+        .ticket-card {
+            padding: 14px 16px;
+            background: var(--bg-elev-2);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .ticket-card:hover {
+            border-color: color-mix(in oklab, var(--accent) 40%, transparent);
+            transform: translateX(3px);
+        }
+        .ticket-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+        .ticket-id {
+            font-family: 'Geist Mono', monospace;
+            font-size: 11px; color: var(--fg-faint);
+        }
+        .ticket-title { font-size: 13.5px; font-weight: 500; flex: 1; }
+        .ticket-meta {
+            display: flex; gap: 14px;
+            font-size: 11.5px; color: var(--fg-dim);
+            font-family: 'Geist Mono', monospace;
+        }
+
+        /* Status tag */
+        .tag {
+            font-size: 10.5px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-family: 'Geist Mono', monospace;
+            font-weight: 500; letter-spacing: 0.04em;
+            text-transform: uppercase;
+            background: var(--bg-elev-3); color: var(--fg-dim);
+        }
+        .tag.open { background: var(--ok-soft); color: var(--ok); }
+        .tag.closed { background: var(--bg-elev-3); color: var(--fg-dim); }
+        .tag.urgent { background: var(--danger-soft); color: var(--danger); }
+        .tag.pending { background: var(--warn-soft); color: var(--warn); }
+        .tag.new { background: var(--accent-soft); color: var(--accent); }
+
+        /* Slider */
+        .slider {
+            width: 100%;
+            -webkit-appearance: none; appearance: none;
+            height: 4px;
+            background: var(--bg-elev-3);
+            border-radius: 2px;
+            outline: none;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 16px; height: 16px;
+            background: var(--accent); border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 15%, transparent);
+            transition: transform 0.15s;
+        }
+        .slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+
+        /* Divider */
+        .divider { height: 1px; background: var(--line-soft); margin: 16px 0; }
+
+        /* Code block */
+        .code {
+            background: #050507;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 12px 14px;
+            font-family: 'Geist Mono', monospace;
+            font-size: 12px; color: #ededf0;
+            overflow-x: auto;
+            line-height: 1.6;
+        }
+
+        /* Role pill */
+        .role-pill {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 11.5px; font-weight: 500;
+            background: color-mix(in oklab, var(--role-color, var(--accent)) 15%, transparent);
+            color: var(--role-color, var(--accent));
+            border: 1px solid color-mix(in oklab, var(--role-color, var(--accent)) 30%, transparent);
+        }
+        .role-pill::before {
+            content: ''; width: 7px; height: 7px;
+            border-radius: 50%; background: var(--role-color, var(--accent));
+        }
+
+        /* KV list */
+        .kv { display: grid; grid-template-columns: 160px 1fr; gap: 2px 20px; font-size: 13px; }
+        .kv dt {
+            color: var(--fg-dim); font-size: 12px;
+            padding: 10px 0; border-bottom: 1px solid var(--line-soft);
+        }
+        .kv dd {
+            margin: 0; padding: 10px 0;
+            border-bottom: 1px solid var(--line-soft);
+        }
+        .kv dt:last-of-type, .kv dd:last-of-type { border-bottom: none; }
+
+        /* Channel tree */
+        .ch-cat {
+            font-size: 10.5px; font-family: 'Geist Mono', monospace;
+            color: var(--fg-faint); letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 14px 10px 6px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .ch-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 13px; color: var(--fg-dim);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .ch-item:hover { background: var(--bg-elev-2); color: var(--fg); }
+        .ch-item svg { width: 14px; height: 14px; flex-shrink: 0; }
+        .ch-item .ch-meta {
+            margin-left: auto; font-size: 11px;
+            color: var(--fg-faint); font-family: 'Geist Mono', monospace;
+        }
+
+        /* Command card */
+        .cmd-card {
+            padding: 14px 16px;
+            background: var(--bg-elev-2);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            display: flex; align-items: center; gap: 14px;
+            transition: all 0.2s;
+        }
+        .cmd-card:hover { border-color: color-mix(in oklab, var(--accent) 30%, transparent); }
+        .cmd-name {
+            font-family: 'Geist Mono', monospace;
+            font-size: 13px; font-weight: 600; color: var(--accent);
+        }
+        .cmd-desc { font-size: 12.5px; color: var(--fg-dim); margin-top: 2px; }
+        .cmd-usage {
+            font-family: 'Geist Mono', monospace;
+            font-size: 11px; color: var(--fg-faint);
+            margin-left: auto;
+        }
+
+        /* Automod rule */
+        .rule-card {
+            padding: 16px;
+            background: var(--bg-elev);
+            border: 1px solid var(--line-soft);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+        .rule-card:hover { border-color: var(--line); }
+        .rule-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+        .rule-icon {
+            width: 34px; height: 34px; border-radius: 9px;
+            display: grid; place-items: center;
+            background: var(--accent-soft); color: var(--accent);
+            flex-shrink: 0;
+        }
+        .rule-icon svg { width: 16px; height: 16px; }
+        .rule-title { font-size: 14px; font-weight: 600; }
+        .rule-sub { font-size: 12.5px; color: var(--fg-dim); margin-top: 1px; }
+
+        /* AI chat bubble */
+        .chat-msg {
+            display: flex; gap: 10px; padding: 10px 0;
+            animation: slideInUp 0.3s ease backwards;
+        }
+        .chat-msg .avatar { width: 28px; height: 28px; }
+        .chat-bubble {
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: var(--bg-elev-2);
+            max-width: 90%;
+            font-size: 13px; line-height: 1.5;
+            color: var(--fg);
+        }
+        .chat-msg.ai .chat-bubble {
+            background: color-mix(in oklab, var(--accent) 10%, var(--bg-elev-2));
+            border: 1px solid color-mix(in oklab, var(--accent) 25%, transparent);
+        }
+
+        /* Danger zone */
+        .danger-zone {
+            padding: 16px;
+            border: 1px solid color-mix(in oklab, var(--danger) 30%, transparent);
+            border-radius: 10px;
+            background: color-mix(in oklab, var(--danger) 4%, transparent);
+        }
+        .danger-zone h3 {
+            margin: 0 0 10px; color: var(--danger);
+            font-size: 13px; font-weight: 600;
+        }
+
+        /* Deploy pipeline */
+        .pipeline {
+            display: flex; align-items: center; gap: 10px;
+            padding: 14px;
+            background: var(--bg-elev-2);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            overflow-x: auto;
+        }
+        .pipe-step {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 12px; border-radius: 8px;
+            background: var(--bg-elev);
+            font-size: 12px; white-space: nowrap;
+            border: 1px solid var(--line-soft);
+        }
+        .pipe-step.done {
+            border-color: color-mix(in oklab, var(--ok) 40%, transparent);
+            color: var(--ok);
+            background: var(--ok-soft);
+        }
+        .pipe-step.running {
+            border-color: color-mix(in oklab, var(--accent) 40%, transparent);
+            color: var(--accent);
+            background: var(--accent-soft);
+        }
+        .pipe-step.running svg { animation: spinSlow 1.4s linear infinite; }
+        .pipe-arrow {
+            width: 14px; height: 14px; color: var(--fg-faint);
+            flex-shrink: 0;
+        }
+        .pipe-step svg { width: 12px; height: 12px; }
+
+        /* Scheduled task row */
+        .task-row {
+            display: grid;
+            grid-template-columns: 1fr auto auto auto;
+            gap: 14px; align-items: center;
+            padding: 12px 14px;
+            background: var(--bg-elev-2);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            transition: border-color 0.2s;
+        }
+        .task-row:hover { border-color: color-mix(in oklab, var(--accent) 30%, transparent); }
+        .task-name { font-size: 13.5px; font-weight: 500; }
+        .task-desc { font-size: 12px; color: var(--fg-dim); margin-top: 2px; }
+        .task-cron {
+            font-family: 'Geist Mono', monospace;
+            font-size: 11.5px; color: var(--fg-faint);
+        }
+
+        /* num tabular */
+        .num { font-variant-numeric: tabular-nums; }
+
+        /* Toast */
+        .toast-stack {
+            position: fixed; bottom: 20px; right: 20px;
+            z-index: 5000; display: flex; flex-direction: column; gap: 8px;
+        }
+        .toast {
+            padding: 12px 16px;
+            background: var(--bg-elev);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            font-size: 13px;
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+            animation: slideInRight 0.3s ease;
+            max-width: 300px;
+        }
+        .toast.ok { border-color: color-mix(in oklab, var(--ok) 40%, transparent); }
+        .toast.err { border-color: color-mix(in oklab, var(--danger) 40%, transparent); }
 
         /* Mobile */
-        .mobile-menu-btn { display: none; }
+        .mobile-menu-btn {
+            display: none;
+        }
+
         @media (max-width: 900px) {
-            .app { grid-template-columns: 1fr; }
+            .app {
+                grid-template-columns: 1fr;
+            }
+
             .sidebar {
-                position: fixed; top: 0; left: 0; width: 280px; z-index: 100;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 280px;
+                z-index: 100;
                 transform: translateX(-100%);
                 transition: transform 0.25s ease;
             }
-            .sidebar.open { transform: translateX(0); }
-            .mobile-menu-btn { display: grid; }
-            .topbar { padding: 12px 16px; }
-            .content { padding: 20px 16px; }
-            .grid.cols-2, .grid.cols-3, .grid.cols-4 { grid-template-columns: 1fr; }
-            .split { grid-template-columns: 1fr; }
-            .sidebar-overlay {
-                display: none; position: fixed; inset: 0; z-index: 99;
-                background: rgba(0,0,0,0.5); backdrop-filter: blur(2px);
+
+            .sidebar.open {
+                transform: translateX(0);
             }
-            .sidebar-overlay.show { display: block; }
+
+            .mobile-menu-btn {
+                display: grid;
+            }
+
+            .topbar {
+                padding: 12px 16px;
+            }
+
+            .content {
+                padding: 20px 16px;
+            }
+
+            .grid.cols-2,
+            .grid.cols-3,
+            .grid.cols-4 {
+                grid-template-columns: 1fr;
+            }
+
+            .split {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                z-index: 99;
+                background: rgba(0, 0, 0, 0.5);
+                backdrop-filter: blur(2px);
+            }
+
+            .sidebar-overlay.show {
+                display: block;
+            }
         }
 
         /* Login Screen */
         .login-screen {
-            position: fixed; inset: 0; z-index: 10000;
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
             background: var(--bg);
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 20px;
         }
+
         .login-card {
-            width: 100%; max-width: 400px;
+            width: 100%;
+            max-width: 400px;
             text-align: center;
             background: var(--bg-elev);
             border: 1px solid var(--line);
             border-radius: 24px;
             padding: 40px 32px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
+
         .login-logo {
             margin-bottom: 24px;
             display: inline-flex;
         }
-        .login-card h1 { font-size: 24px; margin-bottom: 8px; letter-spacing: -0.02em; }
-        .login-card p { color: var(--fg-dim); font-size: 14px; margin-bottom: 32px; line-height: 1.5; }
+
+        .login-card h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .login-card p {
+            color: var(--fg-dim);
+            font-size: 14px;
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+
         .login-btn {
             width: 100%;
             padding: 14px;
-            background: #5865F2; /* Discord Blue */
+            background: #5865F2;
+            /* Discord Blue */
             color: white;
             font-weight: 600;
             border-radius: 12px;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
             transition: filter 0.2s;
         }
-        .login-btn:hover { filter: brightness(1.1); }
-        .login-btn svg { width: 20px; height: 20px; }
 
-        [v-cloak] { display: none !important; }
+        .login-btn:hover {
+            filter: brightness(1.1);
+        }
+
+        .login-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        [v-cloak] {
+            display: none !important;
+        }
     </style>
 </head>
 
@@ -667,14 +1790,18 @@
                     <rect x="11" y="13" width="18" height="13" rx="4" fill="#0b0b0d" />
                     <circle cx="16" cy="19.5" r="1.6" fill="#fff" />
                     <circle cx="24" cy="19.5" r="1.6" fill="#fff" />
-                    <line x1="20" y1="8" x2="20" y2="4" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" />
+                    <line x1="20" y1="8" x2="20" y2="4" stroke="var(--accent)" stroke-width="1.5"
+                        stroke-linecap="round" />
                     <circle cx="20" cy="3" r="1.5" fill="var(--accent)" />
                 </svg>
             </div>
             <h1>Kozzyx Dashboard</h1>
             <p>Please authorize with Discord to manage your servers and view live statistics.</p>
             <button class="login-btn" onclick="startLogin()">
-                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037 19.736 19.736 0 0 0-4.885 1.515.069.069 0 0 0-.032.027C.533 9.048-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+                <svg fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037 19.736 19.736 0 0 0-4.885 1.515.069.069 0 0 0-.032.027C.533 9.048-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
+                </svg>
                 Login with Discord
             </button>
         </div>
@@ -689,7 +1816,8 @@
                     <rect x="11" y="13" width="18" height="13" rx="4" fill="#0b0b0d" />
                     <circle cx="16" cy="19.5" r="1.6" fill="#fff" />
                     <circle cx="24" cy="19.5" r="1.6" fill="#fff" />
-                    <line x1="20" y1="8" x2="20" y2="4" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" />
+                    <line x1="20" y1="8" x2="20" y2="4" stroke="var(--accent)" stroke-width="1.5"
+                        stroke-linecap="round" />
                     <circle cx="20" cy="3" r="1.5" fill="var(--accent)" />
                 </svg>
                 <div class="sidebar-brand-text">
@@ -700,72 +1828,127 @@
 
             <div class="nav-section-label">Overview</div>
             <a class="nav-item active" data-page="overview" href="#overview">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <rect x="3" y="3" width="7" height="9" />
+                    <rect x="14" y="3" width="7" height="5" />
+                    <rect x="14" y="12" width="7" height="9" />
+                    <rect x="3" y="16" width="7" height="5" />
+                </svg>
                 Dashboard
             </a>
             <a class="nav-item" data-page="stats" href="#stats">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <line x1="18" y1="20" x2="18" y2="10" />
+                    <line x1="12" y1="20" x2="12" y2="4" />
+                    <line x1="6" y1="20" x2="6" y2="14" />
+                </svg>
                 Server stats
             </a>
             <a class="nav-item" data-page="logs" href="#logs">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <polyline points="4 17 10 11 4 5" />
+                    <line x1="12" y1="19" x2="20" y2="19" />
+                </svg>
                 Live console
                 <span class="badge">LIVE</span>
             </a>
 
             <div class="nav-section-label">Moderation</div>
             <a class="nav-item" data-page="members" href="#members">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
                 Members
             </a>
             <a class="nav-item" data-page="modlog" href="#modlog">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
                 Mod log
             </a>
             <a class="nav-item" data-page="automod" href="#automod">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+                </svg>
                 Automod
                 <span class="badge">7</span>
             </a>
 
             <div class="nav-section-label">Server</div>
             <a class="nav-item" data-page="roles" href="#roles">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+                    <line x1="7" y1="7" x2="7.01" y2="7" />
+                </svg>
                 Roles
             </a>
             <a class="nav-item" data-page="channels" href="#channels">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <line x1="4" y1="9" x2="20" y2="9" />
+                    <line x1="4" y1="15" x2="20" y2="15" />
+                    <line x1="10" y1="3" x2="8" y2="21" />
+                    <line x1="16" y1="3" x2="14" y2="21" />
+                </svg>
                 Channels
             </a>
             <a class="nav-item" data-page="messaging" href="#messaging">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
                 Send message
             </a>
             <a class="nav-item" data-page="tickets" href="#tickets">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4" />
+                    <path d="M4 6v12c0 1.1.9 2 2 2h14v-4" />
+                    <path d="M18 12a2 2 0 0 0 0 4h4v-4z" />
+                </svg>
                 Tickets
                 <span class="badge">3</span>
             </a>
 
             <div class="nav-section-label">Engine</div>
             <a class="nav-item" data-page="commands" href="#commands">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <polyline points="16 18 22 12 16 6" />
+                    <polyline points="8 6 2 12 8 18" />
+                </svg>
                 Commands
             </a>
             <a class="nav-item" data-page="scheduled" href="#scheduled">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                </svg>
                 Scheduled tasks
             </a>
             <a class="nav-item" data-page="ai" href="#ai">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                    <polyline points="2 17 12 22 22 17" />
+                    <polyline points="2 12 12 17 22 12" />
+                </svg>
                 AI (Claude)
             </a>
             <a class="nav-item" data-page="config" href="#config">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <circle cx="12" cy="12" r="3" />
+                    <path
+                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                </svg>
                 Bot config
             </a>
             <a class="nav-item" data-page="deploy" href="#deploy">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/><polyline points="16 16 12 12 8 16"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <polyline points="16 16 12 12 8 16" />
+                    <line x1="12" y1="12" x2="12" y2="21" />
+                    <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
+                    <polyline points="16 16 12 12 8 16" />
+                </svg>
                 Deploy & CI/CD
             </a>
 
@@ -776,7 +1959,10 @@
                         <b>kozzy's lair</b>
                         <small>1,247 members</small>
                     </div>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--fg-faint)"><polyline points="6 9 12 15 18 9"/></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="color:var(--fg-faint)">
+                        <polyline points="6 9 12 15 18 9" />
+                    </svg>
                 </div>
             </div>
         </aside>
@@ -788,7 +1974,11 @@
             <!-- TOPBAR -->
             <div class="topbar">
                 <button class="iconbtn mobile-menu-btn" onclick="toggleSidebar()" aria-label="Menu">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                        <line x1="4" y1="6" x2="20" y2="6" />
+                        <line x1="4" y1="12" x2="20" y2="12" />
+                        <line x1="4" y1="18" x2="20" y2="18" />
+                    </svg>
                 </button>
                 <div class="breadcrumb">
                     <span>kozzy's lair</span>
@@ -797,11 +1987,23 @@
                 </div>
                 <div class="topbar-right">
                     <span class="status-pill"><span class="dot"></span>bot online</span>
-                    <button class="iconbtn" onclick="document.documentElement.dataset.theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'" title="Toggle theme">
-                        <svg id="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                    <button class="iconbtn"
+                        onclick="document.documentElement.dataset.theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'"
+                        title="Toggle theme">
+                        <svg id="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <circle cx="12" cy="12" r="4" />
+                            <path
+                                d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+                        </svg>
                     </button>
                     <button class="iconbtn" title="Refresh" onclick="pulseConsole()">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <polyline points="23 4 23 10 17 10" />
+                            <polyline points="1 20 1 14 7 14" />
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                        </svg>
                     </button>
                     <div class="user-pill" id="user-profile">
                         <div class="avatar lg" id="user-avatar">KX</div>
@@ -823,33 +2025,901 @@
                     </div>
 
                     <div class="grid cols-4" style="margin-bottom: 20px;">
-                        <div class="stat">
+                        <div class="stat lift">
                             <div class="stat-label">Members</div>
-                            <div class="stat-value" id="stat-members">...</div>
-                            <div class="stat-delta">+... today</div>
+                            <div class="stat-value num" id="stat-members">1,247</div>
+                            <div class="stat-delta">+24 today</div>
+                            <div class="stat-spark">
+                                <div class="spark-bars">
+                                    <span style="height:40%"></span><span style="height:60%"></span>
+                                    <span style="height:55%"></span><span style="height:75%"></span>
+                                    <span style="height:65%"></span><span style="height:90%"></span>
+                                    <span style="height:80%"></span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="stat">
+                        <div class="stat lift">
                             <div class="stat-label">Uptime</div>
-                            <div class="stat-value" id="stat-uptime">...</div>
+                            <div class="stat-value num" id="stat-uptime">12h 44m</div>
+                            <div class="stat-delta">99.98% SLA</div>
                         </div>
-                        <div class="stat">
+                        <div class="stat lift">
                             <div class="stat-label">Guilds</div>
-                            <div class="stat-value" id="stat-guilds">...</div>
+                            <div class="stat-value num" id="stat-guilds">1</div>
+                            <div class="stat-delta">primary: kozzy's lair</div>
                         </div>
-                        <div class="stat">
+                        <div class="stat lift">
                             <div class="stat-label">Status</div>
-                            <div class="stat-value" id="stat-status">...</div>
+                            <div class="stat-value" id="stat-status" style="color: var(--ok);">Online</div>
+                            <div class="stat-delta">all systems nominal</div>
+                        </div>
+                    </div>
+
+                    <div class="grid cols-2" style="margin-bottom: 20px;">
+                        <div class="card">
+                            <div class="card-head">
+                                <h2>Quick actions</h2>
+                                <span class="badge">SHORTCUTS</span>
+                            </div>
+                            <div class="action-grid">
+                                <button class="action-card" onclick="navigate('messaging')">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
+                                    <b>Send message</b>
+                                    <small>Broadcast to any channel</small>
+                                </button>
+                                <button class="action-card" onclick="navigate('automod')">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10" /><line x1="4.93" y1="4.93" x2="19.07" y2="19.07" /></svg>
+                                    <b>Tune automod</b>
+                                    <small>7 rules active</small>
+                                </button>
+                                <button class="action-card" onclick="navigate('members')">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /></svg>
+                                    <b>Manage members</b>
+                                    <small>Ban, kick, assign roles</small>
+                                </button>
+                                <button class="action-card" onclick="navigate('deploy')">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 16 12 12 8 16" /><line x1="12" y1="12" x2="12" y2="21" /><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" /></svg>
+                                    <b>Deploy bot</b>
+                                    <small>Last: 2h ago · main</small>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-head">
+                                <h2>Recent activity</h2>
+                                <span class="badge">LIVE</span>
+                            </div>
+                            <div>
+                                <div class="feed-item">
+                                    <div class="feed-icon join">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                                    </div>
+                                    <div class="feed-content">
+                                        <div class="feed-title"><b>mira</b> joined the server</div>
+                                        <div class="feed-time">2m ago</div>
+                                    </div>
+                                </div>
+                                <div class="feed-item">
+                                    <div class="feed-icon cmd">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                                    </div>
+                                    <div class="feed-content">
+                                        <div class="feed-title"><b>nova</b> ran <span class="mono" style="color:var(--accent)">/play</span></div>
+                                        <div class="feed-time">6m ago · #music</div>
+                                    </div>
+                                </div>
+                                <div class="feed-item">
+                                    <div class="feed-icon warn">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                    </div>
+                                    <div class="feed-content">
+                                        <div class="feed-title">Automod warned <b>spamr_99</b></div>
+                                        <div class="feed-time">14m ago · invite link</div>
+                                    </div>
+                                </div>
+                                <div class="feed-item">
+                                    <div class="feed-icon ban">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                                    </div>
+                                    <div class="feed-content">
+                                        <div class="feed-title"><b>kozzy</b> banned <b>raid0r</b></div>
+                                        <div class="feed-time">28m ago · reason: raid</div>
+                                    </div>
+                                </div>
+                                <div class="feed-item">
+                                    <div class="feed-icon msg">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                    </div>
+                                    <div class="feed-content">
+                                        <div class="feed-title"><b>Bot</b> sent announcement to #general</div>
+                                        <div class="feed-time">1h ago</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid cols-2">
+                        <div class="card">
+                            <div class="card-head"><h2>Top channels (24h)</h2></div>
+                            <div class="chart-bar-row"><span>#general</span><div class="chart-bar-track"><div class="chart-bar-fill" style="width:92%"></div></div><span class="chart-num">8,412</span></div>
+                            <div class="chart-bar-row"><span>#memes</span><div class="chart-bar-track"><div class="chart-bar-fill" style="width:74%"></div></div><span class="chart-num">6,790</span></div>
+                            <div class="chart-bar-row"><span>#music</span><div class="chart-bar-track"><div class="chart-bar-fill" style="width:48%"></div></div><span class="chart-num">4,380</span></div>
+                            <div class="chart-bar-row"><span>#dev</span><div class="chart-bar-track"><div class="chart-bar-fill" style="width:33%"></div></div><span class="chart-num">3,014</span></div>
+                            <div class="chart-bar-row"><span>#bot-spam</span><div class="chart-bar-track"><div class="chart-bar-fill" style="width:22%"></div></div><span class="chart-num">2,087</span></div>
+                        </div>
+                        <div class="card">
+                            <div class="card-head"><h2>System health</h2><span class="badge">1m</span></div>
+                            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items:center; padding: 8px 0;">
+                                <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+                                    <div class="ring">
+                                        <svg viewBox="0 0 72 72">
+                                            <circle class="ring-bg" cx="36" cy="36" r="30"/>
+                                            <circle class="ring-fg" cx="36" cy="36" r="30" stroke-dasharray="188.5" stroke-dashoffset="40"/>
+                                        </svg>
+                                        <div class="ring-text">78%</div>
+                                    </div>
+                                    <small style="color:var(--fg-dim); font-size:11.5px">CPU</small>
+                                </div>
+                                <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+                                    <div class="ring">
+                                        <svg viewBox="0 0 72 72">
+                                            <circle class="ring-bg" cx="36" cy="36" r="30"/>
+                                            <circle class="ring-fg" cx="36" cy="36" r="30" stroke-dasharray="188.5" stroke-dashoffset="96" style="stroke: var(--info);"/>
+                                        </svg>
+                                        <div class="ring-text">49%</div>
+                                    </div>
+                                    <small style="color:var(--fg-dim); font-size:11.5px">Memory</small>
+                                </div>
+                                <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+                                    <div class="ring">
+                                        <svg viewBox="0 0 72 72">
+                                            <circle class="ring-bg" cx="36" cy="36" r="30"/>
+                                            <circle class="ring-fg" cx="36" cy="36" r="30" stroke-dasharray="188.5" stroke-dashoffset="144" style="stroke: var(--ok);"/>
+                                        </svg>
+                                        <div class="ring-text">23%</div>
+                                    </div>
+                                    <small style="color:var(--fg-dim); font-size:11.5px">Disk</small>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+                            <div style="font-size: 12px; color: var(--fg-dim); display:flex; justify-content:space-between;">
+                                <span>Latency: <b style="color:var(--ok)" class="mono">42ms</b></span>
+                                <span>Events/s: <b class="mono">18.4</b></span>
+                                <span>Version: <b class="mono">v2.4.1</b></span>
+                            </div>
                         </div>
                     </div>
                 </section>
-                <!-- Existing sections... -->
+
+                <!-- ==================== SERVER STATS ==================== -->
+                <section class="page" data-page="stats">
+                    <div class="page-head">
+                        <h1>Server <span class="serif">stats.</span></h1>
+                        <p>Traffic, activity, and engagement across the last 7 days.</p>
+                    </div>
+
+                    <div class="chips">
+                        <button class="chip active">Today</button>
+                        <button class="chip">7d</button>
+                        <button class="chip">30d</button>
+                        <button class="chip">90d</button>
+                        <button class="chip">All time</button>
+                    </div>
+
+                    <div class="grid cols-4" style="margin-bottom: 20px;">
+                        <div class="stat lift"><div class="stat-label">Messages</div><div class="stat-value num">41,284</div><div class="stat-delta">+12.4% vs yesterday</div></div>
+                        <div class="stat lift"><div class="stat-label">New members</div><div class="stat-value num">128</div><div class="stat-delta">+8 retained</div></div>
+                        <div class="stat lift"><div class="stat-label">Active users</div><div class="stat-value num">612</div><div class="stat-delta">49% of server</div></div>
+                        <div class="stat lift"><div class="stat-label">Commands run</div><div class="stat-value num">1,840</div><div class="stat-delta down">-3.1%</div></div>
+                    </div>
+
+                    <div class="card" style="margin-bottom: 20px;">
+                        <div class="card-head">
+                            <h2>Activity heatmap</h2>
+                            <span class="badge">UTC · 7 days × 24 hours</span>
+                        </div>
+                        <div class="heatmap" id="heatmap"></div>
+                        <div style="display:flex; align-items:center; gap:10px; margin-top: 14px; font-size: 11px; color: var(--fg-faint); font-family: 'Geist Mono', monospace;">
+                            <span>less</span>
+                            <div style="display:flex; gap: 3px;">
+                                <div class="heat-cell" style="width:12px; height:12px; opacity:0.2"></div>
+                                <div class="heat-cell" style="width:12px; height:12px; background: color-mix(in oklab, var(--accent) 30%, var(--bg-elev-2))"></div>
+                                <div class="heat-cell" style="width:12px; height:12px; background: color-mix(in oklab, var(--accent) 55%, var(--bg-elev-2))"></div>
+                                <div class="heat-cell" style="width:12px; height:12px; background: color-mix(in oklab, var(--accent) 80%, var(--bg-elev-2))"></div>
+                                <div class="heat-cell" style="width:12px; height:12px; background: var(--accent)"></div>
+                            </div>
+                            <span>more</span>
+                        </div>
+                    </div>
+
+                    <div class="grid cols-2">
+                        <div class="card">
+                            <div class="card-head"><h2>Top members</h2></div>
+                            <div class="tbl-wrap">
+                                <table class="tbl">
+                                    <thead><tr><th>Member</th><th>Messages</th><th>Score</th></tr></thead>
+                                    <tbody>
+                                        <tr><td><div class="user-pill"><div class="avatar" style="background: oklch(0.72 0.17 280)">KZ</div><div><div class="uname">kozzy</div><div class="uhandle">@kozzy</div></div></div></td><td class="mono num">3,284</td><td><div class="chart-bar-track" style="width:80px"><div class="chart-bar-fill" style="width:100%"></div></div></td></tr>
+                                        <tr><td><div class="user-pill"><div class="avatar" style="background: oklch(0.6 0.22 220)">NV</div><div><div class="uname">nova</div><div class="uhandle">@nova_7</div></div></div></td><td class="mono num">2,941</td><td><div class="chart-bar-track" style="width:80px"><div class="chart-bar-fill" style="width:89%"></div></div></td></tr>
+                                        <tr><td><div class="user-pill"><div class="avatar" style="background: oklch(0.7 0.17 30)">MR</div><div><div class="uname">mira</div><div class="uhandle">@mira.exe</div></div></div></td><td class="mono num">2,088</td><td><div class="chart-bar-track" style="width:80px"><div class="chart-bar-fill" style="width:63%"></div></div></td></tr>
+                                        <tr><td><div class="user-pill"><div class="avatar" style="background: oklch(0.7 0.17 150)">JX</div><div><div class="uname">jax</div><div class="uhandle">@jax_dev</div></div></div></td><td class="mono num">1,612</td><td><div class="chart-bar-track" style="width:80px"><div class="chart-bar-fill" style="width:49%"></div></div></td></tr>
+                                        <tr><td><div class="user-pill"><div class="avatar" style="background: oklch(0.68 0.17 340)">RI</div><div><div class="uname">riko</div><div class="uhandle">@riko</div></div></div></td><td class="mono num">1,204</td><td><div class="chart-bar-track" style="width:80px"><div class="chart-bar-fill" style="width:36%"></div></div></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-head"><h2>Command usage</h2></div>
+                            <div class="chart-bar-row"><span class="mono">/play</span><div class="chart-bar-track"><div class="chart-bar-fill" style="width:88%"></div></div><span class="chart-num">612</span></div>
+                            <div class="chart-bar-row"><span class="mono">/rank</span><div class="chart-bar-track"><div class="chart-bar-fill" style="width:64%"></div></div><span class="chart-num">441</span></div>
+                            <div class="chart-bar-row"><span class="mono">/ban</span><div class="chart-bar-track"><div class="chart-bar-fill" style="width:42%"></div></div><span class="chart-num">289</span></div>
+                            <div class="chart-bar-row"><span class="mono">/ask</span><div class="chart-bar-track"><div class="chart-bar-fill" style="width:38%"></div></div><span class="chart-num">263</span></div>
+                            <div class="chart-bar-row"><span class="mono">/poll</span><div class="chart-bar-track"><div class="chart-bar-fill" style="width:26%"></div></div><span class="chart-num">178</span></div>
+                            <div class="chart-bar-row"><span class="mono">/help</span><div class="chart-bar-track"><div class="chart-bar-fill" style="width:18%"></div></div><span class="chart-num">120</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== LIVE CONSOLE ==================== -->
+                <section class="page" data-page="logs">
+                    <div class="page-head">
+                        <h1>Live <span class="serif">console.</span></h1>
+                        <p>Streaming logs from the bot process. Paused on hover.</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-head">
+                            <h2>Runtime stream</h2>
+                            <div style="display:flex; gap: 8px; margin-left:auto; align-items:center;">
+                                <button class="chip active">All</button>
+                                <button class="chip">info</button>
+                                <button class="chip">warn</button>
+                                <button class="chip">error</button>
+                                <button class="chip">cmd</button>
+                            </div>
+                        </div>
+                        <div class="searchbar">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            <input class="input" placeholder="Search logs (regex supported)..."/>
+                        </div>
+                        <div class="console" id="console">
+                            <div class="log-line"><span class="log-time">21:38:22</span><span class="log-level info">INFO</span><span class="log-msg">Gateway connected · shard 0 · heartbeat 42ms</span></div>
+                            <div class="log-line"><span class="log-time">21:38:24</span><span class="log-level ok">READY</span><span class="log-msg">Logged in as kozzyx#2847 — serving 1 guild, 1,247 users</span></div>
+                            <div class="log-line"><span class="log-time">21:38:25</span><span class="log-level cmd">CMD</span><span class="log-msg">@nova invoked /play "lofi beats" in #music</span></div>
+                            <div class="log-line"><span class="log-time">21:38:27</span><span class="log-level info">INFO</span><span class="log-msg">Voice channel joined: #music-lounge (region: us-west)</span></div>
+                            <div class="log-line"><span class="log-time">21:38:30</span><span class="log-level warn">WARN</span><span class="log-msg">Rate limit bucket near cap: POST /channels/:id/messages (8/10)</span></div>
+                            <div class="log-line"><span class="log-time">21:38:33</span><span class="log-level info">INFO</span><span class="log-msg">Member joined: mira (id: 482019847182) · account age 3d</span></div>
+                            <div class="log-line"><span class="log-time">21:38:35</span><span class="log-level cmd">CMD</span><span class="log-msg">@kozzy invoked /ban raid0r reason="raid attempt"</span></div>
+                            <div class="log-line"><span class="log-time">21:38:36</span><span class="log-level ok">OK</span><span class="log-msg">Member banned: raid0r — logged to #mod-log</span></div>
+                            <div class="log-line"><span class="log-time">21:38:41</span><span class="log-level warn">WARN</span><span class="log-msg">Automod flagged: invite link in #general (user: spamr_99)</span></div>
+                            <div class="log-line"><span class="log-time">21:38:41</span><span class="log-level info">INFO</span><span class="log-msg">Automod action: message_deleted + warn_dm issued</span></div>
+                            <div class="log-line"><span class="log-time">21:38:47</span><span class="log-level err">ERR</span><span class="log-msg">Failed to reach cloudflare tunnel (retry 1/3) — reconnecting</span></div>
+                            <div class="log-line"><span class="log-time">21:38:49</span><span class="log-level ok">OK</span><span class="log-msg">Tunnel reconnected: rating-george-attempt-ashley.trycloudflare.com</span></div>
+                            <div class="log-line"><span class="log-time">21:38:52</span><span class="log-level cmd">CMD</span><span class="log-msg">@riko invoked /rank — responded with embed</span></div>
+                            <div class="log-line"><span class="log-time">21:38:55</span><span class="log-level info">INFO</span><span class="log-msg">Scheduled task tick: daily-stats-digest (next: 04:00 UTC)</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== MEMBERS ==================== -->
+                <section class="page" data-page="members">
+                    <div class="page-head">
+                        <h1>Members <span class="serif">directory.</span></h1>
+                        <p>Search, filter, and manage every human in the server.</p>
+                    </div>
+
+                    <div class="searchbar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <input class="input" placeholder="Search by username, ID, or role..."/>
+                    </div>
+
+                    <div class="chips">
+                        <button class="chip active">All <span class="count">1247</span></button>
+                        <button class="chip">Online <span class="count">312</span></button>
+                        <button class="chip">Admins <span class="count">4</span></button>
+                        <button class="chip">Mods <span class="count">12</span></button>
+                        <button class="chip">VIP <span class="count">28</span></button>
+                        <button class="chip">Bots <span class="count">6</span></button>
+                        <button class="chip">New (&lt;7d) <span class="count">87</span></button>
+                    </div>
+
+                    <div class="card">
+                        <div class="tbl-wrap">
+                            <table class="tbl">
+                                <thead><tr><th>Member</th><th>Roles</th><th>Joined</th><th>Last active</th><th></th></tr></thead>
+                                <tbody>
+                                    <tr><td><div class="user-pill"><div class="avatar" style="background: oklch(0.72 0.17 280)">KZ</div><div><div class="uname">kozzy</div><div class="uhandle">@kozzy · 194827174</div></div></div></td><td><span class="role-pill" style="--role-color: oklch(0.70 0.18 25)">Admin</span></td><td class="mono">2023-11-04</td><td><span class="status-pill"><span class="dot"></span>now</span></td><td style="text-align:right"><button class="btn sm ghost">Manage</button></td></tr>
+                                    <tr><td><div class="user-pill"><div class="avatar" style="background: oklch(0.6 0.22 220)">NV</div><div><div class="uname">nova</div><div class="uhandle">@nova_7 · 482199201</div></div></div></td><td><span class="role-pill" style="--role-color: oklch(0.80 0.15 80)">Mod</span> <span class="role-pill" style="--role-color: oklch(0.72 0.15 220)">VIP</span></td><td class="mono">2024-02-19</td><td><span style="color:var(--ok); font-size:12px" class="mono">2m</span></td><td style="text-align:right"><button class="btn sm ghost">Manage</button></td></tr>
+                                    <tr><td><div class="user-pill"><div class="avatar" style="background: oklch(0.7 0.17 30)">MR</div><div><div class="uname">mira</div><div class="uhandle">@mira.exe · 592107238</div></div></div></td><td><span class="role-pill" style="--role-color: oklch(0.72 0.15 220)">VIP</span></td><td class="mono">2026-04-18</td><td><span style="color:var(--ok); font-size:12px" class="mono">5m</span></td><td style="text-align:right"><button class="btn sm ghost">Manage</button></td></tr>
+                                    <tr><td><div class="user-pill"><div class="avatar" style="background: oklch(0.7 0.17 150)">JX</div><div><div class="uname">jax</div><div class="uhandle">@jax_dev · 298302401</div></div></div></td><td><span class="role-pill">Member</span></td><td class="mono">2024-06-02</td><td><span style="color:var(--fg-dim); font-size:12px" class="mono">1h</span></td><td style="text-align:right"><button class="btn sm ghost">Manage</button></td></tr>
+                                    <tr><td><div class="user-pill"><div class="avatar" style="background: oklch(0.68 0.17 340)">RI</div><div><div class="uname">riko</div><div class="uhandle">@riko · 710294018</div></div></div></td><td><span class="role-pill">Member</span></td><td class="mono">2025-01-11</td><td><span style="color:var(--fg-dim); font-size:12px" class="mono">4h</span></td><td style="text-align:right"><button class="btn sm ghost">Manage</button></td></tr>
+                                    <tr><td><div class="user-pill"><div class="avatar" style="background: oklch(0.6 0.12 260)">SP</div><div><div class="uname">spamr_99</div><div class="uhandle">@spamr_99 · 918372011</div></div></div></td><td><span class="role-pill">Muted</span></td><td class="mono">2026-04-20</td><td><span style="color:var(--fg-faint); font-size:12px" class="mono">20m</span></td><td style="text-align:right"><button class="btn sm danger">Ban</button></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== MOD LOG ==================== -->
+                <section class="page" data-page="modlog">
+                    <div class="page-head">
+                        <h1>Mod <span class="serif">log.</span></h1>
+                        <p>Every moderation action, timestamped and auditable.</p>
+                    </div>
+
+                    <div class="chips">
+                        <button class="chip active">All actions</button>
+                        <button class="chip">Bans <span class="count">14</span></button>
+                        <button class="chip">Kicks <span class="count">8</span></button>
+                        <button class="chip">Warns <span class="count">32</span></button>
+                        <button class="chip">Mutes <span class="count">21</span></button>
+                        <button class="chip">Unbans <span class="count">3</span></button>
+                    </div>
+
+                    <div class="card">
+                        <div class="timeline">
+                            <div class="timeline-item danger">
+                                <div class="timeline-time">21:38:35 · today</div>
+                                <div class="timeline-title">Ban · <b>raid0r</b> <span class="tag urgent" style="margin-left:6px">BAN</span></div>
+                                <div class="timeline-desc">by @kozzy — reason: "coordinated raid attempt, 8 fresh accts"</div>
+                            </div>
+                            <div class="timeline-item warn">
+                                <div class="timeline-time">21:24:41 · today</div>
+                                <div class="timeline-title">Warn · <b>spamr_99</b> <span class="tag pending" style="margin-left:6px">WARN</span></div>
+                                <div class="timeline-desc">by Automod — rule: "invite-link-filter" · 3rd offense</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">19:02:10 · today</div>
+                                <div class="timeline-title">Mute (1h) · <b>loud_user</b> <span class="tag" style="margin-left:6px">MUTE</span></div>
+                                <div class="timeline-desc">by @nova — reason: "caps spam in #general"</div>
+                            </div>
+                            <div class="timeline-item ok">
+                                <div class="timeline-time">14:50:00 · today</div>
+                                <div class="timeline-title">Unban · <b>old_friend</b> <span class="tag open" style="margin-left:6px">UNBAN</span></div>
+                                <div class="timeline-desc">by @kozzy — reason: "appealed, 60-day cooldown complete"</div>
+                            </div>
+                            <div class="timeline-item danger">
+                                <div class="timeline-time">yesterday · 22:11</div>
+                                <div class="timeline-title">Ban · <b>link_spammer</b> <span class="tag urgent" style="margin-left:6px">BAN</span></div>
+                                <div class="timeline-desc">by Automod — rule: "external-links", auto-escalation</div>
+                            </div>
+                            <div class="timeline-item warn">
+                                <div class="timeline-time">yesterday · 18:45</div>
+                                <div class="timeline-title">Kick · <b>rude_guy</b> <span class="tag pending" style="margin-left:6px">KICK</span></div>
+                                <div class="timeline-desc">by @nova — reason: "harassment, verbal escalation"</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== AUTOMOD ==================== -->
+                <section class="page" data-page="automod">
+                    <div class="page-head">
+                        <h1>Automod <span class="serif">rules.</span></h1>
+                        <p>Pattern-based automated moderation. Enable, tune, or disable each rule.</p>
+                    </div>
+
+                    <div class="grid cols-2">
+                        <div class="rule-card">
+                            <div class="rule-head">
+                                <div class="rule-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
+                                <div style="flex:1;"><div class="rule-title">Invite link filter</div><div class="rule-sub">Deletes discord.gg / other server invites</div></div>
+                                <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                            </div>
+                            <div style="font-size:12px; color:var(--fg-dim); display:flex; gap:10px; flex-wrap:wrap;">
+                                <span class="tag new">DELETE</span><span class="tag pending">WARN</span>
+                                <span style="margin-left:auto" class="mono">triggered 14× this week</span>
+                            </div>
+                        </div>
+                        <div class="rule-card">
+                            <div class="rule-head">
+                                <div class="rule-icon" style="background: var(--warn-soft); color: var(--warn)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+                                <div style="flex:1;"><div class="rule-title">Mention spam</div><div class="rule-sub">Blocks &gt; 5 mentions in a single message</div></div>
+                                <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                            </div>
+                            <div style="font-size:12px; color:var(--fg-dim); display:flex; gap:10px; flex-wrap:wrap;">
+                                <span class="tag urgent">DELETE</span><span class="tag urgent">MUTE 10m</span>
+                                <span style="margin-left:auto" class="mono">triggered 3× this week</span>
+                            </div>
+                        </div>
+                        <div class="rule-card">
+                            <div class="rule-head">
+                                <div class="rule-icon" style="background: var(--danger-soft); color: var(--danger)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
+                                <div style="flex:1;"><div class="rule-title">Slur detection</div><div class="rule-sub">ML-based — matches 480+ variants</div></div>
+                                <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                            </div>
+                            <div style="font-size:12px; color:var(--fg-dim); display:flex; gap:10px; flex-wrap:wrap;">
+                                <span class="tag urgent">DELETE</span><span class="tag urgent">BAN</span>
+                                <span style="margin-left:auto" class="mono">triggered 2× this week</span>
+                            </div>
+                        </div>
+                        <div class="rule-card">
+                            <div class="rule-head">
+                                <div class="rule-icon" style="background: color-mix(in oklab, var(--info) 15%, transparent); color: var(--info)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                                <div style="flex:1;"><div class="rule-title">Caps lock filter</div><div class="rule-sub">Messages &gt; 70% caps, min 12 chars</div></div>
+                                <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                            </div>
+                            <div style="font-size:12px; color:var(--fg-dim); display:flex; gap:10px; flex-wrap:wrap;">
+                                <span class="tag pending">WARN</span>
+                                <span style="margin-left:auto" class="mono">triggered 28× this week</span>
+                            </div>
+                        </div>
+                        <div class="rule-card">
+                            <div class="rule-head">
+                                <div class="rule-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+                                <div style="flex:1;"><div class="rule-title">Raid protection</div><div class="rule-sub">Auto-lockdown on &gt; 10 joins/min</div></div>
+                                <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                            </div>
+                            <div style="font-size:12px; color:var(--fg-dim); display:flex; gap:10px; flex-wrap:wrap;">
+                                <span class="tag urgent">LOCKDOWN</span>
+                                <span style="margin-left:auto" class="mono">triggered 1× this month</span>
+                            </div>
+                        </div>
+                        <div class="rule-card" style="opacity:0.55;">
+                            <div class="rule-head">
+                                <div class="rule-icon" style="background: var(--bg-elev-3); color: var(--fg-faint)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+                                <div style="flex:1;"><div class="rule-title">Phishing link database</div><div class="rule-sub">Cross-references 10k+ known bad URLs</div></div>
+                                <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+                            </div>
+                            <div style="font-size:12px; color:var(--fg-dim); display:flex; gap:10px; flex-wrap:wrap;">
+                                <span class="tag">DISABLED</span>
+                                <span style="margin-left:auto" class="mono">—</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== ROLES ==================== -->
+                <section class="page" data-page="roles">
+                    <div class="page-head">
+                        <h1>Role <span class="serif">hierarchy.</span></h1>
+                        <p>Drag to reorder. Higher roles inherit fewer permissions.</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="sub-head">
+                            <h3>Server roles · 11</h3>
+                            <div class="sub-actions">
+                                <button class="btn sm primary">+ Create role</button>
+                            </div>
+                        </div>
+                        <div class="tbl-wrap">
+                            <table class="tbl">
+                                <thead><tr><th>Role</th><th>Members</th><th>Key permissions</th><th>Color</th><th></th></tr></thead>
+                                <tbody>
+                                    <tr><td><span class="role-pill" style="--role-color: oklch(0.70 0.18 25)">Admin</span></td><td class="mono num">4</td><td style="font-size:12px; color:var(--fg-dim)">All permissions</td><td><div style="width:18px; height:18px; border-radius:4px; background: oklch(0.70 0.18 25)"></div></td><td style="text-align:right"><button class="btn sm ghost">Edit</button></td></tr>
+                                    <tr><td><span class="role-pill" style="--role-color: oklch(0.80 0.15 80)">Moderator</span></td><td class="mono num">12</td><td style="font-size:12px; color:var(--fg-dim)">Ban, Kick, Manage Messages</td><td><div style="width:18px; height:18px; border-radius:4px; background: oklch(0.80 0.15 80)"></div></td><td style="text-align:right"><button class="btn sm ghost">Edit</button></td></tr>
+                                    <tr><td><span class="role-pill" style="--role-color: oklch(0.72 0.15 220)">VIP</span></td><td class="mono num">28</td><td style="font-size:12px; color:var(--fg-dim)">Embed Links, External Emoji</td><td><div style="width:18px; height:18px; border-radius:4px; background: oklch(0.72 0.15 220)"></div></td><td style="text-align:right"><button class="btn sm ghost">Edit</button></td></tr>
+                                    <tr><td><span class="role-pill" style="--role-color: oklch(0.78 0.15 155)">Contributor</span></td><td class="mono num">7</td><td style="font-size:12px; color:var(--fg-dim)">Manage Threads</td><td><div style="width:18px; height:18px; border-radius:4px; background: oklch(0.78 0.15 155)"></div></td><td style="text-align:right"><button class="btn sm ghost">Edit</button></td></tr>
+                                    <tr><td><span class="role-pill" style="--role-color: oklch(0.72 0.17 280)">Member</span></td><td class="mono num">1,192</td><td style="font-size:12px; color:var(--fg-dim)">Send Messages, Attach, React</td><td><div style="width:18px; height:18px; border-radius:4px; background: oklch(0.72 0.17 280)"></div></td><td style="text-align:right"><button class="btn sm ghost">Edit</button></td></tr>
+                                    <tr><td><span class="role-pill" style="--role-color: oklch(0.55 0.02 260)">Muted</span></td><td class="mono num">3</td><td style="font-size:12px; color:var(--fg-dim)">(Read-only)</td><td><div style="width:18px; height:18px; border-radius:4px; background: oklch(0.55 0.02 260)"></div></td><td style="text-align:right"><button class="btn sm ghost">Edit</button></td></tr>
+                                    <tr><td><span class="role-pill" style="--role-color: oklch(0.7 0.17 340)">Bots</span></td><td class="mono num">6</td><td style="font-size:12px; color:var(--fg-dim)">Automation permissions</td><td><div style="width:18px; height:18px; border-radius:4px; background: oklch(0.7 0.17 340)"></div></td><td style="text-align:right"><button class="btn sm ghost">Edit</button></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== CHANNELS ==================== -->
+                <section class="page" data-page="channels">
+                    <div class="page-head">
+                        <h1>Channels <span class="serif">&amp; categories.</span></h1>
+                        <p>The full structural tree of your server.</p>
+                    </div>
+                    <div class="card">
+                        <div class="ch-cat">📢 Information</div>
+                        <div class="ch-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="9" x2="20" y2="9" /><line x1="4" y1="15" x2="20" y2="15" /><line x1="10" y1="3" x2="8" y2="21" /><line x1="16" y1="3" x2="14" y2="21" /></svg> announcements <span class="ch-meta">read-only</span></div>
+                        <div class="ch-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="9" x2="20" y2="9" /><line x1="4" y1="15" x2="20" y2="15" /><line x1="10" y1="3" x2="8" y2="21" /><line x1="16" y1="3" x2="14" y2="21" /></svg> rules <span class="ch-meta">locked</span></div>
+
+                        <div class="ch-cat">💬 General</div>
+                        <div class="ch-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="9" x2="20" y2="9" /><line x1="4" y1="15" x2="20" y2="15" /><line x1="10" y1="3" x2="8" y2="21" /><line x1="16" y1="3" x2="14" y2="21" /></svg> general <span class="ch-meta">8.4k msg / 24h</span></div>
+                        <div class="ch-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="9" x2="20" y2="9" /><line x1="4" y1="15" x2="20" y2="15" /><line x1="10" y1="3" x2="8" y2="21" /><line x1="16" y1="3" x2="14" y2="21" /></svg> memes <span class="ch-meta">6.8k msg / 24h</span></div>
+                        <div class="ch-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="9" x2="20" y2="9" /><line x1="4" y1="15" x2="20" y2="15" /><line x1="10" y1="3" x2="8" y2="21" /><line x1="16" y1="3" x2="14" y2="21" /></svg> bot-spam <span class="ch-meta">2.1k msg / 24h</span></div>
+
+                        <div class="ch-cat">🎵 Music</div>
+                        <div class="ch-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="9" x2="20" y2="9" /><line x1="4" y1="15" x2="20" y2="15" /><line x1="10" y1="3" x2="8" y2="21" /><line x1="16" y1="3" x2="14" y2="21" /></svg> music <span class="ch-meta">4.4k msg / 24h</span></div>
+                        <div class="ch-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg> music-lounge <span class="ch-meta">3 connected</span></div>
+
+                        <div class="ch-cat">🛠 Staff</div>
+                        <div class="ch-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> mod-log <span class="ch-meta">private</span></div>
+                        <div class="ch-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> staff-chat <span class="ch-meta">private</span></div>
+                    </div>
+                </section>
+
+                <!-- ==================== SEND MESSAGE ==================== -->
+                <section class="page" data-page="messaging">
+                    <div class="page-head">
+                        <h1>Send a <span class="serif">message.</span></h1>
+                        <p>Write as the bot. Plain text, markdown, or full embed.</p>
+                    </div>
+
+                    <div class="split">
+                        <div class="card">
+                            <div class="tabs">
+                                <div class="tab active" onclick="switchTab(this, 'compose-text')">Text</div>
+                                <div class="tab" onclick="switchTab(this, 'compose-embed')">Embed</div>
+                            </div>
+                            <label class="input-label">Channel</label>
+                            <select class="select" style="margin-bottom: 14px;">
+                                <option>#announcements</option>
+                                <option>#general</option>
+                                <option>#memes</option>
+                                <option>#music</option>
+                                <option>#bot-spam</option>
+                            </select>
+                            <div id="compose-text">
+                                <label class="input-label">Message content</label>
+                                <textarea class="textarea" id="msg-body" placeholder="Hello, world...&#10;&#10;Supports **markdown**, _italics_, and `code`." oninput="updateEmbedPreview()">Hey everyone 👋 — new version of the bot just shipped.</textarea>
+                                <div class="input-hint">Up to 2000 characters. /help for syntax.</div>
+                            </div>
+                            <div id="compose-embed" style="display:none">
+                                <label class="input-label">Embed title</label>
+                                <input class="input" id="embed-title" value="Patch notes · v2.4.1" oninput="updateEmbedPreview()" style="margin-bottom: 12px;"/>
+                                <label class="input-label">Embed description</label>
+                                <textarea class="textarea" id="embed-desc" oninput="updateEmbedPreview()">• Fixed tunnel reconnect bug
+• Added /poll command
+• Improved automod detection 2×</textarea>
+                                <label class="input-label" style="margin-top: 12px;">Accent color</label>
+                                <input type="color" value="#8b5cf6" id="embed-color" style="width: 60px; height: 34px; background: transparent; border: 1px solid var(--line); border-radius: 6px;" oninput="updateEmbedPreview()"/>
+                            </div>
+                            <div class="divider"></div>
+                            <div style="display:flex; gap: 8px;">
+                                <button class="btn primary" onclick="toast('Message sent to channel', 'ok')">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                                    Send
+                                </button>
+                                <button class="btn">Schedule</button>
+                                <button class="btn ghost" style="margin-left:auto">Save draft</button>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-head"><h2>Preview</h2><span class="badge">DISCORD</span></div>
+                            <div class="discord-preview">
+                                <div class="discord-msg">
+                                    <div class="avatar" style="background: var(--accent)">B</div>
+                                    <div class="content">
+                                        <div class="name">kozzyx <span class="bot-tag">BOT</span><span class="timestamp" id="preview-time">Today at 9:42 PM</span></div>
+                                        <div id="preview-text">Hey everyone 👋 — new version of the bot just shipped.</div>
+                                        <div id="preview-embed" style="display:none; margin-top:8px">
+                                            <div class="embed" id="embed-box">
+                                                <div class="embed-title" id="embed-prev-title">Patch notes · v2.4.1</div>
+                                                <div class="embed-desc" id="embed-prev-desc">• Fixed tunnel reconnect bug
+• Added /poll command
+• Improved automod detection 2×</div>
+                                                <div class="embed-footer">kozzyx · v2.4.1</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== TICKETS ==================== -->
+                <section class="page" data-page="tickets">
+                    <div class="page-head">
+                        <h1>Support <span class="serif">tickets.</span></h1>
+                        <p>3 open · 1 urgent · avg response 14m</p>
+                    </div>
+
+                    <div class="grid cols-3" style="margin-bottom:20px">
+                        <div class="stat lift"><div class="stat-label">Open</div><div class="stat-value num" style="color:var(--ok)">3</div></div>
+                        <div class="stat lift"><div class="stat-label">Pending</div><div class="stat-value num" style="color:var(--warn)">1</div></div>
+                        <div class="stat lift"><div class="stat-label">Resolved (7d)</div><div class="stat-value num">24</div></div>
+                    </div>
+
+                    <div class="card">
+                        <div class="sub-head">
+                            <h3>Open tickets</h3>
+                            <div class="sub-actions"><button class="btn sm">Filter</button><button class="btn sm primary">+ New category</button></div>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:10px">
+                            <div class="ticket-card">
+                                <div class="ticket-head">
+                                    <span class="ticket-id">#1024</span>
+                                    <span class="ticket-title">Bot not joining voice channel</span>
+                                    <span class="tag urgent">URGENT</span>
+                                </div>
+                                <div class="ticket-meta">
+                                    <span>by @nova_7</span><span>opened 42m ago</span><span>category: bugs</span><span>3 replies</span>
+                                </div>
+                            </div>
+                            <div class="ticket-card">
+                                <div class="ticket-head">
+                                    <span class="ticket-id">#1023</span>
+                                    <span class="ticket-title">Can I get the VIP role?</span>
+                                    <span class="tag new">NEW</span>
+                                </div>
+                                <div class="ticket-meta">
+                                    <span>by @mira.exe</span><span>opened 1h ago</span><span>category: roles</span><span>0 replies</span>
+                                </div>
+                            </div>
+                            <div class="ticket-card">
+                                <div class="ticket-head">
+                                    <span class="ticket-id">#1022</span>
+                                    <span class="ticket-title">Feature request: /poll with timer</span>
+                                    <span class="tag pending">PENDING</span>
+                                </div>
+                                <div class="ticket-meta">
+                                    <span>by @jax_dev</span><span>opened 4h ago</span><span>category: feature</span><span>6 replies</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== COMMANDS ==================== -->
+                <section class="page" data-page="commands">
+                    <div class="page-head">
+                        <h1>Commands <span class="serif">registry.</span></h1>
+                        <p>All slash commands and their backing handlers.</p>
+                    </div>
+                    <div class="searchbar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <input class="input" placeholder="Find a command..."/>
+                    </div>
+                    <div class="chips">
+                        <button class="chip active">All <span class="count">23</span></button>
+                        <button class="chip">Moderation <span class="count">6</span></button>
+                        <button class="chip">Music <span class="count">5</span></button>
+                        <button class="chip">Fun <span class="count">7</span></button>
+                        <button class="chip">Utility <span class="count">5</span></button>
+                    </div>
+                    <div class="grid" style="gap:10px">
+                        <div class="cmd-card"><div><div class="cmd-name">/ban</div><div class="cmd-desc">Permanently remove a member. Optional reason + days.</div></div><div class="cmd-usage">289 uses · 7d</div><button class="btn sm">Edit</button></div>
+                        <div class="cmd-card"><div><div class="cmd-name">/kick</div><div class="cmd-desc">Kick a member with optional reason.</div></div><div class="cmd-usage">61 uses · 7d</div><button class="btn sm">Edit</button></div>
+                        <div class="cmd-card"><div><div class="cmd-name">/mute</div><div class="cmd-desc">Silence a user for a specified duration.</div></div><div class="cmd-usage">114 uses · 7d</div><button class="btn sm">Edit</button></div>
+                        <div class="cmd-card"><div><div class="cmd-name">/play</div><div class="cmd-desc">Queue a track from YouTube / Spotify / URL.</div></div><div class="cmd-usage">612 uses · 7d</div><button class="btn sm">Edit</button></div>
+                        <div class="cmd-card"><div><div class="cmd-name">/rank</div><div class="cmd-desc">Show your level &amp; XP with progress bar.</div></div><div class="cmd-usage">441 uses · 7d</div><button class="btn sm">Edit</button></div>
+                        <div class="cmd-card"><div><div class="cmd-name">/poll</div><div class="cmd-desc">Create a timed reaction poll with up to 10 options.</div></div><div class="cmd-usage">178 uses · 7d</div><button class="btn sm">Edit</button></div>
+                        <div class="cmd-card"><div><div class="cmd-name">/ask</div><div class="cmd-desc">Ask Claude anything. Response streamed back.</div></div><div class="cmd-usage">263 uses · 7d</div><button class="btn sm">Edit</button></div>
+                        <div class="cmd-card"><div><div class="cmd-name">/help</div><div class="cmd-desc">List all commands with usage examples.</div></div><div class="cmd-usage">120 uses · 7d</div><button class="btn sm">Edit</button></div>
+                    </div>
+                </section>
+
+                <!-- ==================== SCHEDULED TASKS ==================== -->
+                <section class="page" data-page="scheduled">
+                    <div class="page-head">
+                        <h1>Scheduled <span class="serif">tasks.</span></h1>
+                        <p>Cron-driven jobs running inside the bot.</p>
+                    </div>
+                    <div class="sub-head">
+                        <h3>4 active tasks</h3>
+                        <div class="sub-actions"><button class="btn sm primary">+ New task</button></div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap: 10px;">
+                        <div class="task-row">
+                            <div><div class="task-name">Daily stats digest</div><div class="task-desc">Posts a server summary to #announcements</div></div>
+                            <div class="task-cron">0 4 * * *</div>
+                            <span class="tag open">ACTIVE</span>
+                            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                        </div>
+                        <div class="task-row">
+                            <div><div class="task-name">Backup database</div><div class="task-desc">Snapshots to R2 bucket kozzyx-backups</div></div>
+                            <div class="task-cron">0 */6 * * *</div>
+                            <span class="tag open">ACTIVE</span>
+                            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                        </div>
+                        <div class="task-row">
+                            <div><div class="task-name">Warn expiry sweep</div><div class="task-desc">Clears warnings older than 30 days</div></div>
+                            <div class="task-cron">*/15 * * * *</div>
+                            <span class="tag open">ACTIVE</span>
+                            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                        </div>
+                        <div class="task-row">
+                            <div><div class="task-name">Weekly leaderboard</div><div class="task-desc">Top 10 posters · dropped to #general Monday morning</div></div>
+                            <div class="task-cron">0 10 * * MON</div>
+                            <span class="tag open">ACTIVE</span>
+                            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                        </div>
+                        <div class="task-row" style="opacity:0.6">
+                            <div><div class="task-name">Birthday pings</div><div class="task-desc">Wishes members happy birthday at 9am local</div></div>
+                            <div class="task-cron">0 9 * * *</div>
+                            <span class="tag">PAUSED</span>
+                            <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== AI (CLAUDE) ==================== -->
+                <section class="page" data-page="ai">
+                    <div class="page-head">
+                        <h1>AI <span class="serif">engine.</span></h1>
+                        <p>Powered by Claude. Configure how the bot answers.</p>
+                    </div>
+                    <div class="split">
+                        <div class="card">
+                            <div class="card-head"><h2>Model configuration</h2></div>
+                            <label class="input-label">Model</label>
+                            <select class="select" style="margin-bottom:14px">
+                                <option>claude-sonnet-4-6</option>
+                                <option>claude-opus-4-7</option>
+                                <option>claude-haiku-4-5</option>
+                            </select>
+                            <label class="input-label">System prompt</label>
+                            <textarea class="textarea" style="min-height: 140px">You are kozzyx, a witty, helpful assistant for the kozzy's lair Discord server. Keep replies under 3 sentences unless asked for more. Match the user's tone. Never use emoji in replies unless directly asked.</textarea>
+                            <div class="divider"></div>
+                            <label class="input-label">Temperature · <span class="mono num" id="temp-value">0.7</span></label>
+                            <input class="slider" type="range" min="0" max="1" step="0.05" value="0.7" oninput="document.getElementById('temp-value').textContent = this.value"/>
+                            <div class="input-hint">Lower = more deterministic · Higher = more creative</div>
+                            <div class="divider"></div>
+                            <label class="input-label">Max tokens · <span class="mono num" id="tok-value">1024</span></label>
+                            <input class="slider" type="range" min="128" max="4096" step="128" value="1024" oninput="document.getElementById('tok-value').textContent = this.value"/>
+                        </div>
+                        <div class="card">
+                            <div class="card-head"><h2>Recent conversations</h2><span class="badge">TODAY</span></div>
+                            <div class="chat-msg">
+                                <div class="avatar" style="background: oklch(0.68 0.17 340)">RI</div>
+                                <div class="chat-bubble">What's the biggest star you can see from earth?</div>
+                            </div>
+                            <div class="chat-msg ai" style="animation-delay:0.1s">
+                                <div class="avatar" style="background: var(--accent)">B</div>
+                                <div class="chat-bubble">By apparent brightness, that's Sirius (magnitude -1.46). By actual diameter, UY Scuti is one of the largest known — though it's far too dim for the naked eye.</div>
+                            </div>
+                            <div class="chat-msg" style="animation-delay:0.2s">
+                                <div class="avatar" style="background: oklch(0.6 0.22 220)">NV</div>
+                                <div class="chat-bubble">write me a haiku about pm2</div>
+                            </div>
+                            <div class="chat-msg ai" style="animation-delay:0.3s">
+                                <div class="avatar" style="background: var(--accent)">B</div>
+                                <div class="chat-bubble">Processes reborn —<br>daemon watches every thread,<br>logs bloom through the night.</div>
+                            </div>
+                            <div class="divider"></div>
+                            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap: 14px; font-size: 12px;">
+                                <div><div style="color:var(--fg-dim); margin-bottom:4px;">Requests today</div><div class="mono num" style="font-size:16px; font-weight:600">412</div></div>
+                                <div><div style="color:var(--fg-dim); margin-bottom:4px;">Tokens used</div><div class="mono num" style="font-size:16px; font-weight:600">184k</div></div>
+                                <div><div style="color:var(--fg-dim); margin-bottom:4px;">Cost est.</div><div class="mono num" style="font-size:16px; font-weight:600">$2.41</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== BOT CONFIG ==================== -->
+                <section class="page" data-page="config">
+                    <div class="page-head">
+                        <h1>Bot <span class="serif">config.</span></h1>
+                        <p>Core runtime settings. Changes apply after /restart.</p>
+                    </div>
+                    <div class="card" style="margin-bottom:20px">
+                        <div class="card-head"><h2>General</h2></div>
+                        <div class="setting-row">
+                            <div class="setting-row-text"><b>Command prefix</b><small>Legacy prefix-based commands (slash always enabled)</small></div>
+                            <input class="input mono" value="!" style="width: 80px; text-align:center"/>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-row-text"><b>Default language</b><small>Used for embeds and system messages</small></div>
+                            <select class="select" style="width: 140px;"><option>English</option><option>Hungarian</option><option>Spanish</option><option>German</option></select>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-row-text"><b>Timezone</b><small>Affects scheduled tasks &amp; timestamps</small></div>
+                            <select class="select" style="width: 200px;"><option>UTC</option><option>America/Los_Angeles</option><option>Europe/Budapest</option><option>Asia/Tokyo</option></select>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-row-text"><b>Log level</b><small>How verbose the runtime console is</small></div>
+                            <select class="select" style="width: 140px;"><option>info</option><option>debug</option><option>warn</option><option>error</option></select>
+                        </div>
+                    </div>
+                    <div class="card" style="margin-bottom:20px">
+                        <div class="card-head"><h2>Secrets</h2><span class="badge">MASKED</span></div>
+                        <dl class="kv">
+                            <dt>Client ID</dt><dd class="mono">1094827461028374650</dd>
+                            <dt>Bot token</dt><dd class="mono">••••••••••••••••••••••• <button class="btn sm ghost" style="margin-left:8px">Reveal</button></dd>
+                            <dt>Cloudflare tunnel</dt><dd class="mono" style="font-size:11.5px">rating-george-attempt-ashley.trycloudflare.com</dd>
+                            <dt>API key</dt><dd class="mono">Balazs**** <button class="btn sm ghost" style="margin-left:8px">Rotate</button></dd>
+                        </dl>
+                    </div>
+                    <div class="card" style="margin-bottom:20px">
+                        <div class="card-head"><h2>Feature toggles</h2></div>
+                        <div class="setting-row"><div class="setting-row-text"><b>Music player</b><small>Enable /play, /queue, /skip</small></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                        <div class="setting-row"><div class="setting-row-text"><b>Leveling / XP</b><small>Award XP for messages &amp; voice time</small></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                        <div class="setting-row"><div class="setting-row-text"><b>AI assistant</b><small>Slash command /ask with Claude</small></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                        <div class="setting-row"><div class="setting-row-text"><b>Starboard</b><small>Repost messages with enough ⭐ reactions</small></div><label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+                    </div>
+                    <div class="danger-zone">
+                        <h3>Danger zone</h3>
+                        <div class="setting-row">
+                            <div class="setting-row-text"><b>Restart bot</b><small>Graceful shutdown &amp; PM2 auto-revive</small></div>
+                            <button class="btn warn" onclick="toast('Bot restart queued', 'ok')">Restart</button>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-row-text"><b>Wipe user data</b><small>Clears XP, warn history, and custom prefs</small></div>
+                            <button class="btn danger">Wipe</button>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-row-text"><b>Leave this server</b><small>Bot will need re-invite to rejoin</small></div>
+                            <button class="btn danger">Leave</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== DEPLOY & CI/CD ==================== -->
+                <section class="page" data-page="deploy">
+                    <div class="page-head">
+                        <h1>Deploy <span class="serif">&amp; CI/CD.</span></h1>
+                        <p>Ship new code from your repo straight to the VM.</p>
+                    </div>
+
+                    <div class="grid cols-3" style="margin-bottom: 20px;">
+                        <div class="stat lift"><div class="stat-label">Branch</div><div class="stat-value mono" style="font-size:20px">main</div><div class="stat-delta">ahead by 2 commits</div></div>
+                        <div class="stat lift"><div class="stat-label">Last deploy</div><div class="stat-value mono num" style="font-size:20px">2h ago</div><div class="stat-delta">v2.4.1 · 42s</div></div>
+                        <div class="stat lift"><div class="stat-label">Status</div><div class="stat-value" style="color:var(--ok); font-size:20px">Healthy</div><div class="stat-delta">all checks pass</div></div>
+                    </div>
+
+                    <div class="card" style="margin-bottom: 20px;">
+                        <div class="card-head"><h2>Pipeline</h2><span class="badge">LATEST RUN</span></div>
+                        <div class="pipeline">
+                            <div class="pipe-step done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Checkout</div>
+                            <svg class="pipe-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+                            <div class="pipe-step done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Install</div>
+                            <svg class="pipe-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+                            <div class="pipe-step done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Test</div>
+                            <svg class="pipe-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+                            <div class="pipe-step running"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/></svg>Deploy</div>
+                            <svg class="pipe-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+                            <div class="pipe-step">Health check</div>
+                        </div>
+                    </div>
+
+                    <div class="split">
+                        <div class="card">
+                            <div class="card-head"><h2>Build logs</h2></div>
+                            <div class="code">
+<span style="color: var(--fg-faint)">$</span> git pull origin main<br>
+Already up to date.<br>
+<span style="color: var(--fg-faint)">$</span> npm ci<br>
+<span style="color: var(--ok)">✓</span> 284 packages audited in 3.2s<br>
+<span style="color: var(--fg-faint)">$</span> npm test<br>
+<span style="color: var(--ok)">✓</span> 128 passing <span style="color:var(--fg-faint)">(2.8s)</span><br>
+<span style="color: var(--fg-faint)">$</span> pm2 restart KozzyX<br>
+<span style="color: var(--ok)">✓</span> Process KozzyX reloaded<br>
+<span style="color: var(--info)">[info]</span> Reconnected to gateway · 42ms heartbeat<br>
+<span style="color: var(--warn)">[warn]</span> Tunnel URL rotated: rating-george-attempt-ashley.trycloudflare.com
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-head"><h2>Actions</h2></div>
+                            <div class="action-grid">
+                                <button class="action-card" onclick="toast('Pulling latest from main...', 'ok')">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/><path d="M20 18v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg>
+                                    <b>Pull latest</b>
+                                    <small>git pull &amp; restart</small>
+                                </button>
+                                <button class="action-card" onclick="toast('Deploy queued', 'ok')">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                                    <b>Deploy now</b>
+                                    <small>Run full pipeline</small>
+                                </button>
+                                <button class="action-card" onclick="toast('Rollback initiated', 'ok')">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                                    <b>Rollback</b>
+                                    <small>Revert to v2.4.0</small>
+                                </button>
+                                <button class="action-card" onclick="toast('Restarting...', 'ok')">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/></svg>
+                                    <b>Restart PM2</b>
+                                    <small>Warm restart only</small>
+                                </button>
+                            </div>
+                            <div class="divider"></div>
+                            <label class="input-label">Webhook URL</label>
+                            <div style="display:flex; gap:6px">
+                                <input class="input mono" style="font-size:11px" value="https://kozzyx.bazsi9849.workers.dev/hooks/gh" readonly/>
+                                <button class="btn" onclick="toast('Copied', 'ok')">Copy</button>
+                            </div>
+                            <div class="input-hint">Push → auto-deploy via GitHub webhook</div>
+                        </div>
+                    </div>
+                </section>
             </div>
         </main>
     </div>
 
     <script>
         const API = {
-            base: 'https://sculpture-foods-leather-restore.trycloudflare.com', // Active Tunnel
+            base: 'https://rating-george-attempt-ashley.trycloudflare.com', // Permanent-ish Tunnel
             key: 'Balazs9849'
         };
 
@@ -906,18 +2976,18 @@
         function checkAuth() {
             const token = localStorage.getItem('kozzyx_session');
             const user = JSON.parse(localStorage.getItem('kozzyx_user') || '{}');
-            
+
             if (token) {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('app').style.display = 'grid';
-                
+
                 // Update profile
                 document.getElementById('user-name').textContent = user.username || 'Admin';
                 document.getElementById('user-tag').textContent = `@${user.username}`;
                 if (user.avatar) {
                     document.getElementById('user-avatar').innerHTML = `<img src="https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png" style="width:100%;height:100%;border-radius:50%">`;
                 }
-                
+
                 initDashboard();
             } else {
                 document.getElementById('login-screen').style.display = 'flex';
@@ -994,4 +3064,5 @@
         });
     </script>
 </body>
+
 </html>
