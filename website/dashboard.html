@@ -4290,7 +4290,7 @@
                 document.getElementById('stat-status').textContent = stats.online ? 'Online' : 'Offline';
                 document.getElementById('overview-summary').textContent = `Bot is ${stats.online ? 'online' : 'offline'} across ${stats.guilds} servers with ${stats.members?.toLocaleString()} members.`;
                 // Update sidebar server info
-                if (stats.members) document.getElementById('server-members').textContent = stats.members.toLocaleString() + ' members';
+                if (stats.guildMembers !== undefined) document.getElementById('server-members').textContent = stats.guildMembers.toLocaleString() + ' members';
                 if (stats.guildName) document.getElementById('server-name').textContent = stats.guildName;
             } catch (err) { console.error('Stats refresh failed:', err); }
         }
@@ -4322,11 +4322,34 @@
             document.getElementById('sidebar-overlay').classList.toggle('show');
         }
 
+        // Global error handler for debugging
+        window.onerror = function(msg, url, line) {
+            console.error(`[Global Error] ${msg} at ${url}:${line}`);
+            // toast(`Error: ${msg}`, 'error'); // Only if toast is defined
+        };
+
         function navigate(name, push = true) {
-            document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.dataset.page === name));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.page === name));
-            document.getElementById('crumb').textContent = name.charAt(0).toUpperCase() + name.slice(1);
+            const pages = document.querySelectorAll('.page');
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            let found = false;
+            pages.forEach(p => {
+                const isMatch = p.dataset.page === name;
+                p.classList.toggle('active', isMatch);
+                if (isMatch) found = true;
+            });
+            
+            navItems.forEach(n => n.classList.toggle('active', n.dataset.page === name));
+            
+            const crumb = document.getElementById('crumb');
+            if (crumb) crumb.textContent = name.charAt(0).toUpperCase() + name.slice(1);
+            
             if (push) history.replaceState(null, '', '#' + name);
+            
+            if (!found && name !== 'overview') {
+                console.warn(`Page "${name}" not found, falling back to overview`);
+                navigate('overview', false);
+            }
         }
 
         // Initialization on Load

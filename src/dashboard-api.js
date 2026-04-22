@@ -124,7 +124,8 @@ export function initAPI(client) {
                 members: client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0),
                 guilds: client.guilds.cache.size,
                 online: client.ws.status === 0,
-                guildName: client.guilds.cache.get(process.env.GUILD_ID)?.name || "Kozzy's Lair"
+                guildName: client.guilds.cache.get(process.env.GUILD_ID)?.name || "Kozzy's Lair",
+                guildMembers: client.guilds.cache.get(process.env.GUILD_ID)?.memberCount || 0
             };
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(data));
