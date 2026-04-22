@@ -459,6 +459,9 @@
             padding: 32px 28px;
             max-width: 1400px;
             width: 100%;
+            min-height: calc(100vh - 65px);
+            /* Debug: Subtle background to ensure area is rendered */
+            background: rgba(255, 255, 255, 0.01);
         }
 
         .page-head {
@@ -1234,7 +1237,8 @@
         }
 
         .page.active>* {
-            animation: slideInUp 0.45s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+            /* animation: slideInUp 0.45s cubic-bezier(0.4, 0, 0.2, 1) backwards; Disabled to prevent black screen on wide monitors */
+            opacity: 1; /* Ensure visible without animation */
         }
 
         .page.active>*:nth-child(1) {
@@ -2188,6 +2192,10 @@
             .sidebar-overlay.show {
                 display: block;
             }
+        }
+
+        .sidebar-overlay {
+            display: none;
         }
 
         /* Login Screen */
@@ -4268,7 +4276,7 @@
             if (token) {
                 console.log('[Auth] Logged in as:', user.username || 'Admin');
                 document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('app').style.display = 'grid';
+                document.getElementById('app').style.display = 'flex';
 
                 // Update profile
                 const nameEl = document.getElementById('user-name');
@@ -4339,6 +4347,13 @@
                     consoleEl.appendChild(line);
                 });
             } catch (err) { console.error('Logs refresh failed:', err); }
+        }
+
+        function pulseConsole() {
+            console.log('[Dashboard] Manual refresh triggered');
+            refreshStats();
+            refreshLogs();
+            toast('Dashboard refreshed', 'ok');
         }
 
         function toggleSidebar() {
