@@ -4178,35 +4178,33 @@
 
     <script>
         const API = {
-            base: 'http://104.199.127.109:3456',
+            base: 'https://kozzyx-api.bazsi9849.workers.dev',
             key: 'Balazs9849'
         };
 
         // Utility: API Fetch
         async function apiFetch(path, options = {}) {
             const token = localStorage.getItem('kozzyx_session');
-            let res;
             try {
-                res = await fetch(`${API.base}${path}`, {
+                const res = await fetch(`${API.base}${path}`, {
                     ...options,
                     headers: {
-                        ...options.headers,
                         'Authorization': `Bearer ${token}`,
                         'x-api-key': API.key,
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        ...options.headers
                     }
                 });
+                if (res.status === 401 && token) {
+                    logout();
+                    return;
+                }
+                if (!res.ok) throw new Error(`API Error: ${res.status}`);
+                return await res.json();
             } catch (networkErr) {
-                // Tunnel offline or network error — don't log out, just throw
-                throw new Error('Network error: ' + networkErr.message);
+                console.error(`[API] Fetch failed for ${path}:`, networkErr);
+                throw networkErr;
             }
-            // Only log out if we have a token and the server explicitly rejects it
-            if (res.status === 401 && token) {
-                logout();
-                return;
-            }
-            if (!res.ok) throw new Error(`API Error: ${res.status}`);
-            return res.json();
         }
 
         // --- AUTH LOGIC ---
