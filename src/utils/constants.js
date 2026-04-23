@@ -10,12 +10,24 @@ export const generalHelpCommands = [
     "/remind — Set a reminder",
     "/translate — Translate text",
     "/define — Look up a word",
+    "/ask — Ask the AI a question",
+    "/summarize — Summarize a URL or text",
+    "/imagine — Generate an image with AI",
+    "/generate_rules — Generate server rules with AI",
+    "/decide — Let the bot decide for you",
+    "/todo — Manage your to-do list",
+    "/invites — View invite leaderboard",
+    "/stats — View bot stats",
+    "/appeal — Submit a ban appeal",
+    "/vc — Voice channel controls",
 ];
 
 export const funHelpCommands = [
-    "/hug — Send a hug",
+    "/hug — Send a hug to someone",
     "/roast — Roast someone",
-    "/topic — Conversation topic",
+    "/topic — Get a conversation topic",
+    "/coinflip — Flip a coin",
+    "/random — Get a random number",
 ];
 
 export const featureList = [

@@ -1,7 +1,10 @@
-import { Events, PermissionsBitField } from "discord.js";
+import { Events, PermissionsBitField, ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 import { safeRespond } from "../utils/helpers.js";
 import { asEmbedPayload, buildCoolEmbed } from "../utils/embeds.js";
 import { getDB } from "../utils/db.js";
+import { helpPages } from "../slashCommands/general/help.js";
+import { modHelpPages } from "../slashCommands/general/modhelp.js";
+import { featureHelpPages } from "../slashCommands/general/features.js";
 
 export default {
     name: Events.InteractionCreate,
@@ -26,9 +29,49 @@ export default {
             return;
         }
 
-        // ── APPEAL BUTTONS ─────────────────────────────────────────────
-        if (interaction.isButton() && interaction.customId.startsWith("appeal_")) {
-            return handleAppealButton(interaction);
+        // ── HELP PAGINATION ────────────────────────────────────────────
+        if (interaction.isButton()) {
+            const id = interaction.customId;
+
+            if (id.startsWith("help_prev:") || id.startsWith("help_next:")) {
+                const [action, category, pageStr] = id.split(":");
+                let page = parseInt(pageStr);
+                page = action === "help_next" ? page + 1 : page - 1;
+                const pages = helpPages[category];
+                if (!pages) return;
+                const row = new ActionRowBuilder().addComponents(
+                    new ButtonBuilder().setCustomId(`help_prev:${category}:${page}`).setLabel("⬅ Previous").setStyle(ButtonStyle.Secondary).setDisabled(page === 0),
+                    new ButtonBuilder().setCustomId(`help_next:${category}:${page}`).setLabel("Next ➡").setStyle(ButtonStyle.Primary).setDisabled(page === pages.length - 1)
+                );
+                return interaction.update({ embeds: [pages[page]], components: [row] });
+            }
+
+            if (id.startsWith("modhelp_prev:") || id.startsWith("modhelp_next:")) {
+                const [action, pageStr] = id.split(":");
+                let page = parseInt(pageStr);
+                page = action === "modhelp_next" ? page + 1 : page - 1;
+                const row = new ActionRowBuilder().addComponents(
+                    new ButtonBuilder().setCustomId(`modhelp_prev:${page}`).setLabel("⬅ Previous").setStyle(ButtonStyle.Secondary).setDisabled(page === 0),
+                    new ButtonBuilder().setCustomId(`modhelp_next:${page}`).setLabel("Next ➡").setStyle(ButtonStyle.Primary).setDisabled(page === modHelpPages.length - 1)
+                );
+                return interaction.update({ embeds: [modHelpPages[page]], components: [row] });
+            }
+
+            if (id.startsWith("features_prev:") || id.startsWith("features_next:")) {
+                const [action, pageStr] = id.split(":");
+                let page = parseInt(pageStr);
+                page = action === "features_next" ? page + 1 : page - 1;
+                const row = new ActionRowBuilder().addComponents(
+                    new ButtonBuilder().setCustomId(`features_prev:${page}`).setLabel("⬅ Previous").setStyle(ButtonStyle.Secondary).setDisabled(page === 0),
+                    new ButtonBuilder().setCustomId(`features_next:${page}`).setLabel("Next ➡").setStyle(ButtonStyle.Primary).setDisabled(page === featureHelpPages.length - 1)
+                );
+                return interaction.update({ embeds: [featureHelpPages[page]], components: [row] });
+            }
+
+            // ── APPEAL BUTTONS ─────────────────────────────────────────────
+            if (id.startsWith("appeal_")) {
+                return handleAppealButton(interaction);
+            }
         }
     }
 };

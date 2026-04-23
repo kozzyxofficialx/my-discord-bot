@@ -1,3 +1,9 @@
+[2026-04-23] fix: repair help/modhelp/features pagination buttons and restore 7 pages
+- Fixed "Interaction Failed" on prev/next buttons — interactionCreate was not handling help pagination
+- Added button handlers for help_prev/next, modhelp_prev/next, features_prev/next
+- Expanded generalHelpCommands from 11 to 21 entries (7 pages at 3 per page)
+- Added coinflip and random to funHelpCommands
+
 [2026-04-21] refactor: consolidate all bots into single root bot
 - Removed bots/ folder structure (mod-bot, utility-bot, ticket-bot, ai-bot)
 - Merged ALL commands into one bot at the project root
