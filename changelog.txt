@@ -1,3 +1,10 @@
+[2026-04-27] security: harden Claude AI safety filter against jailbreaks and prompt injection
+- Added locked SAFETY_SYSTEM_PROMPT injected into every user-facing Claude call (ask, translate, summarize, conversation history)
+- Added detectJailbreak() with 20+ regex patterns catching: DAN, developer mode, god mode, "ignore instructions", "no restrictions", prompt injection via [SYSTEM], and more
+- Moderation prompt made significantly stricter with explicit instruction to flag when in doubt
+- All AI commands (/ask, /translate, /summarize) now return BLOCKED with an ephemeral error instead of continuing on jailbreak detection
+- Safety rules are enforced at both the input (pattern matching) and model (system prompt) layers
+
 [2026-04-26] docs: add commands.txt with every command listed
 - Full reference file covering all 63 commands (29 slash + 34 prefix)
 - Organized by category with usage, aliases, and permission requirements

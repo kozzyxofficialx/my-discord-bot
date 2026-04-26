@@ -84,6 +84,16 @@ export default {
             answer = await askClaude(prompt);
         }
 
+        if (answer === "BLOCKED") {
+            return safeRespond(i, asEmbedPayload({
+                guildId: i.guild?.id,
+                type: "error",
+                title: "🚫 Blocked",
+                description: "Your message was blocked because it appears to contain a prompt injection or jailbreak attempt.",
+                ephemeral: true,
+            }));
+        }
+
         if (!answer || answer === "ERROR") {
             return safeRespond(i, asEmbedPayload({
                 guildId: i.guild?.id,

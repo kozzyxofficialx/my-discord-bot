@@ -41,6 +41,16 @@ export default {
         const prompt = `Translate the following text to ${to}. Only provide the translation, nothing else.\n\nText: ${text}`;
         const translation = await askClaude(prompt);
 
+        if (translation === "BLOCKED") {
+            return safeRespond(i, asEmbedPayload({
+                guildId: i.guild?.id,
+                type: "error",
+                title: "🚫 Blocked",
+                description: "Your input was blocked because it contains a prompt injection or jailbreak attempt.",
+                ephemeral: true,
+            }));
+        }
+
         if (!translation || translation === "ERROR") {
             return safeRespond(i, asEmbedPayload({
                 guildId: i.guild?.id,

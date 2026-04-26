@@ -50,6 +50,16 @@ export default {
             const prompt = `Summarize the following Discord conversation concisely:\n\n${transcript}`;
             const summary = await askClaude(prompt);
 
+            if (summary === "BLOCKED") {
+                return safeRespond(i, asEmbedPayload({
+                    guildId: i.guild?.id,
+                    type: "error",
+                    title: "🚫 Blocked",
+                    description: "The conversation content was blocked due to a safety violation.",
+                    ephemeral: true,
+                }));
+            }
+
             if (!summary || summary === "ERROR") {
                 return safeRespond(i, asEmbedPayload({
                     guildId: i.guild?.id,
