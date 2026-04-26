@@ -1,3 +1,9 @@
+[2026-04-27] feat: full config prefix commands + modhelp overhaul
+- New ,antiraid (alias ,ar): configure threshold, window, action, minage, mention, mentiontime, alertchannel. Show with ,antiraid show
+- New ,color (alias ,embedcolor ,colour): list/set/reset per-type embed colors (10 types)
+- New ,badwords (alias ,bw ,filter): add/remove/list/clear bad words filter (up to 200 words)
+- /modhelp expanded from 5 to 7 pages covering every command including new config commands
+
 [2026-04-27] feat: add /antiraid test simulation command
 - New /antiraid slash command (ManageGuild only) with a `test` subcommand
 - Simulates a join spike of N fake accounts (defaults to configured threshold)
