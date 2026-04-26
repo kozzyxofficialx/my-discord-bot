@@ -1,5 +1,6 @@
 import { Events } from "discord.js";
 import { replyEmbed } from "../utils/embeds.js";
+import { checkMassMention } from "../utils/raidProtection.js";
 
 const PREFIX = ",";
 
@@ -9,6 +10,10 @@ export default {
         try {
             if (!message?.content || message.author.bot) return;
             if (!message.guild) return;
+
+            // Anti-raid: mass-mention detection (runs on every guild message)
+            const blocked = await checkMassMention(message);
+            if (blocked) return;
 
             const raw = message.content;
             if (!raw.startsWith(PREFIX)) return;

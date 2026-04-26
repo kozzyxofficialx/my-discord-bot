@@ -89,7 +89,15 @@ function defaultPlugins() {
 }
 
 function defaultAntiRaidConfig() {
-    return { threshold: 10, windowMs: 60_000, action: "lockdown" };
+    return {
+        threshold: 10,
+        windowMs: 60_000,
+        action: "lockdown",          // lockdown | kick | ban
+        minAccountAgeMs: 0,          // 0 = disabled. Otherwise, accounts younger than this joining during a window get auto-kicked
+        massMentionThreshold: 5,     // mentions per message → auto-timeout sender (0 = disabled)
+        massMentionTimeoutMs: 10 * 60_000, // 10 min default
+        alertChannelId: null,        // channel for raid alert posts
+    };
 }
 
 function defaultDynamicVcConfig() {
