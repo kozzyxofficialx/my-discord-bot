@@ -1,3 +1,10 @@
+[2026-04-27] feat: split prefixes — , for mod, ! for config; modhelp config tab
+- messageCreate.js now routes , prefix to mod commands and ! prefix to config commands
+- All 13 config command files tagged with config:true for routing
+- /modhelp rebuilt with 4 mod pages + 4 config pages (anti-raid, tickets, autoresponders, colors)
+- Mod pages have ⚙️ Config button; config pages have 🔧 Mod Help button to toggle back
+- interactionCreate.js handles cfghelp_prev/next and modhelp_switch button IDs
+
 [2026-04-27] feat: full config prefix commands + modhelp overhaul
 - New ,antiraid (alias ,ar): configure threshold, window, action, minage, mention, mentiontime, alertchannel. Show with ,antiraid show
 - New ,color (alias ,embedcolor ,colour): list/set/reset per-type embed colors (10 types)

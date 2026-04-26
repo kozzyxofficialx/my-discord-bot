@@ -13,6 +13,7 @@ import { replyEmbed } from "../../utils/embeds.js";
 import { buildTicketPanelEmbed, buildTicketPanelComponents } from "../../utils/ticketUtils.js";
 
 export default {
+    config: true,
     name: "ticket_channel",
     async execute(message, args) {
         if (!message.member.permissions.has(PermissionsBitField.Flags.ManageGuild)) {

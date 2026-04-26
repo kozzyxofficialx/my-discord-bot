@@ -4,6 +4,7 @@ import { replyEmbed } from "../../utils/embeds.js";
 import { parseDurationToMs } from "../../utils/helpers.js";
 
 export default {
+    config: true,
     name: "ticket_close",
     async execute(message, args) {
         if (!message.member.permissions.has(PermissionsBitField.Flags.ManageGuild)) {

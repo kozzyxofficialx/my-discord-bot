@@ -3,6 +3,7 @@ import { getGuildSettings, guildAutoresponders, saveAutoresponders } from "../..
 import { replyEmbed } from "../../utils/embeds.js";
 
 export default {
+    config: true,
     name: "autoresponder",
     async execute(message, args) {
         if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {

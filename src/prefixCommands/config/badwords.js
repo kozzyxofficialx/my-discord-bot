@@ -6,6 +6,7 @@ const MAX_WORDS = 200;
 const MAX_WORD_LEN = 50;
 
 export default {
+    config: true,
     name: "badwords",
     aliases: ["bw", "filter"],
     async execute(message, args) {

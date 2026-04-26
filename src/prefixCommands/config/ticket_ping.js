@@ -3,6 +3,7 @@ import { getGuildSettings, saveSettings } from "../../utils/database.js";
 import { replyEmbed } from "../../utils/embeds.js";
 
 export default {
+    config: true,
     name: "ticket_ping",
     async execute(message, args) {
         if (!message.member.permissions.has(PermissionsBitField.Flags.ManageGuild)) {

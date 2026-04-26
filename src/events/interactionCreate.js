@@ -3,7 +3,7 @@ import { safeRespond } from "../utils/helpers.js";
 import { asEmbedPayload, buildCoolEmbed } from "../utils/embeds.js";
 import { getDB } from "../utils/db.js";
 import { helpPages } from "../slashCommands/general/help.js";
-import { modHelpPages } from "../slashCommands/general/modhelp.js";
+import { modHelpPages, configHelpPages, modRow, configRow } from "../slashCommands/general/modhelp.js";
 import { featureHelpPages } from "../slashCommands/general/features.js";
 
 export default {
@@ -50,11 +50,24 @@ export default {
                 const [action, pageStr] = id.split(":");
                 let page = parseInt(pageStr);
                 page = action === "modhelp_next" ? page + 1 : page - 1;
-                const row = new ActionRowBuilder().addComponents(
-                    new ButtonBuilder().setCustomId(`modhelp_prev:${page}`).setLabel("⬅ Previous").setStyle(ButtonStyle.Secondary).setDisabled(page === 0),
-                    new ButtonBuilder().setCustomId(`modhelp_next:${page}`).setLabel("Next ➡").setStyle(ButtonStyle.Primary).setDisabled(page === modHelpPages.length - 1)
-                );
-                return interaction.update({ embeds: [modHelpPages[page]], components: [row] });
+                return interaction.update({ embeds: [modHelpPages[page]], components: [modRow(page)] });
+            }
+
+            if (id.startsWith("cfghelp_prev:") || id.startsWith("cfghelp_next:")) {
+                const [action, pageStr] = id.split(":");
+                let page = parseInt(pageStr);
+                page = action === "cfghelp_next" ? page + 1 : page - 1;
+                return interaction.update({ embeds: [configHelpPages[page]], components: [configRow(page)] });
+            }
+
+            if (id.startsWith("modhelp_switch:")) {
+                const [, mode, pageStr] = id.split(":");
+                const page = parseInt(pageStr);
+                if (mode === "config") {
+                    return interaction.update({ embeds: [configHelpPages[page]], components: [configRow(page)] });
+                } else {
+                    return interaction.update({ embeds: [modHelpPages[page]], components: [modRow(page)] });
+                }
             }
 
             if (id.startsWith("features_prev:") || id.startsWith("features_next:")) {

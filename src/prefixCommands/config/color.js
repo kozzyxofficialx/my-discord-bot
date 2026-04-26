@@ -28,6 +28,7 @@ function parseHex(str) {
 }
 
 export default {
+    config: true,
     name: "color",
     aliases: ["embedcolor", "colour"],
     async execute(message, args) {

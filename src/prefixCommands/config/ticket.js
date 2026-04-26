@@ -3,6 +3,7 @@ import { replyEmbed } from "../../utils/embeds.js";
 import { buildTicketPanelEmbed, buildTicketPanelComponents } from "../../utils/ticketUtils.js";
 
 export default {
+    config: true,
     name: "ticket",
     async execute(message, args) {
         const settings = getGuildSettings(message.guild.id);

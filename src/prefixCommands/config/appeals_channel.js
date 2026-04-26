@@ -3,6 +3,7 @@ import { replyEmbed } from "../../utils/embeds.js";
 import { getGuildSettings, saveSettings } from "../../utils/database.js";
 
 export default {
+    config: true,
     name: "appealschannel",
     aliases: ["appealchannel"],
     async execute(message) {

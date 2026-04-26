@@ -41,6 +41,7 @@ function showConfig(message, cfg, settings) {
 }
 
 export default {
+    config: true,
     name: "antiraid",
     aliases: ["ar"],
     async execute(message, args) {
