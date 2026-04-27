@@ -891,13 +891,42 @@
         .console {
             background: #050507;
             border: 1px solid var(--line);
-            border-radius: 12px;
-            padding: 16px 18px;
-            font-family: 'Geist Mono', monospace;
-            font-size: 12.5px;
-            line-height: 1.7;
-            max-height: 420px;
+            border-radius: 16px 16px 0 0;
+            padding: 20px;
+            height: 400px;
             overflow-y: auto;
+            font-family: 'Geist Mono', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .terminal-input-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            background: #0a0a0c;
+            border: 1px solid var(--line);
+            border-top: none;
+            border-radius: 0 0 16px 16px;
+        }
+
+        .terminal-prompt {
+            color: var(--accent);
+            font-family: 'Geist Mono', monospace;
+            font-weight: 700;
+            font-size: 14px;
+            user-select: none;
+        }
+
+        #terminal-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--fg);
+            font-family: 'Geist Mono', monospace;
+            font-size: 13px;
+            outline: none;
         }
 
         html[data-theme="light"] .console {
@@ -2995,48 +3024,11 @@
                             <input class="input" placeholder="Search logs (regex supported)..." />
                         </div>
                         <div class="console" id="console">
-                            <div class="log-line"><span class="log-time">21:38:22</span><span
-                                    class="log-level info">INFO</span><span class="log-msg">Gateway connected · shard 0
-                                    · heartbeat 42ms</span></div>
-                            <div class="log-line"><span class="log-time">21:38:24</span><span
-                                    class="log-level ok">READY</span><span class="log-msg">Logged in as kozzyx#2847 —
-                                    serving 1 guild, 1,247 users</span></div>
-                            <div class="log-line"><span class="log-time">21:38:25</span><span
-                                    class="log-level cmd">CMD</span><span class="log-msg">@nova invoked /play "lofi
-                                    beats" in #music</span></div>
-                            <div class="log-line"><span class="log-time">21:38:27</span><span
-                                    class="log-level info">INFO</span><span class="log-msg">Voice channel joined:
-                                    #music-lounge (region: us-west)</span></div>
-                            <div class="log-line"><span class="log-time">21:38:30</span><span
-                                    class="log-level warn">WARN</span><span class="log-msg">Rate limit bucket near cap:
-                                    POST /channels/:id/messages (8/10)</span></div>
-                            <div class="log-line"><span class="log-time">21:38:33</span><span
-                                    class="log-level info">INFO</span><span class="log-msg">Member joined: mira (id:
-                                    482019847182) · account age 3d</span></div>
-                            <div class="log-line"><span class="log-time">21:38:35</span><span
-                                    class="log-level cmd">CMD</span><span class="log-msg">@kozzy invoked /ban raid0r
-                                    reason="raid attempt"</span></div>
-                            <div class="log-line"><span class="log-time">21:38:36</span><span
-                                    class="log-level ok">OK</span><span class="log-msg">Member banned: raid0r — logged
-                                    to #mod-log</span></div>
-                            <div class="log-line"><span class="log-time">21:38:41</span><span
-                                    class="log-level warn">WARN</span><span class="log-msg">Automod flagged: invite link
-                                    in #general (user: spamr_99)</span></div>
-                            <div class="log-line"><span class="log-time">21:38:41</span><span
-                                    class="log-level info">INFO</span><span class="log-msg">Automod action:
-                                    message_deleted + warn_dm issued</span></div>
-                            <div class="log-line"><span class="log-time">21:38:47</span><span
-                                    class="log-level err">ERR</span><span class="log-msg">Failed to reach cloudflare
-                                    tunnel (retry 1/3) — reconnecting</span></div>
-                            <div class="log-line"><span class="log-time">21:38:49</span><span
-                                    class="log-level ok">OK</span><span class="log-msg">Tunnel reconnected:
-                                    rating-george-attempt-ashley.trycloudflare.com</span></div>
-                            <div class="log-line"><span class="log-time">21:38:52</span><span
-                                    class="log-level cmd">CMD</span><span class="log-msg">@riko invoked /rank —
-                                    responded with embed</span></div>
-                            <div class="log-line"><span class="log-time">21:38:55</span><span
-                                    class="log-level info">INFO</span><span class="log-msg">Scheduled task tick:
-                                    daily-stats-digest (next: 04:00 UTC)</span></div>
+                            <!-- Logs will be injected here -->
+                        </div>
+                        <div class="terminal-input-wrap">
+                            <span class="terminal-prompt">&gt;</span>
+                            <input type="text" id="terminal-input" placeholder="Type a command (e.g. ,warn @user)..." autocomplete="off" onkeydown="handleTerminalInput(event)">
                         </div>
                     </div>
                 </section>
@@ -4191,7 +4183,7 @@
 
     <script>
         const API = {
-            base: 'https://kozzyx-api.bazsi9849.workers.dev',
+            base: window.location.origin,
             key: 'Balazs9849'
         };
 
@@ -4215,7 +4207,7 @@
                 if (!res.ok) throw new Error(`API Error: ${res.status}`);
                 return await res.json();
             } catch (networkErr) {
-                console.error(`[API] Fetch failed for ${path}:`, networkErr);
+                if (!options.silent) console.error(`[API] Fetch failed for ${path}:`, networkErr);
                 throw networkErr;
             }
         }
@@ -4336,9 +4328,12 @@
 
         async function refreshLogs() {
             try {
-                const logs = await apiFetch('/api/logs');
+                const logs = await apiFetch('/api/logs', { silent: true });
                 const consoleEl = document.getElementById('console');
                 if (!consoleEl) return;
+
+                const isAtBottom = consoleEl.scrollHeight - consoleEl.clientHeight <= consoleEl.scrollTop + 50;
+
                 consoleEl.innerHTML = '';
                 logs.forEach(log => {
                     const line = document.createElement('div');
@@ -4346,7 +4341,35 @@
                     line.innerHTML = `<span class="log-time">${log.time}</span><span class="log-level ${log.level.toLowerCase()}">${log.level}</span><span class="log-msg">${log.msg}</span>`;
                     consoleEl.appendChild(line);
                 });
+
+                if (isAtBottom) {
+                    consoleEl.scrollTop = consoleEl.scrollHeight;
+                }
             } catch (err) { console.error('Logs refresh failed:', err); }
+        }
+
+        async function handleTerminalInput(e) {
+            if (e.key === 'Enter') {
+                const input = document.getElementById('terminal-input');
+                const cmd = input.value.trim();
+                if (!cmd) return;
+
+                input.value = '';
+                input.disabled = true;
+
+                try {
+                    await apiFetch('/api/terminal', {
+                        method: 'POST',
+                        body: JSON.stringify({ command: cmd })
+                    });
+                    refreshLogs();
+                } catch (err) {
+                    toast('Terminal error: ' + err.message, 'error');
+                } finally {
+                    input.disabled = false;
+                    input.focus();
+                }
+            }
         }
 
         function pulseConsole() {

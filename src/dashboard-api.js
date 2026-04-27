@@ -117,6 +117,17 @@ export function initAPI(client) {
             return;
         }
 
+        if (pathname === '/api/auth/guilds' && req.method === 'GET') {
+            const guilds = client.guilds.cache.map(g => ({
+                id: g.id,
+                name: g.name,
+                icon: g.iconURL(),
+                memberCount: g.memberCount
+            }));
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(guilds));
+        }
+
         if (pathname === '/api/stats' && req.method === 'GET') {
             const data = {
                 ...botStats,
@@ -155,6 +166,152 @@ export function initAPI(client) {
                     res.end(JSON.stringify({ error: err.message }));
                 }
             });
+        }
+        else if (pathname === '/api/terminal' && req.method === 'POST') {
+            let body = '';
+            req.on('data', chunk => { body += chunk.toString(); });
+            req.on('end', async () => {
+                try {
+                    const { command: fullCommand } = JSON.parse(body);
+                    const user = sessions.get(sessionToken);
+                    
+                    addLog('CMD', `Terminal: ${fullCommand} (by ${user?.username || 'Admin'})`);
+                    
+                    const prefix = fullCommand.startsWith(',') ? ',' : fullCommand.startsWith('!') ? '!' : null;
+                    if (!prefix) {
+                        addLog('ERR', 'Invalid command prefix. Use , or !');
+                        res.writeHead(400, { 'Content-Type': 'application/json' });
+                        return res.end(JSON.stringify({ error: 'Invalid prefix' }));
+                    }
+                    
+                    const args = fullCommand.slice(prefix.length).trim().split(/\s+/);
+                    const commandName = args.shift()?.toLowerCase();
+                    const command = client.prefixCommands.get(commandName) || client.prefixCommands.get(client.aliases.get(commandName));
+                    
+                    if (!command) {
+                        addLog('ERR', `Command not found: ${commandName}`);
+                        res.writeHead(404, { 'Content-Type': 'application/json' });
+                        return res.end(JSON.stringify({ error: 'Command not found' }));
+                    }
+                    
+                    const guild = client.guilds.cache.get(process.env.GUILD_ID);
+                    const channel = guild.channels.cache.find(c => c.type === 0); // Default to first text channel
+                    const member = user ? await guild.members.fetch(user.id).catch(() => null) : null;
+                    
+                    const mockMessage = {
+                        content: fullCommand,
+                        author: user ? (client.users.cache.get(user.id) || { username: user.username, id: user.id }) : { username: 'Admin', id: '0' },
+                        guild: guild,
+                        channel: channel,
+                        member: member,
+                        reply: async (content) => {
+                            const msg = typeof content === 'string' ? content : (content.description || content.title || 'Embed sent');
+                            addLog('OK', `Response: ${msg}`);
+                            return { delete: () => {}, edit: () => {} };
+                        },
+                        send: async (content) => {
+                            const msg = typeof content === 'string' ? content : (content.description || content.title || 'Embed sent');
+                            addLog('OK', `Response: ${msg}`);
+                        }
+                    };
+                    
+                    await command.execute(mockMessage, args, client);
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ success: true }));
+                } catch (err) {
+                    addLog('ERR', `Terminal execution error: ${err.message}`);
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: err.message }));
+                }
+            });
+        }
+        else if (pathname === '/api/members' && req.method === 'GET') {
+            const guild = client.guilds.cache.get(process.env.GUILD_ID);
+            const members = guild ? guild.members.cache.map(m => ({
+                id: m.id,
+                username: m.user.username,
+                tag: m.user.tag,
+                avatar: m.user.displayAvatarURL(),
+                bot: m.user.bot,
+                roles: m.roles.cache.map(r => ({ name: r.name, color: r.hexColor })),
+                joinedAt: m.joinedAt
+            })) : [];
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(members));
+        }
+        else if (pathname === '/api/roles' && req.method === 'GET') {
+            const guild = client.guilds.cache.get(process.env.GUILD_ID);
+            const roles = guild ? guild.roles.cache.map(r => ({
+                id: r.id,
+                name: r.name,
+                color: r.hexColor,
+                members: r.members.size,
+                position: r.position,
+                hoist: r.hoist
+            })) : [];
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(roles));
+        }
+        else if (pathname === '/api/channels' && req.method === 'GET') {
+            const guild = client.guilds.cache.get(process.env.GUILD_ID);
+            const channels = guild ? guild.channels.cache.map(c => ({
+                id: c.id,
+                name: c.name,
+                type: c.type,
+                position: c.position,
+                parentId: c.parentId
+            })) : [];
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(channels));
+        }
+        else if (pathname === '/api/commands' && req.method === 'GET') {
+            const slash = Array.from(client.slashCommands.values()).map(c => ({ name: c.data.name, description: c.data.description }));
+            const prefix = Array.from(client.prefixCommands.values()).map(c => ({ name: c.name, description: c.description, aliases: c.aliases }));
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ slash, prefix }));
+        }
+        else if (pathname === '/api/history' && req.method === 'GET') {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({
+                growth: [100, 105, 110, 115, 120, 125, 130],
+                heatmap: Array(24).fill(0).map(() => Math.random()),
+                topChannels: [{ name: 'general', count: 150 }, { name: 'memes', count: 80 }]
+            }));
+        }
+        else if (pathname === '/api/modlogs' && req.method === 'GET') {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify([]));
+        }
+        else if (pathname === '/api/triggers' && req.method === 'GET') {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify([]));
+        }
+        else if (pathname === '/api/config' && req.method === 'GET') {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ prefix: ',' }));
+        }
+        else if (pathname === '/api/restart' && req.method === 'POST') {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: true }));
+            setTimeout(() => process.exit(0), 1000);
+        }
+        else if (pathname === '/api/wipe' && req.method === 'POST') {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: true }));
+        }
+        else if (pathname === '/api/leave' && req.method === 'POST') {
+            const guild = client.guilds.cache.get(process.env.GUILD_ID);
+            if (guild) guild.leave();
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: true }));
+        }
+        else if (pathname.startsWith('/api/triggers') && (req.method === 'POST' || req.method === 'PUT' || req.method === 'DELETE')) {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: true }));
+        }
+        else if (pathname === '/api/config' && req.method === 'POST') {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: true }));
         }
         else {
             res.writeHead(404);
