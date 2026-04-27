@@ -179,7 +179,7 @@ configHelpPages.push(
 );
 
 // ── BUTTON BUILDERS ───────────────────────────────────────────────────────
-function modRow(page) {
+export function modRow(page) {
     return new ActionRowBuilder().addComponents(
         new ButtonBuilder()
             .setCustomId(`modhelp_prev:${page}`)
@@ -198,7 +198,7 @@ function modRow(page) {
     );
 }
 
-function configRow(page) {
+export function configRow(page) {
     return new ActionRowBuilder().addComponents(
         new ButtonBuilder()
             .setCustomId(`cfghelp_prev:${page}`)
